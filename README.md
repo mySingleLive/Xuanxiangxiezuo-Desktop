@@ -11,8 +11,8 @@
 交付严格按以下顺序进行：
 
 1. [调研文档](docs/01-research.md)
-2. [产品设计](docs/02-product-design.md) → 子代理审核
-3. UI 设计 → 子代理审核 → 用户审核
+2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/01-product-review.md)
+3. [UI 设计](docs/03-ui-design.md) → [子代理审核](docs/reviews/02-ui-review.md) → 等待用户审核
 4. 技术方案 → 子代理审核
 5. 测试用例（含真实桌面用户场景）→ 子代理审核
 6. TDD 实现 → 子代理 code review
@@ -21,9 +21,20 @@
 
 阶段状态、审核记录与继续工作的条件见 [交付进度](docs/00-delivery-status.md)。
 
+## 查看 UI 设计稿
+
+[交互稿源码](design/desktop-preview.html)包含两平台、两主题、十个页面及异常状态；[截图与检查记录](design/preview-verification.md)用于复核。所有数据均为内存演示，请勿输入真实 Key。
+
+在仓库根目录启动仅用于设计审核的静态预览：
+
+```sh
+python3 -m http.server 4187 --bind 127.0.0.1
+```
+
+然后打开 <http://127.0.0.1:4187/design/desktop-preview.html>。此临时预览服务不是最终 App 的运行方案，最终桌面版无需部署服务端。
+
 ## 来源
 
 Web 基线：`mySingleLive/xuanxiang.ink`，提交 `55a62560dc4818143469abb12717a23c752ade8c`。桌面版保持独立 Git 历史、构建和发布，不依赖原仓库所在目录。
 
-开源许可证拟采用 MIT；正式源码发布时保留第三方许可证、字体声明与来源记录。此阶段未替原 Web 仓库添加许可证。
-
+开源许可证为 [MIT](LICENSE)，第三方资源见 [来源与许可声明](THIRD_PARTY_NOTICES.md)。此阶段未替原 Web 仓库添加许可证。

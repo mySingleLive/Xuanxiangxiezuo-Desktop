@@ -12,7 +12,7 @@
 
 1. [调研文档](docs/01-research.md)
 2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/01-product-review.md)
-3. [UI 设计](docs/03-ui-design.md) → [子代理审核](docs/reviews/02-ui-review.md) → 等待用户审核
+3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/02-ui-review.md) → 等待用户审核
 4. 技术方案 → 子代理审核
 5. 测试用例（含真实桌面用户场景）→ 子代理审核
 6. TDD 实现 → 子代理 code review

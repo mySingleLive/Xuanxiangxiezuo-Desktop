@@ -1,0 +1,15 @@
+node_modules/
+.next/
+out/
+dist/
+release/
+test-results/
+playwright-report/
+.env*
+!.env.example
+*.db
+*.db-shm
+*.db-wal
+*.sqlite*
+.DS_Store
+

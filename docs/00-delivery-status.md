@@ -5,8 +5,8 @@
 | 顺序 | 产物 | 状态 | 完成证据 / 继续条件 |
 | --- | --- | --- | --- |
 | 1 | 调研文档 | 已产出 | `01-research.md`、`source-inventory.json` |
-| 2 | 产品设计 | v0.3 修订子代理审核通过 | `02-product-design.md`、能力矩阵、`reviews/01-product-review.md`、`reviews/03-product-revision-review.md`；原4项发现已关闭 |
-| 3 | UI 设计 | v0.4 子代理复审通过，待用户审核 | `03-ui-design.md`、`reviews/04-ui-revision-review.md`；UI4-01–06 已关闭；157 项新版原型检查；需用户明确批准 |
+| 2 | 产品设计 | v0.4 修订子代理审核通过 | `02-product-design.md`、能力矩阵、`reviews/01-product-review.md`、`reviews/03-product-revision-review.md`、`reviews/05-product-ui-followup-review.md`；本次矩阵表达项已关闭 |
+| 3 | UI 设计 | v0.5 子代理审核通过，待用户审核 | `03-ui-design.md`、`reviews/06-ui-followup-review.md`；本版70项定向原型检查通过，旧版157项为历史证据；需用户明确批准 |
 | 4 | 技术方案 | 尚未开始 | UI 用户审核通过后开始 |
 | 5 | 测试用例 | 尚未开始 | 技术方案审核通过后开始 |
 | 6 | 代码实现 | 尚未开始 | 测试用例审核通过后，以 RED → GREEN → 重构推进 |
@@ -24,4 +24,4 @@
 
 ## 工作区
 
-该目录已初始化为独立 Git 仓库，远端为目标仓库。调研与已审产品设计已发布到远端（`9615571`）；UI v0.3、交互稿与检查证据已发布（`9be0e4e`），v0.4 按本次用户意见修订，产品与 UI 新审核记录及证据随本阶段交付。上游 Web 项目的已有文件未修改。
+该目录已初始化为独立 Git 仓库，远端为目标仓库。调研与已审产品设计已发布到远端（`9615571`）；UI v0.3、交互稿与检查证据已发布（`9be0e4e`），v0.4 已发布（`6a040f4`）；本次 v0.5 分组模型、Web 用户菜单、用户资料手动保存及复用边界随新审核记录和证据交付。上游 Web 项目的已有文件未修改。

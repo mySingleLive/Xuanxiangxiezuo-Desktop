@@ -10,9 +10,9 @@
 
 交付严格按以下顺序进行：
 
-1. [调研文档](docs/01-research.md)
-2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/05-product-ui-followup-review.md)
-3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/06-ui-followup-review.md) → 等待用户审核
+1. [调研文档](docs/01-research.md)及[供应商目录补充](docs/provider-catalog-research.md)
+2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/07-product-model-agent-review.md)
+3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/08-ui-model-agent-review.md) → 等待用户审核
 4. 技术方案 → 子代理审核
 5. 测试用例（含真实桌面用户场景）→ 子代理审核
 6. TDD 实现 → 子代理 code review
@@ -23,7 +23,7 @@
 
 ## 查看 UI 设计稿
 
-[交互稿源码](design/desktop-preview.html)包含两平台、两套色板与三种主题模式、十二个页面及异常状态；[截图与检查记录](design/preview-verification.md)用于复核。所有数据均为内存演示，请勿输入真实 Key。
+[交互稿源码](design/desktop-preview.html)包含两平台、两套色板与三种主题模式、十三个页面及异常状态；[截图与检查记录](design/preview-verification.md)用于复核。所有数据均为内存演示，请勿输入真实 Key。UI v0.6 增加智能体页、彩色供应商菜单与手动保存模型；目录条目明确标为示例，真实完整目录尚未接入。
 
 在仓库根目录启动仅用于设计审核的静态预览：
 

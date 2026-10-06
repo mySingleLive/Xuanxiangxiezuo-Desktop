@@ -34,5 +34,10 @@
   "icons": {
     "package": "lucide",
     "license": "assets/Lucide-LICENSE.txt"
+  },
+  "providerLogos": {
+    "manifest": "provider-logo-provenance.json",
+    "license": "assets/providers/LICENSE.txt",
+    "scope": "user-requested colored provider menu; local static SVG assets"
   }
 }

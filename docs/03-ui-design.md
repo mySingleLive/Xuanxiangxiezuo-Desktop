@@ -1,6 +1,6 @@
 # 桌面 UI 设计
 
-版本：0.13；日期：2026-10-07；状态：本次修订子代理复审通过（`reviews/22-ui-settings-shell-review.md`），待用户批准。前序 UI v0.4 / 产品 v0.3 的通过记录保留于 `reviews/04-ui-revision-review.md`、`reviews/03-product-revision-review.md`。
+版本：0.13；日期：2026-10-07；状态：本次修订子代理复审通过（`reviews/22-ui-settings-shell-review.md`），用户已于2026-10-07批准（实施边界见 implementation-boundaries.md）。前序 UI v0.4 / 产品 v0.3 的通过记录保留于 `reviews/04-ui-revision-review.md`、`reviews/03-product-revision-review.md`。
 
 ## 1. 审核材料与边界
 

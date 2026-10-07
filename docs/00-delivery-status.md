@@ -6,16 +6,16 @@
 | --- | --- | --- | --- |
 | 1 | 调研文档 | 已产出 | `01-research.md`、`source-inventory.json` |
 | 2 | 产品设计 | v0.12 子代理复审通过 | `02-product-design.md`、能力矩阵、`reviews/01-product-review.md`、`reviews/03-product-revision-review.md`、`reviews/05-product-ui-followup-review.md`；本次记录 `reviews/21-product-settings-shell-review.md` |
-| 3 | UI 设计 | v0.13 子代理复审通过，待用户审核 | `03-ui-design.md`、`reviews/22-ui-settings-shell-review.md`；本版23项定向界面检查通过（6张截图），历史数量不计入本版；需用户明确批准 |
-| 4 | 技术方案 | 尚未开始 | UI 用户审核通过后开始 |
-| 5 | 测试用例 | 尚未开始 | 技术方案审核通过后开始 |
+| 3 | UI 设计 | v0.13 子代理复审及用户审核通过 | 用户于2026-10-07明确批准；附加实施边界见 `implementation-boundaries.md`，原审核/23项原型检查与6图保留 |
+| 4 | 技术方案 | v1.0 独立审核通过 | `04-technical-design.md`、`requirements-traceability.json`、`migration-map.json`、`reuse-manifest.json`、审核23/24 |
+| 5 | 测试用例 | 编写中 | 技术方案已审核通过，正在展开逐条桌面与业务操作用例 |
 | 6 | 代码实现 | 尚未开始 | 测试用例审核通过后，以 RED → GREEN → 重构推进 |
 | 7 | 全量用例与真实桌面验收 | 尚未开始 | 使用真实 Electron 窗口，macOS 与 Windows 分别记录证据 |
 | 8 | 测试通过后总结 | 尚未开始 | 所有用例通过、无待验收项后产出 |
 
 ## 执行约束
 
-- UI 用户审核是本任务明确要求的阶段门。未收到批准时不提前编写技术方案、测试用例或 App 实现。
+- UI 阶段门已由用户于2026-10-07明确批准解除；按技术方案→用例→TDD实现→真实验收继续推进，不重复索取UI批准。
 - 审核者写独立记录，指出严重程度、对应需求、修复意见与最终结论；主代理修复后复审。
 - 每条最终测试用例有唯一编号、前置条件、操作、预期结果和证据。未执行、跳过、仅浏览器验证或缺少某操作系统证据，均不计为通过。
 - 模拟模型接口能证明配置、协议、调用链与失败处理；不能冒充真实供应商验证。真实模型验收需要作者提供可用于验收的自定义端点/密钥和调用授权。

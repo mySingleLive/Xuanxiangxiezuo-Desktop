@@ -12,8 +12,8 @@
 
 1. [调研文档](docs/01-research.md)及[供应商目录补充](docs/provider-catalog-research.md)
 2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/21-product-settings-shell-review.md)
-3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/22-ui-settings-shell-review.md) → 等待用户审核
-4. 技术方案 → 子代理审核
+3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/22-ui-settings-shell-review.md) → 用户已批准（2026-10-07），[实施边界](docs/implementation-boundaries.md)
+4. [技术方案](docs/04-technical-design.md) → [独立审核通过](docs/reviews/23-technical-design-review.md)
 5. 测试用例（含真实桌面用户场景）→ 子代理审核
 6. TDD 实现 → 子代理 code review
 7. 执行全部测试用例与真实桌面验收

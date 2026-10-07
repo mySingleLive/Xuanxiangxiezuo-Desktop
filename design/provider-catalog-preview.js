@@ -1,4 +1,4 @@
-/* Layout fixtures only. Not real model IDs, complete catalogs, or provider capability assertions. */
+/* Layout fixtures only. Demo IDs/efforts are illustrative; provider output categories follow the dated primary-source research. */
 window.DESKTOP_PROVIDER_CATALOG = {
   "illustrative": true,
   "providers": {
@@ -31,6 +31,12 @@ window.DESKTOP_PROVIDER_CATALOG = {
       {
         "id": "demo-openai-image-1",
         "name": "GPT 图像（示例）",
+        "capability": "图像",
+        "efforts": []
+      },
+      {
+        "id": "demo-openai-image-2",
+        "name": "GPT 图像扩展（示例）",
         "capability": "图像",
         "efforts": []
       }
@@ -300,6 +306,12 @@ window.DESKTOP_PROVIDER_CATALOG = {
         "name": "MiniMax 通用（示例）",
         "capability": "文本",
         "efforts": []
+      },
+      {
+        "id": "demo-minimax-image-1",
+        "name": "MiniMax 图像（示例）",
+        "capability": "图像",
+        "efforts": []
       }
     ],
     "tencent": [
@@ -326,6 +338,12 @@ window.DESKTOP_PROVIDER_CATALOG = {
         "id": "demo-tencent-text-2",
         "name": "混元 通用（示例）",
         "capability": "文本",
+        "efforts": []
+      },
+      {
+        "id": "demo-tencent-image-1",
+        "name": "混元 图像（示例）",
+        "capability": "图像",
         "efforts": []
       }
     ],

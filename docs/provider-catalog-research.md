@@ -1,6 +1,6 @@
 # 供应商目录与图标补充调研
 
-日期：2026-10-07；用于产品 v0.5 / UI v0.6 修订，不是技术方案或真实接口验收。
+日期：2026-10-07；用于产品 v0.6 / UI v0.7 修订，不是技术方案或真实接口验收。
 
 用户要求：预设供应商配置只显示 API Key 与模型列表，列表覆盖供应商全部可用模型；自定义供应商保留接口字段。新增腾讯、字节跳动，并为每家供应商提供对应彩色 Logo。
 
@@ -26,8 +26,27 @@
 
 采用 [LobeHub Icons](https://github.com/lobehub/lobe-icons) 的 npm 官方注册表包 @lobehub/icons-static-svg@1.95.1 中静态 SVG。仅解包资产，没有安装或运行包代码。包版本、完整性值、原始/处理后 SHA-256 与逐 Logo 映射见 `design/provider-logo-provenance.json`；MIT 原文随本地资产保存。已有彩色 SVG 保留原色；单色图形按原形着色，色值是桌面预览处理，不声明为官方品牌标准色。
 
-月之暗面对应 Moonshot 图形、阿里巴巴对应 Alibaba、腾讯对应 Tencent、字节跳动对应 ByteDance，不以模型家族图标替代供应商主体。用户指定的「质谱」文案按原文保留，对应 Zhipu/ZAI 图形。Logo 在本地提供，不从 CDN 请求。
+月之暗面对应 Moonshot 图形、阿里巴巴对应 Alibaba、腾讯对应 Tencent、字节跳动对应 ByteDance，不以模型家族图标替代供应商主体。用户本次修正为「智谱」。改用包内 `zai.svg` 的现代斜向 Z 图形，着色 #3859FF；形状与 [智谱 / Z.ai 官网 SVG](https://www.zhipuai.cn/logo-en.svg) 交叉核对，官方图仅用于核对而未复制进仓库，资产仍来自 MIT 包。Logo 在本地提供，不从 CDN 请求。
 
 ## 原型证据限制
 
-`design/provider-catalog-preview.js` 是有意使用 demo ID 和「示例」名称的布局夹具；既不是供应商真实型号表，也不是能力兼容表。默认思考档位仅用于演示按能力出现/消失。实际安装版必须替换为经核验的完整目录和原 Web 思考能力契约；此阶段没有使用真实 Key、发现目录或产生费用。
+`design/provider-catalog-preview.js` 是有意使用 demo ID 和「示例」名称的布局夹具；既不是供应商真实型号表，也不是逐模型能力兼容表；供应商输出类别依据下表，demo 型号/档位仅为布局演示。默认思考档位仅用于演示按能力出现/消失。实际安装版必须替换为经核验的完整目录和原 Web 思考能力契约；此阶段没有使用真实 Key、发现目录或产生费用。
+
+## v0.7 输出类别筛选依据
+
+核对日期：2026-10-07。按输出能力筛选，不按是否接受图片输入判断。文本十二家保留，依据上表及 `provider-ui-presets.md` 中各家文本官方接口；当前文生图八家及依据如下。未知能力不推断，不自动试生成；安装版需更新官方能力目录并分别发现 Key 权限。当前排除 Anthropic、深度求索、月之暗面、Xiaomi 只表示本次未核验到其文生图预设，不断言其永远没有此能力。
+
+| 文生图供应商 | 公开生成能力依据 | 接口边界 |
+| --- | --- | --- |
+| OpenAI | [Images API](https://developers.openai.com/api/reference/resources/images) | 图像接口与文本任务分开 |
+| Google | [Gemini image generation](https://ai.google.dev/gemini-api/docs/image-generation) | 原生图像生成，不等同 OpenAI 文本兼容接口 |
+| xAI | [Image generation](https://docs.x.ai/developers/model-capabilities/images/generation) | Images generation 接口 |
+| 智谱 | [Generate Image](https://docs.z.ai/api-reference/image/generate-image) | 图像生成，通用 API / Coding Plan 权限分别核验 |
+| 阿里巴巴 | [文生图](https://help.aliyun.com/zh/model-studio/text-to-image) | Qwen / 万相图像输出；区域/模型适配不同 |
+| MiniMax | [Text to image](https://platform.minimax.io/docs/api-reference/image-generation-t2i) | Bearer API Key，`image_generation` 不是通用 Images 路径 |
+| 腾讯 | [Hy 生图调用指南](https://intl.cloud.tencent.com/zh/document/product/1300/83708) | TokenHub API Key Bearer；国际站 `https://tokenhub-intl.tencentcloudmaas.com/v1` 的 wand 图像路径，不能复用混元文本端点/凭据或旧云签名 |
+| 字节跳动 | [Image generation API](https://docs.volcengine.com/docs/ark/image-generation-api?lang=zh) | 方舟图像生成路径；按区域/授权发现 |
+
+从这些官方接口可推断：隐藏的 OpenAI / Anthropic 协议标记不能证明图像路由兼容，实际 App 要按供应商和输出类别适配真实路径、请求/响应、Key 所属站点和区域。腾讯图像预览元数据使用 TokenHub 地址，与文本预设分离；不提供旧式 SecretId/SecretKey 字段。自定义在两类菜单保留，表示作者配置入口，真实输出能力待测试，并不宣称自定义全部支持。
+
+测试改为直接执行全部已选草稿目标；每项结果只证明该项测试，不代表全目录/权限。原型没有生成请求，真实测试授权和适配留待后续阶段。

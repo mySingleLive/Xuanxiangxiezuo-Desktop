@@ -11,8 +11,8 @@
 交付严格按以下顺序进行：
 
 1. [调研文档](docs/01-research.md)及[供应商目录补充](docs/provider-catalog-research.md)
-2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/13-product-menu-editor-review.md)
-3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/14-ui-menu-editor-review.md) → 等待用户审核
+2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/15-product-settings-bindings-review.md)
+3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/16-ui-settings-bindings-review.md) → 等待用户审核
 4. 技术方案 → 子代理审核
 5. 测试用例（含真实桌面用户场景）→ 子代理审核
 6. TDD 实现 → 子代理 code review
@@ -23,7 +23,7 @@
 
 ## 查看 UI 设计稿
 
-[交互稿源码](design/desktop-preview.html)包含两平台、两套色板与三种主题模式、十三个页面及异常状态；[截图与检查记录](design/preview-verification.md)用于复核。所有数据均为内存演示，请勿输入真实 Key。UI v0.9 增加 macOS 系统菜单位置示意和 Windows 窗控左侧菜单；可用模型改为搜索滚动下拉，GPT 用黑白图形、Kimi 用黑色圆角图形，自定义上下文支持 128K / 1M。外观拆为界面与正文配置，快捷键目录扩为 131 项并支持分类、作用域冲突和平台隔离。默认显示调试工具栏；全部目录和测试仍是示例，真实原生菜单/完整 Monaco 命令及模型目录尚未接入。
+[交互稿源码](design/desktop-preview.html)包含两平台、两套色板与三种主题模式、十三个页面及异常状态；[截图与检查记录](design/preview-verification.md)用于复核。所有数据均为内存演示，请勿输入真实 Key。UI v0.10 将设置统一为左侧名称、右侧控件的逐行分组布局；配置模型只允许单选；同一命令支持多个快捷键，逐个添加、编辑、删除，支持冲突提示与平台隔离。默认显示平台/主题/页面调试工具栏；本版62项原型检查通过，21张截图。原生菜单、系统快捷键注册、磁盘持久化和真实模型调用尚未实现。
 
 在仓库根目录启动仅用于设计审核的静态预览：
 

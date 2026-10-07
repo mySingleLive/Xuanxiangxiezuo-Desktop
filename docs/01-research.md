@@ -2,6 +2,8 @@
 
 日期：2026-10-06。来源基线：`mySingleLive/xuanxiang.ink@55a62560dc4818143469abb12717a23c752ade8c`。
 
+后续决策（2026-10-07）：本页保留调研阶段的SQLite推荐及历史状态。用户批准UI后，技术方案基于原数组/JSON/事务/外键完整复用选择**PGlite内嵌PostgreSQL WASM + Prisma**，不运行数据库服务或监听端口；已通过技术审核23。最终实现以 `04-technical-design.md` 为准，兼容性必须通过随后TDD契约，不把研究结论当运行验证。
+
 ## 1. 调研结论
 
 推荐 **Electron + Next.js 静态渲染端 + React 19 / TypeScript / Tailwind 4 / 现有组件 + 本地服务层 + 内嵌 SQLite**。现有服务层迁入桌面本地进程，界面与本地进程通过受限 IPC 通信。最终安装包包含运行所需资源；作者不安装 Node.js、数据库、Docker 或服务端，也不启动本地 HTTP 服务。

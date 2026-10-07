@@ -6,7 +6,7 @@
 
 ## 当前进度
 
-目前处于设计阶段，尚未实现、打包或完成桌面验收。不能将设计原型视为可用 App。
+技术方案与531条正式测试用例已通过独立审核，进入TDD实现阶段。尚未打包或完成桌面验收，不能将设计原型视为可用App。
 
 交付严格按以下顺序进行：
 
@@ -14,7 +14,7 @@
 2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/21-product-settings-shell-review.md)
 3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/22-ui-settings-shell-review.md) → 用户已批准（2026-10-07），[实施边界](docs/implementation-boundaries.md)
 4. [技术方案](docs/04-technical-design.md) → [独立审核通过](docs/reviews/23-technical-design-review.md)
-5. 测试用例（含真实桌面用户场景）→ 子代理审核
+5. [测试用例](docs/05-test-cases.md)（107桌面 + 424业务）→ [独立审核通过](docs/reviews/25-test-cases-review.md)
 6. TDD 实现 → 子代理 code review
 7. 执行全部测试用例与真实桌面验收
 8. 测试通过后总结

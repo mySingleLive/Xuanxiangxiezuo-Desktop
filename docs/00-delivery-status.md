@@ -5,8 +5,8 @@
 | 顺序 | 产物 | 状态 | 完成证据 / 继续条件 |
 | --- | --- | --- | --- |
 | 1 | 调研文档 | 已产出 | `01-research.md`、`source-inventory.json` |
-| 2 | 产品设计 | v0.10 子代理复审通过 | `02-product-design.md`、能力矩阵、`reviews/01-product-review.md`、`reviews/03-product-revision-review.md`、`reviews/05-product-ui-followup-review.md`；本次记录 `reviews/17-product-settings-layout-review.md` |
-| 3 | UI 设计 | v0.11 子代理复审通过，待用户审核 | `03-ui-design.md`、`reviews/18-ui-settings-layout-review.md`；本版24项原型检查通过（11张截图），历史数量不计入本版；需用户明确批准 |
+| 2 | 产品设计 | v0.11 子代理复审通过 | `02-product-design.md`、能力矩阵、`reviews/01-product-review.md`、`reviews/03-product-revision-review.md`、`reviews/05-product-ui-followup-review.md`；本次记录 `reviews/19-product-desktop-interactions-review.md` |
+| 3 | UI 设计 | v0.12 子代理复审通过，待用户审核 | `03-ui-design.md`、`reviews/20-ui-desktop-interactions-review.md`；本版61项浏览器检查与7项按键规则检查通过（14张截图），历史数量不计入本版；需用户明确批准 |
 | 4 | 技术方案 | 尚未开始 | UI 用户审核通过后开始 |
 | 5 | 测试用例 | 尚未开始 | 技术方案审核通过后开始 |
 | 6 | 代码实现 | 尚未开始 | 测试用例审核通过后，以 RED → GREEN → 重构推进 |
@@ -24,4 +24,4 @@
 
 ## 工作区
 
-该目录已初始化为独立 Git 仓库，远端为目标仓库。调研与已审产品设计已发布到远端（`9615571`）；UI v0.3、交互稿与检查证据已发布（`9be0e4e`），v0.4 已发布（`6a040f4`）；v0.5 已发布（`9154a24`）；v0.6 已发布（`e91b386`）；v0.7 已发布（`a76ef8f`）；v0.8 已发布（`16a97e3`）；v0.9 已发布（`f88746f`）；v0.10 已发布（`dc8ceef`）；本次 v0.11 长字段/主题/模型表单上下布局、模型卡片增高与用户卡片美化，随新审核与证据交付。上游 Web 项目的已有文件未修改。
+该目录已初始化为独立 Git 仓库，远端为目标仓库。调研与已审产品设计已发布到远端（`9615571`）；UI v0.3、交互稿与检查证据已发布（`9be0e4e`），v0.4 已发布（`6a040f4`）；v0.5 已发布（`9154a24`）；v0.6 已发布（`e91b386`）；v0.7 已发布（`a76ef8f`）；v0.8 已发布（`16a97e3`）；v0.9 已发布（`f88746f`）；v0.10 已发布（`dc8ceef`）；v0.11 已发布（`6065402`）；本次 v0.12 主题分组、真实键盘录制/冲突处理、外点关闭与阴影、任务模型门控、先目录选择及独立关于窗口设计，随新审核与证据交付。上游 Web 项目的已有文件未修改。

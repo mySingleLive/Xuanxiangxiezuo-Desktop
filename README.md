@@ -11,8 +11,8 @@
 交付严格按以下顺序进行：
 
 1. [调研文档](docs/01-research.md)及[供应商目录补充](docs/provider-catalog-research.md)
-2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/17-product-settings-layout-review.md)
-3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/18-ui-settings-layout-review.md) → 等待用户审核
+2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/19-product-desktop-interactions-review.md)
+3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/20-ui-desktop-interactions-review.md) → 等待用户审核
 4. 技术方案 → 子代理审核
 5. 测试用例（含真实桌面用户场景）→ 子代理审核
 6. TDD 实现 → 子代理 code review
@@ -23,7 +23,7 @@
 
 ## 查看 UI 设计稿
 
-[交互稿源码](design/desktop-preview.html)包含两平台、两套色板与三种主题模式、十三个页面及异常状态；[截图与检查记录](design/preview-verification.md)用于复核。所有数据均为内存演示，请勿输入真实 Key。UI v0.11 将路径、主题与模型配置改为上方标题、下方全宽控件；模型清单卡片增加留白，用户卡片采用新背景和纯图标编辑入口。其余短设置保留左右行，模型单选与多快捷键独立编辑继续保留。本版24项原型检查通过，11张截图。默认显示调试工具栏；原生菜单、系统快捷键、磁盘持久化与真实模型调用尚未实现。
+[交互稿源码](design/desktop-preview.html)包含两平台、两套色板与三种主题模式、十三个页面及异常状态；[截图与检查记录](design/preview-verification.md)用于复核。所有数据均为内存演示，请勿输入真实 Key。UI v0.12 将主题移入界面首项；快捷键直接捕获键盘，冲突支持取消、转移绑定与定位命令；设置有外部阴影并支持外点关闭。首次启动按实际任务需要引导模型配置，迁移/父目录先选择目录，两平台菜单关于使用独立面板。本版61项浏览器检查和7项按键规则检查通过，14张截图。原生目录选择、关于窗口、系统快捷键、磁盘持久化与真实模型调用仍待Electron实现与验收。
 
 在仓库根目录启动仅用于设计审核的静态预览：
 
@@ -31,7 +31,9 @@
 python3 -m http.server 4187 --bind 127.0.0.1
 ```
 
-然后打开 <http://127.0.0.1:4187/design/desktop-preview.html>；默认在顶部显示调试工具栏（平台、色板、页面、异常状态），按 Alt+Shift+P 切换显隐；`?review=0` 隐藏工具栏。此临时预览服务不是最终 App 的运行方案，最终桌面版无需部署服务端。
+然后打开 <http://127.0.0.1:4187/design/desktop-preview.html>；默认在顶部显示调试工具栏（平台、色板、页面、异常状态、AI门控示例），按 Alt+Shift+P 切换显隐；`?review=0` 隐藏工具栏。此临时预览服务不是最终 App 的运行方案，最终桌面版无需部署服务端。
+
+原型按键规则检查：`node --test design/check-shortcut-keys.cjs`。
 
 ## 来源
 

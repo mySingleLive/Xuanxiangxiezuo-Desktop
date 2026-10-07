@@ -11,8 +11,8 @@
 交付严格按以下顺序进行：
 
 1. [调研文档](docs/01-research.md)及[供应商目录补充](docs/provider-catalog-research.md)
-2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/11-product-logo-appearance-review.md)
-3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/12-ui-logo-appearance-review.md) → 等待用户审核
+2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/13-product-menu-editor-review.md)
+3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/14-ui-menu-editor-review.md) → 等待用户审核
 4. 技术方案 → 子代理审核
 5. 测试用例（含真实桌面用户场景）→ 子代理审核
 6. TDD 实现 → 子代理 code review
@@ -23,7 +23,7 @@
 
 ## 查看 UI 设计稿
 
-[交互稿源码](design/desktop-preview.html)包含两平台、两套色板与三种主题模式、十三个页面及异常状态；[截图与检查记录](design/preview-verification.md)用于复核。所有数据均为内存演示，请勿输入真实 Key。UI v0.8 使用黑底圆角智谱Logo、外观分类与无文字主题图、模型家族Logo选择项，默认顶部显示调试工具栏；保留分类筛选与直接测试/手动保存；目录条目明确标为示例，真实完整目录尚未接入。
+[交互稿源码](design/desktop-preview.html)包含两平台、两套色板与三种主题模式、十三个页面及异常状态；[截图与检查记录](design/preview-verification.md)用于复核。所有数据均为内存演示，请勿输入真实 Key。UI v0.9 增加 macOS 系统菜单位置示意和 Windows 窗控左侧菜单；可用模型改为搜索滚动下拉，GPT 用黑白图形、Kimi 用黑色圆角图形，自定义上下文支持 128K / 1M。外观拆为界面与正文配置，快捷键目录扩为 131 项并支持分类、作用域冲突和平台隔离。默认显示调试工具栏；全部目录和测试仍是示例，真实原生菜单/完整 Monaco 命令及模型目录尚未接入。
 
 在仓库根目录启动仅用于设计审核的静态预览：
 

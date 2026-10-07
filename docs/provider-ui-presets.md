@@ -1,11 +1,11 @@
 # 模型 UI 预设依据
 
-日期：2026-10-07。范围：预设隐藏元数据与官方依据，不构成真实模型接口验收。UI v0.8 非自定义仅显示 Key/模型列表；协议/端点不是可见复杂字段。安装版按作者所选供应商/Key发现完整目录，当前原型不联网。主协议只有 OpenAI / Anthropic。
+日期：2026-10-07。范围：预设隐藏元数据与官方依据，不构成真实模型接口验收。UI v0.9 非自定义仅显示 Key/模型搜索下拉；协议/端点不是可见复杂字段。安装版按作者所选供应商/Key发现完整目录，当前原型不联网。主协议只有 OpenAI / Anthropic。
 
 | 供应商 | 隐藏的默认协议/端点 | 官方依据与注意事项 |
 | --- | --- | --- |
 | OpenAI | OpenAI / https://api.openai.com/v1 | [官方 API](https://platform.openai.com/docs/api-reference/introduction)；Organization/Project 可选，请求形式独立于协议 |
-| Anthropic | Anthropic / https://api.anthropic.com | [Messages](https://platform.claude.com/docs/en/api/http/messages)；输出上限必填；思考支持情况依模型，adaptive 不使用预算，enabled 预算模式依接口校验 |
+| Anthropic | Anthropic / https://api.anthropic.com | [Messages](https://platform.claude.com/docs/en/api/http/messages)；请求输出上限必填（隐藏参数按模型元数据生成，不要求用户填写）；思考支持情况依模型，adaptive 不使用预算，enabled 预算模式依接口校验 |
 | Google | OpenAI / https://generativelanguage.googleapis.com/v1beta/openai/ | [官方兼容接口](https://ai.google.dev/gemini-api/docs/openai)；使用 Gemini Key，思考档位受具体模型约束 |
 | xAI | OpenAI / https://api.x.ai/v1 | [REST 推理](https://docs.x.ai/developers/rest-api-reference/inference) |
 | 深度求索 | OpenAI / https://api.deepseek.com | [官方集成](https://api-docs.deepseek.com/guides/agent_integrations/opencode)；亦提供 Anthropic 兼容，UI 初始选择 OpenAI，额外参数按具体模型支持 |
@@ -29,3 +29,5 @@
 智能体默认模型来自已保存有效的文本/图像记录，思考选项复用原 `src/lib/ai/thinking-effort.ts`，默认模式复用原会话标准/计划契约。默认值只影响新任务；删除/禁用后不静默补位。
 
 模型选择项使用模型家族Logo，智谱为官方黑底圆角Z图形；选择器外观/图标不改变原有效性、Key、即时回执和分类约束。详见 UI v0.8。
+
+UI v0.9：可用模型为可搜索、滚动下拉，收起显示数量/名称摘要；添加多选/编辑单选，已添加禁选，类别过滤保持。自定义去输出输入、上下文十进制K/M；隐藏的必要输出参数仍依协议/模型合法默认值生成，不以UI删项作为删协议参数的依据。

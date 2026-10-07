@@ -1,6 +1,6 @@
 {
   "version": "1.95.1",
-  "license": "MIT",
+  "license": "MIT for package-sourced assets; official Kimi entry has separate brand attribution",
   "tarball": "https://registry.npmjs.org/@lobehub/icons-static-svg/-/icons-static-svg-1.95.1.tgz",
   "integrity": "sha512-Hw7EPPgVnC4NZLXBfTNJG6hyQgqECfUPC11VVXodPSr1aebKcFxDZlSpxhWwYNdCc6bhxps/x5TtXoPmfKH2ag==",
   "assets": [
@@ -26,13 +26,6 @@
       "method": "original monochrome paths; preview tint #767b91"
     },
     {
-      "target": "design/assets/models/kimi.svg",
-      "packageAsset": "kimi-color.svg",
-      "originalSha256": "74a7292aeb0220445d14c5d397d75760e2e8c6ed6a9e5fe4f3023471bf62a9ff",
-      "sha256": "74a7292aeb0220445d14c5d397d75760e2e8c6ed6a9e5fe4f3023471bf62a9ff",
-      "method": "original color SVG"
-    },
-    {
       "target": "design/assets/models/qwen.svg",
       "packageAsset": "qwen-color.svg",
       "originalSha256": "77f5768c66d08ce1d3d14e73373975c1bc0454be88c81523ddd0ffd7e2974029",
@@ -52,6 +45,22 @@
       "originalSha256": "3cd31ba03ae44b8c29561597a3b863809efecb13fcdfd08407a086df86a69b55",
       "sha256": "3cd31ba03ae44b8c29561597a3b863809efecb13fcdfd08407a086df86a69b55",
       "method": "original color SVG"
+    },
+    {
+      "target": "design/assets/models/openai.svg",
+      "packageAsset": "openai.svg",
+      "originalSha256": "a595df6b423920c67a7f8f73c063e4bfb72d415948097b6cac063a2366bb5186",
+      "sha256": "76f621128c2f9b530c8315eb11b9b6c44cbc75446fb260a2c35483f40bd0f780",
+      "method": "original monochrome paths; black on paper, CSS inverted to white on ink"
+    },
+    {
+      "target": "design/assets/models/kimi.svg",
+      "source": "https://statics.moonshot.cn/kimi-web-seo/assets/kimi.icon-CElMvu4q.js",
+      "reference": "https://www.kimi.com/pwa-192.png",
+      "originalSha256": "775218eaadcb227c283baf354210f03cd71a6383c9765af91bd500c1d9676dbd",
+      "sha256": "1d0cbe13a173cba10833b80838b637684edd0ea50fd1a658dd9d23bb9fa956ad",
+      "method": "official KforKimi_f1 glyph; white K and blue dot on user-requested black rounded tile",
+      "license": "Official brand asset; not claimed MIT"
     }
   ],
   "fallback": "Other known families use provider assets; unrecognised/custom endpoints use the generic icon, no fabricated brand.",

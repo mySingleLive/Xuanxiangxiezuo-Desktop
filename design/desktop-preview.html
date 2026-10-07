@@ -11,6 +11,7 @@
   <script src="assets/lucide.js" defer></script>
   <script src="desktop-meta.js" defer></script>
   <script src="provider-catalog-preview.js" defer></script>
+  <script src="desktop-commands.js" defer></script>
   <script src="desktop-preview.js" defer></script>
 </head>
 <body>
@@ -19,12 +20,13 @@
     <label>平台 <select id="preview-platform"><option value="mac">macOS</option><option value="win">Windows</option></select></label>
     <label>主题 <select id="preview-theme"><option value="paper">宣纸</option><option value="ink">玄墨</option></select></label>
     <label>页面 <select id="preview-page"><option value="workspace">工作台</option><option value="first">首次启动</option><option value="create">创作向导</option><option value="chat-create">聊天建书目录</option><option value="general">设置 · 通用</option><option value="user">设置 · 用户</option><option value="about">设置 · 关于我们</option><option value="agents">设置 · 智能体</option><option value="models">设置 · 模型</option><option value="appearance">设置 · 外观</option><option value="shortcuts">设置 · 快捷键</option><option value="migration">数据迁移</option><option value="recovery">草稿恢复</option></select></label>
-    <label>状态 <select id="preview-state"><option value="normal">正常</option><option value="directory-error">目录冲突</option><option value="directory-bound">目录已绑定作品</option><option value="save-error">关闭前保存失败</option><option value="settings-save-error">设置保存失败</option><option value="root-unavailable">数据根失联</option><option value="backup-invalid">备份损坏</option><option value="long-title">超长作品标题</option><option value="shortcut-error">快捷键冲突</option><option value="model-error">模型认证失败</option><option value="migration-error">迁移失败</option><option value="cleanup-pending">旧副本待清理</option></select></label>
+    <label>状态 <select id="preview-state"><option value="normal">正常</option><option value="directory-error">目录冲突</option><option value="directory-bound">目录已绑定作品</option><option value="save-error">关闭前保存失败</option><option value="settings-save-error">设置保存失败</option><option value="root-unavailable">数据根失联</option><option value="backup-invalid">备份损坏</option><option value="long-title">超长作品标题</option><option value="shortcut-error">快捷键冲突</option><option value="model-error">模型认证失败</option><option value="catalog-many">模型长列表（80 个示例）</option><option value="migration-error">迁移失败</option><option value="cleanup-pending">旧副本待清理</option></select></label>
     <span class="review-note">示例数据 · 窗控与文件选择为示意 · 无真实 AI / 文件读写</span>
   </div>
+  <div id="mac-system-menubar" class="mac-system-menubar" role="menubar" aria-label="macOS 系统应用菜单"></div>
   <div id="desktop" class="desktop" data-platform="mac">
     <span id="window-title" hidden aria-hidden="true">玄香印</span>
-    <div class="win-controls" aria-label="Windows 原生按钮位置示意"><span>─</span><span>□</span><span>×</span></div>
+    <div class="win-controls" aria-label="Windows 原生按钮位置示意"><button id="windows-menu-trigger" class="icon-btn" data-action="toggle-app-menu" aria-label="应用程序菜单" aria-haspopup="menu" aria-controls="app-root-menu" aria-expanded="false"><i data-lucide="menu"></i></button><span>─</span><span>□</span><span>×</span></div>
     <div class="workspace" id="workspace">
       <aside class="sidebar bg-sidebar" aria-label="作品导航">
         <header class="sidebar-head"><div class="navigation-tools"><div class="mac-controls" aria-label="macOS 原生按钮位置示意"><span class="traffic close"></span><span class="traffic minimize"></span><span class="traffic maximize"></span></div><button class="icon-btn" data-action="navigate-back" aria-label="后退"><i data-lucide="arrow-left"></i></button><button class="icon-btn" data-action="navigate-forward" aria-label="前进"><i data-lucide="arrow-right"></i></button><button class="icon-btn" data-action="toggle-sidebar" aria-label="展开或收起左侧导航栏"><i data-lucide="panel-left"></i></button></div></header><div class="sidebar-brand"><img id="brand" src="assets/logo-horizontal-paper.svg" alt="玄香印"></div>
@@ -47,6 +49,8 @@
     </div>
     <div id="surface" class="surface" hidden></div>
     <div id="subdialog" class="subdialog" hidden></div>
+    <div id="app-root-menu" class="application-popup" role="menu" aria-label="应用程序菜单" hidden></div>
+    <div id="app-submenu" class="application-popup" role="menu" hidden></div>
     <div id="toast" role="status" aria-live="polite" hidden></div>
   </div>
 </body>

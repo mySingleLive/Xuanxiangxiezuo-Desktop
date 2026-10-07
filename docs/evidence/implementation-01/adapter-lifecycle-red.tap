@@ -1,0 +1,97 @@
+TAP version 13
+# Subtest: ADAPTER-01: real Prisma values and hostile SQL parameters round trip without type loss
+ok 1 - ADAPTER-01: real Prisma values and hostile SQL parameters round trip without type loss
+  ---
+  duration_ms: 1659.842708
+  type: 'test'
+  ...
+# Subtest: ADAPTER-02: executeScript only acknowledges actual engine completion
+ok 2 - ADAPTER-02: executeScript only acknowledges actual engine completion
+  ---
+  duration_ms: 23.707708
+  type: 'test'
+  ...
+# Subtest: ADAPTER-03: commits, nested tx work, constraints, and rollback have real effects
+ok 3 - ADAPTER-03: commits, nested tx work, constraints, and rollback have real effects
+  ---
+  duration_ms: 38.758041
+  type: 'test'
+  ...
+# Subtest: ADAPTER-03: requested isolation is set inside the acquired transaction
+ok 4 - ADAPTER-03: requested isolation is set inside the acquired transaction
+  ---
+  duration_ms: 3.880167
+  type: 'test'
+  ...
+# Subtest: ADAPTER-03: deferred foreign key failure during COMMIT reaches caller and frees queue
+ok 5 - ADAPTER-03: deferred foreign key failure during COMMIT reaches caller and frees queue
+  ---
+  duration_ms: 1.783167
+  type: 'test'
+  ...
+# Subtest: ADAPTER-04: external read, write, and second client cannot enter an active transaction
+ok 6 - ADAPTER-04: external read, write, and second client cannot enter an active transaction
+  ---
+  duration_ms: 43.885209
+  type: 'test'
+  ...
+# Subtest: ADAPTER-05: Prisma timeout rolls back before the next transaction succeeds
+ok 7 - ADAPTER-05: Prisma timeout rolls back before the next transaction succeeds
+  ---
+  duration_ms: 124.641042
+  type: 'test'
+  ...
+# Subtest: ADAPTER-06: nested service writes use the supplied transaction and roll back together
+ok 8 - ADAPTER-06: nested service writes use the supplied transaction and roll back together
+  ---
+  duration_ms: 4.024291
+  type: 'test'
+  ...
+# Subtest: ADAPTER-02/03: invalid script and isolation fail without poisoning future work
+ok 9 - ADAPTER-02/03: invalid script and isolation fail without poisoning future work
+  ---
+  duration_ms: 1.399292
+  type: 'test'
+  ...
+# Subtest: ADAPTER-05: dispose rejects pending starters and releases their leases before resolving
+not ok 10 - ADAPTER-05: dispose rejects pending starters and releases their leases before resolving
+  ---
+  duration_ms: 1.339458
+  type: 'test'
+  location: '<repo>/tests/integration/pglite-adapter.test.ts:10:7306'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'rejects'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+  ...
+# Subtest: ADAPTER-05: same ending is idempotent; opposite ending and writes after finishing reject
+not ok 11 - ADAPTER-05: same ending is idempotent; opposite ending and writes after finishing reject
+  ---
+  duration_ms: 0.560709
+  type: 'test'
+  location: '<repo>/tests/integration/pglite-adapter.test.ts:10:8128'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'rejects'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (<repo>/tests/integration/pglite-adapter.test.ts:175:3)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 9
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2298.885458

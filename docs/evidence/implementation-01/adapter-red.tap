@@ -1,0 +1,71 @@
+✔ ADAPTER-01: real Prisma values and hostile SQL parameters round trip without type loss (1964.691041ms)
+✖ ADAPTER-02: executeScript only acknowledges actual engine completion (24.902292ms)
+✔ ADAPTER-03: commits, nested tx work, constraints, and rollback have real effects (34.484583ms)
+✖ ADAPTER-03: requested isolation is set inside the acquired transaction (2.367834ms)
+✖ ADAPTER-03: deferred foreign key failure during COMMIT reaches caller and frees queue (1.5165ms)
+✔ ADAPTER-04: external read, write, and second client cannot enter an active transaction (52.558041ms)
+✔ ADAPTER-05: Prisma timeout rolls back before the next transaction succeeds (127.028459ms)
+✔ ADAPTER-06: nested service writes use the supplied transaction and roll back together (4.939084ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 5
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3132.40725
+
+✖ failing tests:
+
+test at tests/integration/pglite-adapter.test.ts:10:2040
+✖ ADAPTER-02: executeScript only acknowledges actual engine completion (24.902292ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  true !== false
+
+      at TestContext.<anonymous> (<repo>/tests/integration/pglite-adapter.test.ts:71:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/integration/pglite-adapter.test.ts:10:3828
+✖ ADAPTER-03: requested isolation is set inside the acquired transaction (2.367834ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'read committed'
+  - 'repeatable read'
+       ^
+
+      at TestContext.<anonymous> (<repo>/tests/integration/pglite-adapter.test.ts:93:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'read committed',
+    expected: 'repeatable read',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/integration/pglite-adapter.test.ts:10:4259
+✖ ADAPTER-03: deferred foreign key failure during COMMIT reaches caller and frees queue (1.5165ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (<repo>/tests/integration/pglite-adapter.test.ts:98:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

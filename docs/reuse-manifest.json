@@ -37,7 +37,7 @@
       "allowedChanges": [
         "Local library transport/identity and import/export; preserve prompt editor UI"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/admin/SettingsClient.tsx",
@@ -74,7 +74,7 @@
       "allowedChanges": [
         "Local library transport/identity and import/export; preserve prompt editor UI"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/AskUserPanel.tsx",
@@ -83,7 +83,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/CandidateActionPanel.tsx",
@@ -92,7 +92,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/CandidateDrawCard.tsx",
@@ -101,7 +101,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/ChangesCard.tsx",
@@ -110,7 +110,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/Collapse.tsx",
@@ -119,7 +119,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/ComposerChipHoverCard.tsx",
@@ -128,7 +128,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/EntityHoverCard.tsx",
@@ -137,7 +137,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/FileCard.tsx",
@@ -146,7 +146,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/GroupedToolRows.tsx",
@@ -155,7 +155,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/ImageCard.tsx",
@@ -164,7 +164,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/ManuscriptCard.tsx",
@@ -173,7 +173,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/MentionPopup.tsx",
@@ -182,7 +182,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/ModelPicker.tsx",
@@ -191,7 +191,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/NarrativeCheckCard.tsx",
@@ -200,7 +200,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/ProgressPanel.tsx",
@@ -209,7 +209,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/QueueRow.tsx",
@@ -218,7 +218,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/ReviewCard.tsx",
@@ -227,7 +227,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/SearchPalette.tsx",
@@ -236,7 +236,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/SopPlanCard.tsx",
@@ -245,7 +245,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/StagedChips.tsx",
@@ -254,7 +254,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/StoryTaskNavigationPanel.tsx",
@@ -263,7 +263,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/SubAgentRow.tsx",
@@ -272,7 +272,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/TaskReferenceInput.tsx",
@@ -281,7 +281,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/ToolCallCard.tsx",
@@ -290,7 +290,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/TurnProgressCard.tsx",
@@ -299,7 +299,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/chip-drag.ts",
@@ -308,7 +308,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/composer-editor.ts",
@@ -317,7 +317,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/cost-estimate.ts",
@@ -326,7 +326,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/entity-refs.ts",
@@ -335,7 +335,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/level-chip.ts",
@@ -344,7 +344,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/pending-answer.ts",
@@ -353,7 +353,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/provider-logos.tsx",
@@ -362,7 +362,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/scene-receipts.ts",
@@ -371,7 +371,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/story-focus.ts",
@@ -380,7 +380,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/types.ts",
@@ -389,7 +389,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/ui-events.ts",
@@ -398,7 +398,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/use-agent-chat.ts",
@@ -407,7 +407,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/use-card-selection.ts",
@@ -416,7 +416,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/use-draw-redraw-settings.ts",
@@ -425,7 +425,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/use-entity-index.ts",
@@ -434,7 +434,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/chat/use-mention-candidates.ts",
@@ -443,7 +443,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/comments/CommentBubble.tsx",
@@ -452,7 +452,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/comments/CommentComposer.tsx",
@@ -461,7 +461,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/comments/CommentablePreview.tsx",
@@ -470,7 +470,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/comments/comment-drafts.tsx",
@@ -479,7 +479,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/comments/comment-save-coordinator.ts",
@@ -488,7 +488,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/comments/types.ts",
@@ -497,7 +497,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/comments/use-monaco-comments.tsx",
@@ -506,7 +506,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/comments/use-text-comments.ts",
@@ -515,7 +515,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/AttributesPanel.tsx",
@@ -524,7 +524,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/BubbleInput.tsx",
@@ -533,7 +533,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/CandidatePanel.tsx",
@@ -542,7 +542,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/CascadePanel.tsx",
@@ -551,7 +551,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ChapterConflictDialog.tsx",
@@ -560,7 +560,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ChapterContentPanel.tsx",
@@ -569,7 +569,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ChapterFinalizationDialog.tsx",
@@ -578,7 +578,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ChapterHistory.tsx",
@@ -587,7 +587,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ChapterOutlinePanel.tsx",
@@ -596,7 +596,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/CharacterImagePanel.tsx",
@@ -605,7 +605,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/CharacterPanel.tsx",
@@ -614,7 +614,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/CharactersPanel.tsx",
@@ -623,7 +623,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/CreateLevelSystemDialog.tsx",
@@ -632,7 +632,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/CroppedImage.tsx",
@@ -641,7 +641,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/DraftConflictTools.tsx",
@@ -650,7 +650,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/EntityAttributesEditor.tsx",
@@ -659,7 +659,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ForeshadowPanel.tsx",
@@ -668,7 +668,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ImageCropEditor.tsx",
@@ -677,7 +677,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ItemIcon.tsx",
@@ -686,7 +686,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ItemImagePanel.tsx",
@@ -695,7 +695,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ItemLevelPicker.tsx",
@@ -704,7 +704,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ItemPanel.tsx",
@@ -713,7 +713,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ItemsPanel.tsx",
@@ -722,7 +722,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/LevelSystemEditor.tsx",
@@ -731,7 +731,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ManuscriptExportItems.tsx",
@@ -740,7 +740,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/NovelCoverPanel.tsx",
@@ -749,7 +749,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/NovelOverview.tsx",
@@ -758,7 +758,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/OutlinePanel.tsx",
@@ -767,7 +767,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/PlaceholderPanel.tsx",
@@ -776,7 +776,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ReviewCard.tsx",
@@ -785,7 +785,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ReviewHistory.tsx",
@@ -794,7 +794,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ScenePanel.tsx",
@@ -803,7 +803,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ScenesPanel.tsx",
@@ -812,7 +812,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/SettingContentEditor.tsx",
@@ -821,7 +821,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/SettingPanel.tsx",
@@ -830,7 +830,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/StagedSaveSurface.tsx",
@@ -839,7 +839,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/StoryReviewPanel.tsx",
@@ -848,7 +848,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/StoryWorkflowPanel.tsx",
@@ -857,7 +857,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/SubAgentPanel.tsx",
@@ -866,7 +866,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/ThemePanel.tsx",
@@ -875,7 +875,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/TropePanel.tsx",
@@ -884,7 +884,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/WorldPanel.tsx",
@@ -893,7 +893,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/api.ts",
@@ -902,7 +902,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/candidate-accept.ts",
@@ -911,7 +911,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/chapter-status.ts",
@@ -920,7 +920,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/character-arc/arc-chain.tsx",
@@ -929,7 +929,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/character-arc/arc-change-editor.tsx",
@@ -938,7 +938,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/character-arc/arc-marker-input.tsx",
@@ -947,7 +947,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/character-arc/arc-stage-editor.tsx",
@@ -956,7 +956,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/character-arc/arc-tab.tsx",
@@ -965,7 +965,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/character-fields.tsx",
@@ -974,7 +974,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/image-prompt.ts",
@@ -983,7 +983,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/item-levels.ts",
@@ -992,7 +992,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/labels.ts",
@@ -1001,7 +1001,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/level-card-parts.tsx",
@@ -1010,7 +1010,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/planning/PlanningWorkspace.tsx",
@@ -1019,7 +1019,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/planning/planning.module.css",
@@ -1028,7 +1028,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/registry.tsx",
@@ -1037,7 +1037,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scenario/ConfigForm.tsx",
@@ -1046,7 +1046,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scenario/ScenarioPanel.tsx",
@@ -1055,7 +1055,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scenario/beats/BeatsView.tsx",
@@ -1064,7 +1064,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scenario/chat/ChatView.tsx",
@@ -1073,7 +1073,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scenario/prose/ProseView.tsx",
@@ -1082,7 +1082,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scenario/queries.ts",
@@ -1091,7 +1091,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scenario/trunk/TrunkView.tsx",
@@ -1100,7 +1100,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scenario/types.ts",
@@ -1109,7 +1109,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scene/SceneEditor.tsx",
@@ -1118,7 +1118,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scene/SceneImagePanel.tsx",
@@ -1127,7 +1127,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scene/SceneTree.tsx",
@@ -1136,7 +1136,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scene/SceneWorkspace.tsx",
@@ -1145,7 +1145,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scene/scene.css",
@@ -1154,7 +1154,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/scene/use-scenes.ts",
@@ -1163,7 +1163,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/setting-content.ts",
@@ -1172,7 +1172,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/types.ts",
@@ -1181,7 +1181,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/content/use-autosave.tsx",
@@ -1190,7 +1190,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/editor/MarkdownEditor.tsx",
@@ -1199,7 +1199,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/editor/MarkdownPreview.tsx",
@@ -1208,7 +1208,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/editor/MonacoMarkdownEditor.tsx",
@@ -1217,7 +1217,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/editor/monaco-setup.ts",
@@ -1226,7 +1226,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/editor/use-editor-commands.ts",
@@ -1235,7 +1235,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/foreshadow/preview-references.tsx",
@@ -1244,7 +1244,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/foreshadow/references.tsx",
@@ -1253,7 +1253,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/foreshadow/use-editor-references.tsx",
@@ -1262,7 +1262,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/foreshadow/use-panel-focus.ts",
@@ -1271,7 +1271,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/layout/ChatPanel.tsx",
@@ -1280,7 +1280,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/layout/ContentTabs.tsx",
@@ -1289,7 +1289,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/layout/CreateNovelDialog.tsx",
@@ -1298,7 +1298,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/layout/DashboardShell.tsx",
@@ -1307,7 +1307,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/layout/OutlineTreeMenu.tsx",
@@ -1316,7 +1316,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/layout/ScenarioCreateDialog.tsx",
@@ -1325,7 +1325,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/layout/SidebarHoverCard.tsx",
@@ -1334,7 +1334,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/layout/SidebarTree.tsx",
@@ -1343,7 +1343,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/marketing/auth-shell.tsx",
@@ -1387,7 +1387,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/marketing/section-heading.tsx",
@@ -1424,7 +1424,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/score/ReviewCommentsSection.tsx",
@@ -1433,7 +1433,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/score/ScoreHoverCard.tsx",
@@ -1442,7 +1442,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/score/ScoreIndicator.tsx",
@@ -1451,7 +1451,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/score/ScoreReportPanel.tsx",
@@ -1460,7 +1460,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/score/use-improve-dialog-settings.ts",
@@ -1469,7 +1469,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/score/use-score-report.ts",
@@ -1478,7 +1478,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/theme/ThemeSwitcher.tsx",
@@ -1487,7 +1487,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/avatar.tsx",
@@ -1496,7 +1496,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/badge.tsx",
@@ -1505,7 +1505,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/button.tsx",
@@ -1514,7 +1514,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/card.tsx",
@@ -1523,7 +1523,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/checkbox.tsx",
@@ -1532,7 +1532,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/dialog.tsx",
@@ -1541,7 +1541,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/dropdown-menu.tsx",
@@ -1550,7 +1550,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/form.tsx",
@@ -1559,7 +1559,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/input.tsx",
@@ -1568,7 +1568,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/label.tsx",
@@ -1577,7 +1577,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/scroll-area.tsx",
@@ -1586,7 +1586,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/select.tsx",
@@ -1595,7 +1595,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/separator.tsx",
@@ -1604,7 +1604,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/sonner.tsx",
@@ -1613,7 +1613,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/switch.tsx",
@@ -1622,7 +1622,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/table.tsx",
@@ -1631,7 +1631,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/tabs.tsx",
@@ -1640,7 +1640,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/tentative-badge.tsx",
@@ -1649,7 +1649,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/textarea.tsx",
@@ -1658,7 +1658,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/components/ui/tooltip.tsx",
@@ -1667,7 +1667,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/stores/chat.ts",
@@ -1676,7 +1676,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/stores/scene-ui.ts",
@@ -1685,7 +1685,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/stores/staged-changes.ts",
@@ -1694,7 +1694,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/stores/story-activity.ts",
@@ -1703,7 +1703,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/stores/tabs.ts",
@@ -1712,7 +1712,7 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/app/globals.css",
@@ -1721,7 +1721,7 @@
       "allowedChanges": [
         "desktop theme/local resources integration"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     },
     {
       "source": "src/app/providers.tsx",
@@ -1730,7 +1730,7 @@
       "allowedChanges": [
         "desktop theme/local resources integration"
       ],
-      "status": "not-imported"
+      "status": "imported-unmodified"
     }
   ]
 }

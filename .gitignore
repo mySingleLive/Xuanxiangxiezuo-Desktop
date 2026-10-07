@@ -13,3 +13,7 @@ playwright-report/
 *.sqlite*
 .DS_Store
 
+
+src/generated/
+tests/generated/
+*.tsbuildinfo

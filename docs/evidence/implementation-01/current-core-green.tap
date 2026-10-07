@@ -1,0 +1,220 @@
+TAP version 13
+# Subtest: DESK-D04: trusted database scope never leaks to work outside a request
+ok 1 - DESK-D04: trusted database scope never leaks to work outside a request
+  ---
+  duration_ms: 3913.769334
+  type: 'test'
+  ...
+# Subtest: DESK-D04: simultaneous work requests keep their own database after asynchronous suspension
+ok 2 - DESK-D04: simultaneous work requests keep their own database after asynchronous suspension
+  ---
+  duration_ms: 99.54675
+  type: 'test'
+  ...
+# Subtest: ADAPTER-06: using the default client inside an interactive tx is rejected instead of self-deadlocking
+ok 3 - ADAPTER-06: using the default client inside an interactive tx is rejected instead of self-deadlocking
+  ---
+  duration_ms: 9.889458
+  type: 'test'
+  ...
+# Subtest: ADAPTER-08: migration failure rolls back the whole pending batch and does not advance checksums
+ok 4 - ADAPTER-08: migration failure rolls back the whole pending batch and does not advance checksums
+  ---
+  duration_ms: 16.124625
+  type: 'test'
+  ...
+# Subtest: SERVICE-content-commit: original CAS, idempotency and immutable snapshots execute on PGlite
+ok 5 - SERVICE-content-commit: original CAS, idempotency and immutable snapshots execute on PGlite
+  ---
+  duration_ms: 3222.823042
+  type: 'test'
+  ...
+# Subtest: SERVICE-content-commit: failure inside original effects rolls back content, version, snapshots and receipt
+ok 6 - SERVICE-content-commit: failure inside original effects rolls back content, version, snapshots and receipt
+  ---
+  duration_ms: 14.458125
+  type: 'test'
+  ...
+# Subtest: ADAPTER-07: usage records retain an immutable local model snapshot and uncallable reference
+ok 7 - ADAPTER-07: usage records retain an immutable local model snapshot and uncallable reference
+  ---
+  duration_ms: 7.238375
+  type: 'test'
+  ...
+# Subtest: ADAPTER-01: real Prisma values and hostile SQL parameters round trip without type loss
+ok 8 - ADAPTER-01: real Prisma values and hostile SQL parameters round trip without type loss
+  ---
+  duration_ms: 2732.033458
+  type: 'test'
+  ...
+# Subtest: ADAPTER-02: executeScript only acknowledges actual engine completion
+ok 9 - ADAPTER-02: executeScript only acknowledges actual engine completion
+  ---
+  duration_ms: 25.24
+  type: 'test'
+  ...
+# Subtest: ADAPTER-03: commits, nested tx work, constraints, and rollback have real effects
+ok 10 - ADAPTER-03: commits, nested tx work, constraints, and rollback have real effects
+  ---
+  duration_ms: 59.336084
+  type: 'test'
+  ...
+# Subtest: ADAPTER-03: requested isolation is set inside the acquired transaction
+ok 11 - ADAPTER-03: requested isolation is set inside the acquired transaction
+  ---
+  duration_ms: 4.126333
+  type: 'test'
+  ...
+# Subtest: ADAPTER-03: deferred foreign key failure during COMMIT reaches caller and frees queue
+ok 12 - ADAPTER-03: deferred foreign key failure during COMMIT reaches caller and frees queue
+  ---
+  duration_ms: 2.774458
+  type: 'test'
+  ...
+# Subtest: ADAPTER-04: external read, write, and second client cannot enter an active transaction
+ok 13 - ADAPTER-04: external read, write, and second client cannot enter an active transaction
+  ---
+  duration_ms: 46.861375
+  type: 'test'
+  ...
+# Subtest: ADAPTER-05: Prisma timeout rolls back before the next transaction succeeds
+ok 14 - ADAPTER-05: Prisma timeout rolls back before the next transaction succeeds
+  ---
+  duration_ms: 127.27625
+  type: 'test'
+  ...
+# Subtest: ADAPTER-06: nested service writes use the supplied transaction and roll back together
+ok 15 - ADAPTER-06: nested service writes use the supplied transaction and roll back together
+  ---
+  duration_ms: 4.67425
+  type: 'test'
+  ...
+# Subtest: ADAPTER-02/03: invalid script and isolation fail without poisoning future work
+ok 16 - ADAPTER-02/03: invalid script and isolation fail without poisoning future work
+  ---
+  duration_ms: 2.0095
+  type: 'test'
+  ...
+# Subtest: ADAPTER-05: dispose rejects pending starters and releases their leases before resolving
+ok 17 - ADAPTER-05: dispose rejects pending starters and releases their leases before resolving
+  ---
+  duration_ms: 1.149375
+  type: 'test'
+  ...
+# Subtest: ADAPTER-05: same ending is idempotent; opposite ending and writes after finishing reject
+ok 18 - ADAPTER-05: same ending is idempotent; opposite ending and writes after finishing reject
+  ---
+  duration_ms: 1.660166
+  type: 'test'
+  ...
+# Subtest: ADAPTER-05: rejected opposite ending cannot make dispose lose an in-flight COMMIT
+ok 19 - ADAPTER-05: rejected opposite ending cannot make dispose lose an in-flight COMMIT
+  ---
+  duration_ms: 34.183792
+  type: 'test'
+  ...
+# Subtest: DESK-A03/M14: missing, unselected, disabled and wrong-category selections have no fallback
+ok 20 - DESK-A03/M14: missing, unselected, disabled and wrong-category selections have no fallback
+  ---
+  duration_ms: 0.785417
+  type: 'test'
+  ...
+# Subtest: NET-01: authorization is checked after asynchronous key access, before every actual HTTP send
+ok 21 - NET-01: authorization is checked after asynchronous key access, before every actual HTTP send
+  ---
+  duration_ms: 1.066291
+  type: 'test'
+  ...
+# Subtest: DESK-M13: failed draft save does not replace committed authorization; committed revision revokes old lease
+ok 22 - DESK-M13: failed draft save does not replace committed authorization; committed revision revokes old lease
+  ---
+  duration_ms: 30.945
+  type: 'test'
+  ...
+# Subtest: NET-01: queued retry, deleted model, cancelled draft and finished request cannot send
+ok 23 - NET-01: queued retry, deleted model, cancelled draft and finished request cannot send
+  ---
+  duration_ms: 0.207084
+  type: 'test'
+  ...
+# Subtest: NET-02: endpoint/path/redirect escape is rejected without sending a credential elsewhere
+ok 24 - NET-02: endpoint/path/redirect escape is rejected without sending a credential elsewhere
+  ---
+  duration_ms: 0.534041
+  type: 'test'
+  ...
+# Subtest: NET-01: a response or delayed stream chunk after revocation cannot be consumed
+ok 25 - NET-01: a response or delayed stream chunk after revocation cannot be consumed
+  ---
+  duration_ms: 3.595833
+  type: 'test'
+  ...
+# Subtest: NET-01: revocation actively ends a stalled response reader without waiting for the server
+ok 26 - NET-01: revocation actively ends a stalled response reader without waiting for the server
+  ---
+  duration_ms: 0.359875
+  type: 'test'
+  ...
+# Subtest: NET-01: revocation discards a previously prefetched response chunk
+ok 27 - NET-01: revocation discards a previously prefetched response chunk
+  ---
+  duration_ms: 0.897917
+  type: 'test'
+  ...
+# Subtest: NET-01: abort, finish, error and consumer cancellation release the underlying stream lock
+ok 28 - NET-01: abort, finish, error and consumer cancellation release the underlying stream lock
+  ---
+  duration_ms: 3.199166
+  type: 'test'
+  ...
+# Subtest: DESK-S08: acknowledged settings survive a fresh repository and detached reads cannot mutate state
+ok 29 - DESK-S08: acknowledged settings survive a fresh repository and detached reads cannot mutate state
+  ---
+  duration_ms: 22.733125
+  type: 'test'
+  ...
+# Subtest: DESK-S08: two edits based on one revision cannot silently overwrite each other
+ok 30 - DESK-S08: two edits based on one revision cannot silently overwrite each other
+  ---
+  duration_ms: 11.843458
+  type: 'test'
+  ...
+# Subtest: DESK-S08: failed replacement leaves prior durable state and revision authoritative
+ok 31 - DESK-S08: failed replacement leaves prior durable state and revision authoritative
+  ---
+  duration_ms: 16.743375
+  type: 'test'
+  ...
+# Subtest: DESK-G03: corrupt/unknown schema data never silently becomes default settings
+ok 32 - DESK-G03: corrupt/unknown schema data never silently becomes default settings
+  ---
+  duration_ms: 6.198375
+  type: 'test'
+  ...
+# Subtest: DESK-S08: invalid draft is rejected without modifying stored values
+ok 33 - DESK-S08: invalid draft is rejected without modifying stored values
+  ---
+  duration_ms: 1.991083
+  type: 'test'
+  ...
+# Subtest: DESK-S08: failure after rename reports committed state; reread and retry use the new revision
+ok 34 - DESK-S08: failure after rename reports committed state; reread and retry use the new revision
+  ---
+  duration_ms: 20.033792
+  type: 'test'
+  ...
+# Subtest: DESK-S08: failure to exclusively create a temp file must not delete another file
+ok 35 - DESK-S08: failure to exclusively create a temp file must not delete another file
+  ---
+  duration_ms: 9.7265
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4600.865958

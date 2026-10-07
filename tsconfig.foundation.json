@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "desktop/core/**/*.ts",
+    "desktop/service/context.ts",
+    "desktop/service/database/**/*.ts",
+    "tests/unit/**/*.ts",
+    "tests/integration/pglite-adapter.test.ts",
+    "tests/integration/local-database.test.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "tests/generated"
+  ]
+}

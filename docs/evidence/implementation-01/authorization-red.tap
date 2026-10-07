@@ -1,0 +1,112 @@
+TAP version 13
+# Subtest: DESK-A03/M14: missing, unselected, disabled and wrong-category selections have no fallback
+not ok 1 - DESK-A03/M14: missing, unselected, disabled and wrong-category selections have no fallback
+  ---
+  duration_ms: 1.881167
+  type: 'test'
+  location: '<repo>/tests/unit/model-authorization.test.ts:2:1409'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    TestContext.<anonymous> (<repo>/tests/unit/model-authorization.test.ts:11:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.start (node:internal/test_runner/test:1242:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  ...
+# Subtest: NET-01: authorization is checked after asynchronous key access, before every actual HTTP send
+not ok 2 - NET-01: authorization is checked after asynchronous key access, before every actual HTTP send
+  ---
+  duration_ms: 14.827292
+  type: 'test'
+  location: '<repo>/tests/unit/model-authorization.test.ts:2:2242'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (<repo>/tests/unit/model-authorization.test.ts:28:3)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: DESK-M13: failed draft save does not replace committed authorization; committed revision revokes old lease
+not ok 3 - DESK-M13: failed draft save does not replace committed authorization; committed revision revokes old lease
+  ---
+  duration_ms: 0.89825
+  type: 'test'
+  location: '<repo>/tests/unit/model-authorization.test.ts:2:3040'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (<repo>/tests/unit/model-authorization.test.ts:40:3)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: NET-01: queued retry, deleted model, cancelled draft and finished request cannot send
+not ok 4 - NET-01: queued retry, deleted model, cancelled draft and finished request cannot send
+  ---
+  duration_ms: 0.215958
+  type: 'test'
+  location: '<repo>/tests/unit/model-authorization.test.ts:2:3976'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (<repo>/tests/unit/model-authorization.test.ts:50:3)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: NET-02: endpoint/path/redirect escape is rejected without sending a credential elsewhere
+not ok 5 - NET-02: endpoint/path/redirect escape is rejected without sending a credential elsewhere
+  ---
+  duration_ms: 0.751459
+  type: 'test'
+  location: '<repo>/tests/unit/model-authorization.test.ts:2:4765'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+
+    Caught error:
+
+    AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+    + actual - expected
+
+    + undefined
+    - 'manual'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (<repo>/tests/unit/model-authorization.test.ts:64:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: NET-01: a response or delayed stream chunk after revocation cannot be consumed
+not ok 6 - NET-01: a response or delayed stream chunk after revocation cannot be consumed
+  ---
+  duration_ms: 4.534375
+  type: 'test'
+  location: '<repo>/tests/unit/model-authorization.test.ts:2:5813'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (<repo>/tests/unit/model-authorization.test.ts:78:3)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 0
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 211.505125

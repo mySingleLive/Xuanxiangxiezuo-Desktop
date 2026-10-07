@@ -9,7 +9,7 @@
 | 3 | UI 设计 | v0.13 子代理复审及用户审核通过 | 用户于2026-10-07明确批准；附加实施边界见 `implementation-boundaries.md`，原审核/23项原型检查与6图保留 |
 | 4 | 技术方案 | v1.0 独立审核通过 | `04-technical-design.md`、`requirements-traceability.json`、`migration-map.json`、`reuse-manifest.json`、审核23/24 |
 | 5 | 测试用例 | v1.0 独立审核通过 | 107桌面 + 424业务 = 531条；05主文档及两附录、机器清单，审核25/26 |
-| 6 | 代码实现 | TDD进行中 | 本地数据库、原子设置、模型授权先行，保留每批RED/GREEN与独立code review |
+| 6 | 代码实现 | TDD进行中 | 原 Web 源码已独立导入；本地数据库、原子设置、模型授权及密钥仓库51项核心测试通过，独立审核27–30通过；Electron及全量业务接入继续中 |
 | 7 | 全量用例与真实桌面验收 | 尚未开始 | 使用真实 Electron 窗口，macOS 与 Windows 分别记录证据 |
 | 8 | 测试通过后总结 | 尚未开始 | 所有用例通过、无待验收项后产出 |
 

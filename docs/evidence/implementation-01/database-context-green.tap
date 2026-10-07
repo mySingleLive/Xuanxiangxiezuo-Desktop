@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: DESK-D04: trusted database scope never leaks to work outside a request
+ok 1 - DESK-D04: trusted database scope never leaks to work outside a request
+  ---
+  duration_ms: 2337.150625
+  type: 'test'
+  ...
+# Subtest: DESK-D04: simultaneous work requests keep their own database after asynchronous suspension
+ok 2 - DESK-D04: simultaneous work requests keep their own database after asynchronous suspension
+  ---
+  duration_ms: 130.200833
+  type: 'test'
+  ...
+# Subtest: ADAPTER-06: using the default client inside an interactive tx is rejected instead of self-deadlocking
+ok 3 - ADAPTER-06: using the default client inside an interactive tx is rejected instead of self-deadlocking
+  ---
+  duration_ms: 7.129958
+  type: 'test'
+  ...
+# Subtest: ADAPTER-08: migration failure rolls back the whole pending batch and does not advance checksums
+ok 4 - ADAPTER-08: migration failure rolls back the whole pending batch and does not advance checksums
+  ---
+  duration_ms: 17.824584
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3069.283875

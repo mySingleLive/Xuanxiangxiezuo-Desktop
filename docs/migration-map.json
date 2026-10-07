@@ -1753,7 +1753,7 @@
       ],
       "disposition": "replace-boundary",
       "reason": "迁为本地设置/目录聚合/模板/模型command，保留相关能力",
-      "local": "desktop/handlers/admin/config.ts",
+      "local": "desktop/handlers/admin/config/route.ts",
       "testIds": [
         "API-admin_config-GET",
         "API-admin_config-PUT"
@@ -1768,7 +1768,7 @@
       ],
       "disposition": "replace-boundary",
       "reason": "迁为本地设置/目录聚合/模板/模型command，保留相关能力",
-      "local": "desktop/handlers/admin/models/[id].ts",
+      "local": "desktop/handlers/admin/models/[id]/route.ts",
       "testIds": [
         "API-admin_models_id-PATCH",
         "API-admin_models_id-DELETE"
@@ -1783,7 +1783,7 @@
       ],
       "disposition": "replace-boundary",
       "reason": "迁为本地设置/目录聚合/模板/模型command，保留相关能力",
-      "local": "desktop/handlers/admin/models.ts",
+      "local": "desktop/handlers/admin/models/route.ts",
       "testIds": [
         "API-admin_models-GET",
         "API-admin_models-POST"
@@ -1831,7 +1831,7 @@
       ],
       "disposition": "replace-boundary",
       "reason": "迁为本地设置/目录聚合/模板/模型command，保留相关能力",
-      "local": "desktop/handlers/admin/prompts/[id].ts",
+      "local": "desktop/handlers/admin/prompts/[id]/route.ts",
       "testIds": [
         "API-admin_prompts_id-PATCH",
         "API-admin_prompts_id-DELETE"
@@ -1846,7 +1846,7 @@
       ],
       "disposition": "replace-boundary",
       "reason": "迁为本地设置/目录聚合/模板/模型command，保留相关能力",
-      "local": "desktop/handlers/admin/prompts.ts",
+      "local": "desktop/handlers/admin/prompts/route.ts",
       "testIds": [
         "API-admin_prompts-GET",
         "API-admin_prompts-POST"
@@ -1860,7 +1860,7 @@
       ],
       "disposition": "replace-boundary",
       "reason": "迁为本地设置/目录聚合/模板/模型command，保留相关能力",
-      "local": "desktop/handlers/admin/sop.ts",
+      "local": "desktop/handlers/admin/sop/route.ts",
       "testIds": [
         "API-admin_sop-GET"
       ],
@@ -1884,7 +1884,7 @@
       ],
       "disposition": "replace-boundary",
       "reason": "迁为本地设置/目录聚合/模板/模型command，保留相关能力",
-      "local": "desktop/handlers/admin/usage.ts",
+      "local": "desktop/handlers/admin/usage/route.ts",
       "testIds": [
         "API-admin_usage-GET"
       ],
@@ -1930,7 +1930,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/chat/conversations/[id].ts",
+      "local": "desktop/handlers/chat/conversations/[id]/route.ts",
       "testIds": [
         "API-chat_conversations_id-GET",
         "API-chat_conversations_id-PATCH",
@@ -1945,7 +1945,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/chat/conversations/[id]/sop-plan.ts",
+      "local": "desktop/handlers/chat/conversations/[id]/sop-plan/route.ts",
       "testIds": [
         "API-chat_conversations_id_sop-plan-GET"
       ],
@@ -1958,7 +1958,7 @@
       ],
       "disposition": "replace-boundary",
       "reason": "迁为本地设置/目录聚合/模板/模型command，保留相关能力",
-      "local": "desktop/handlers/chat/conversations.ts",
+      "local": "desktop/handlers/chat/conversations/route.ts",
       "testIds": [
         "API-chat_conversations-GET"
       ],
@@ -1971,7 +1971,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/chat.ts",
+      "local": "desktop/handlers/chat/route.ts",
       "testIds": [
         "API-chat-POST"
       ],
@@ -1984,7 +1984,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/chat/turns/[turnId]/cancel.ts",
+      "local": "desktop/handlers/chat/turns/[turnId]/cancel/route.ts",
       "testIds": [
         "API-chat_turns_turnId_cancel-POST"
       ],
@@ -1997,7 +1997,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/chat/turns/[turnId]/interaction.ts",
+      "local": "desktop/handlers/chat/turns/[turnId]/interaction/route.ts",
       "testIds": [
         "API-chat_turns_turnId_interaction-POST"
       ],
@@ -2010,7 +2010,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/chat/turns/[turnId]/navigation.ts",
+      "local": "desktop/handlers/chat/turns/[turnId]/navigation/route.ts",
       "testIds": [
         "API-chat_turns_turnId_navigation-POST"
       ],
@@ -2023,7 +2023,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/chat/turns/[turnId].ts",
+      "local": "desktop/handlers/chat/turns/[turnId]/route.ts",
       "testIds": [
         "API-chat_turns_turnId-GET"
       ],
@@ -2036,7 +2036,7 @@
       ],
       "disposition": "replace-boundary",
       "reason": "迁为本地设置/目录聚合/模板/模型command，保留相关能力",
-      "local": "desktop/handlers/generate/test.ts",
+      "local": "desktop/handlers/generate/test/route.ts",
       "testIds": [
         "API-generate_test-POST"
       ],
@@ -2049,7 +2049,7 @@
       ],
       "disposition": "replace-boundary",
       "reason": "迁为本地设置/目录聚合/模板/模型command，保留相关能力",
-      "local": "desktop/handlers/image-models.ts",
+      "local": "desktop/handlers/image-models/route.ts",
       "testIds": [
         "API-image-models-GET"
       ],
@@ -2062,7 +2062,7 @@
       ],
       "disposition": "replace-boundary",
       "reason": "迁为本地设置/目录聚合/模板/模型command，保留相关能力",
-      "local": "desktop/handlers/models.ts",
+      "local": "desktop/handlers/models/route.ts",
       "testIds": [
         "API-models-GET"
       ],
@@ -2076,7 +2076,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/attributes/[attributeId].ts",
+      "local": "desktop/handlers/novels/[id]/attributes/[attributeId]/route.ts",
       "testIds": [
         "API-novels_id_attributes_attributeId-PATCH",
         "API-novels_id_attributes_attributeId-DELETE"
@@ -2091,7 +2091,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/attributes.ts",
+      "local": "desktop/handlers/novels/[id]/attributes/route.ts",
       "testIds": [
         "API-novels_id_attributes-GET",
         "API-novels_id_attributes-POST"
@@ -2105,7 +2105,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/cascade/[jobId]/apply.ts",
+      "local": "desktop/handlers/novels/[id]/cascade/[jobId]/apply/route.ts",
       "testIds": [
         "API-novels_id_cascade_jobId_apply-POST"
       ],
@@ -2118,7 +2118,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/cascade/[jobId]/apply-all.ts",
+      "local": "desktop/handlers/novels/[id]/cascade/[jobId]/apply-all/route.ts",
       "testIds": [
         "API-novels_id_cascade_jobId_apply-all-POST"
       ],
@@ -2131,7 +2131,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/cascade/[jobId]/finish.ts",
+      "local": "desktop/handlers/novels/[id]/cascade/[jobId]/finish/route.ts",
       "testIds": [
         "API-novels_id_cascade_jobId_finish-POST"
       ],
@@ -2144,7 +2144,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/cascade/[jobId].ts",
+      "local": "desktop/handlers/novels/[id]/cascade/[jobId]/route.ts",
       "testIds": [
         "API-novels_id_cascade_jobId-GET"
       ],
@@ -2157,7 +2157,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/cascade/[jobId]/skip.ts",
+      "local": "desktop/handlers/novels/[id]/cascade/[jobId]/skip/route.ts",
       "testIds": [
         "API-novels_id_cascade_jobId_skip-POST"
       ],
@@ -2170,7 +2170,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/cascade.ts",
+      "local": "desktop/handlers/novels/[id]/cascade/route.ts",
       "testIds": [
         "API-novels_id_cascade-GET"
       ],
@@ -2183,7 +2183,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/candidates/[candidateId]/accept.ts",
+      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/candidates/[candidateId]/accept/route.ts",
       "testIds": [
         "API-novels_id_chapters_chapterId_candidates_candidateId_accept-POST"
       ],
@@ -2196,7 +2196,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/candidates/[candidateId]/discard.ts",
+      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/candidates/[candidateId]/discard/route.ts",
       "testIds": [
         "API-novels_id_chapters_chapterId_candidates_candidateId_discard-POST"
       ],
@@ -2209,7 +2209,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/candidates/[candidateId].ts",
+      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/candidates/[candidateId]/route.ts",
       "testIds": [
         "API-novels_id_chapters_chapterId_candidates_candidateId-GET"
       ],
@@ -2222,7 +2222,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/candidates/[candidateId]/withdraw.ts",
+      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/candidates/[candidateId]/withdraw/route.ts",
       "testIds": [
         "API-novels_id_chapters_chapterId_candidates_candidateId_withdraw-POST"
       ],
@@ -2235,7 +2235,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/candidates.ts",
+      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/candidates/route.ts",
       "testIds": [
         "API-novels_id_chapters_chapterId_candidates-GET"
       ],
@@ -2248,7 +2248,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/finalization.ts",
+      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/finalization/route.ts",
       "testIds": [
         "API-novels_id_chapters_chapterId_finalization-GET"
       ],
@@ -2261,7 +2261,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/generate.ts",
+      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/generate/route.ts",
       "testIds": [
         "API-novels_id_chapters_chapterId_generate-POST"
       ],
@@ -2275,7 +2275,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/chapters/[chapterId].ts",
+      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/route.ts",
       "testIds": [
         "API-novels_id_chapters_chapterId-GET",
         "API-novels_id_chapters_chapterId-PATCH"
@@ -2289,7 +2289,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/versions/[versionId]/restore.ts",
+      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/versions/[versionId]/restore/route.ts",
       "testIds": [
         "API-novels_id_chapters_chapterId_versions_versionId_restore-POST"
       ],
@@ -2302,7 +2302,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/versions/[versionId].ts",
+      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/versions/[versionId]/route.ts",
       "testIds": [
         "API-novels_id_chapters_chapterId_versions_versionId-GET"
       ],
@@ -2315,7 +2315,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/versions.ts",
+      "local": "desktop/handlers/novels/[id]/chapters/[chapterId]/versions/route.ts",
       "testIds": [
         "API-novels_id_chapters_chapterId_versions-GET"
       ],
@@ -2329,7 +2329,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/characters/[characterId]/image.ts",
+      "local": "desktop/handlers/novels/[id]/characters/[characterId]/image/route.ts",
       "testIds": [
         "API-novels_id_characters_characterId_image-POST",
         "API-novels_id_characters_characterId_image-PATCH"
@@ -2343,7 +2343,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/characters/[characterId]/image-prompt.ts",
+      "local": "desktop/handlers/novels/[id]/characters/[characterId]/image-prompt/route.ts",
       "testIds": [
         "API-novels_id_characters_characterId_image-prompt-POST"
       ],
@@ -2357,7 +2357,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/characters/[characterId]/images.ts",
+      "local": "desktop/handlers/novels/[id]/characters/[characterId]/images/route.ts",
       "testIds": [
         "API-novels_id_characters_characterId_images-GET",
         "API-novels_id_characters_characterId_images-POST"
@@ -2372,7 +2372,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/characters/[characterId].ts",
+      "local": "desktop/handlers/novels/[id]/characters/[characterId]/route.ts",
       "testIds": [
         "API-novels_id_characters_characterId-PATCH",
         "API-novels_id_characters_characterId-DELETE"
@@ -2386,7 +2386,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/characters/assist.ts",
+      "local": "desktop/handlers/novels/[id]/characters/assist/route.ts",
       "testIds": [
         "API-novels_id_characters_assist-POST"
       ],
@@ -2400,7 +2400,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/characters.ts",
+      "local": "desktop/handlers/novels/[id]/characters/route.ts",
       "testIds": [
         "API-novels_id_characters-GET",
         "API-novels_id_characters-POST"
@@ -2415,7 +2415,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/comments/[commentId]/apply.ts",
+      "local": "desktop/handlers/novels/[id]/comments/[commentId]/apply/route.ts",
       "testIds": [
         "API-novels_id_comments_commentId_apply-GET",
         "API-novels_id_comments_commentId_apply-POST"
@@ -2429,7 +2429,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/comments/[commentId]/replies.ts",
+      "local": "desktop/handlers/novels/[id]/comments/[commentId]/replies/route.ts",
       "testIds": [
         "API-novels_id_comments_commentId_replies-POST"
       ],
@@ -2443,7 +2443,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/comments/[commentId].ts",
+      "local": "desktop/handlers/novels/[id]/comments/[commentId]/route.ts",
       "testIds": [
         "API-novels_id_comments_commentId-PATCH",
         "API-novels_id_comments_commentId-DELETE"
@@ -2458,7 +2458,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/comments.ts",
+      "local": "desktop/handlers/novels/[id]/comments/route.ts",
       "testIds": [
         "API-novels_id_comments-GET",
         "API-novels_id_comments-POST"
@@ -2472,7 +2472,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/cover/image-prompt.ts",
+      "local": "desktop/handlers/novels/[id]/cover/image-prompt/route.ts",
       "testIds": [
         "API-novels_id_cover_image-prompt-POST"
       ],
@@ -2486,7 +2486,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/cover/images.ts",
+      "local": "desktop/handlers/novels/[id]/cover/images/route.ts",
       "testIds": [
         "API-novels_id_cover_images-GET",
         "API-novels_id_cover_images-POST"
@@ -2501,7 +2501,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/cover.ts",
+      "local": "desktop/handlers/novels/[id]/cover/route.ts",
       "testIds": [
         "API-novels_id_cover-POST",
         "API-novels_id_cover-PATCH"
@@ -2515,7 +2515,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/foreshadow-characters/[fid]/promote.ts",
+      "local": "desktop/handlers/novels/[id]/foreshadow-characters/[fid]/promote/route.ts",
       "testIds": [
         "API-novels_id_foreshadow-characters_fid_promote-POST"
       ],
@@ -2528,7 +2528,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/foreshadow-characters/[fid]/reveal.ts",
+      "local": "desktop/handlers/novels/[id]/foreshadow-characters/[fid]/reveal/route.ts",
       "testIds": [
         "API-novels_id_foreshadow-characters_fid_reveal-POST"
       ],
@@ -2542,7 +2542,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/foreshadow-characters/[fid].ts",
+      "local": "desktop/handlers/novels/[id]/foreshadow-characters/[fid]/route.ts",
       "testIds": [
         "API-novels_id_foreshadow-characters_fid-PATCH",
         "API-novels_id_foreshadow-characters_fid-DELETE"
@@ -2557,7 +2557,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/foreshadow-characters.ts",
+      "local": "desktop/handlers/novels/[id]/foreshadow-characters/route.ts",
       "testIds": [
         "API-novels_id_foreshadow-characters-GET",
         "API-novels_id_foreshadow-characters-POST"
@@ -2573,7 +2573,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/foreshadows/[fid].ts",
+      "local": "desktop/handlers/novels/[id]/foreshadows/[fid]/route.ts",
       "testIds": [
         "API-novels_id_foreshadows_fid-GET",
         "API-novels_id_foreshadows_fid-PATCH",
@@ -2588,7 +2588,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/foreshadows/[fid]/touches/[tid]/evaluate.ts",
+      "local": "desktop/handlers/novels/[id]/foreshadows/[fid]/touches/[tid]/evaluate/route.ts",
       "testIds": [
         "API-novels_id_foreshadows_fid_touches_tid_evaluate-POST"
       ],
@@ -2602,7 +2602,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/foreshadows/[fid]/touches/[tid]/references/[rid].ts",
+      "local": "desktop/handlers/novels/[id]/foreshadows/[fid]/touches/[tid]/references/[rid]/route.ts",
       "testIds": [
         "API-novels_id_foreshadows_fid_touches_tid_references_rid-PATCH",
         "API-novels_id_foreshadows_fid_touches_tid_references_rid-DELETE"
@@ -2616,7 +2616,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/foreshadows/[fid]/touches/[tid]/references.ts",
+      "local": "desktop/handlers/novels/[id]/foreshadows/[fid]/touches/[tid]/references/route.ts",
       "testIds": [
         "API-novels_id_foreshadows_fid_touches_tid_references-POST"
       ],
@@ -2629,7 +2629,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/foreshadows/[fid]/touches/[tid].ts",
+      "local": "desktop/handlers/novels/[id]/foreshadows/[fid]/touches/[tid]/route.ts",
       "testIds": [
         "API-novels_id_foreshadows_fid_touches_tid-DELETE"
       ],
@@ -2642,7 +2642,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/foreshadows/[fid]/touches.ts",
+      "local": "desktop/handlers/novels/[id]/foreshadows/[fid]/touches/route.ts",
       "testIds": [
         "API-novels_id_foreshadows_fid_touches-POST"
       ],
@@ -2655,7 +2655,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/foreshadows/marks.ts",
+      "local": "desktop/handlers/novels/[id]/foreshadows/marks/route.ts",
       "testIds": [
         "API-novels_id_foreshadows_marks-GET"
       ],
@@ -2669,7 +2669,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/foreshadows.ts",
+      "local": "desktop/handlers/novels/[id]/foreshadows/route.ts",
       "testIds": [
         "API-novels_id_foreshadows-GET",
         "API-novels_id_foreshadows-POST"
@@ -2684,7 +2684,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/items/[itemId]/image.ts",
+      "local": "desktop/handlers/novels/[id]/items/[itemId]/image/route.ts",
       "testIds": [
         "API-novels_id_items_itemId_image-POST",
         "API-novels_id_items_itemId_image-PATCH"
@@ -2698,7 +2698,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/items/[itemId]/image-prompt.ts",
+      "local": "desktop/handlers/novels/[id]/items/[itemId]/image-prompt/route.ts",
       "testIds": [
         "API-novels_id_items_itemId_image-prompt-POST"
       ],
@@ -2712,7 +2712,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/items/[itemId]/images.ts",
+      "local": "desktop/handlers/novels/[id]/items/[itemId]/images/route.ts",
       "testIds": [
         "API-novels_id_items_itemId_images-GET",
         "API-novels_id_items_itemId_images-POST"
@@ -2727,7 +2727,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/items/[itemId].ts",
+      "local": "desktop/handlers/novels/[id]/items/[itemId]/route.ts",
       "testIds": [
         "API-novels_id_items_itemId-PATCH",
         "API-novels_id_items_itemId-DELETE"
@@ -2742,7 +2742,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/items.ts",
+      "local": "desktop/handlers/novels/[id]/items/route.ts",
       "testIds": [
         "API-novels_id_items-GET",
         "API-novels_id_items-POST"
@@ -2756,7 +2756,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/manuscript.ts",
+      "local": "desktop/handlers/novels/[id]/manuscript/route.ts",
       "testIds": [
         "API-novels_id_manuscript-GET"
       ],
@@ -2769,7 +2769,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/outline/chapters/[chapterId].ts",
+      "local": "desktop/handlers/novels/[id]/outline/chapters/[chapterId]/route.ts",
       "testIds": [
         "API-novels_id_outline_chapters_chapterId-PATCH"
       ],
@@ -2783,7 +2783,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/outline/deletion.ts",
+      "local": "desktop/handlers/novels/[id]/outline/deletion/route.ts",
       "testIds": [
         "API-novels_id_outline_deletion-GET",
         "API-novels_id_outline_deletion-DELETE"
@@ -2797,7 +2797,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/outline/generate.ts",
+      "local": "desktop/handlers/novels/[id]/outline/generate/route.ts",
       "testIds": [
         "API-novels_id_outline_generate-POST"
       ],
@@ -2810,7 +2810,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/outline.ts",
+      "local": "desktop/handlers/novels/[id]/outline/route.ts",
       "testIds": [
         "API-novels_id_outline-GET"
       ],
@@ -2823,7 +2823,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/outline/volumes/[volumeId]/chapters.ts",
+      "local": "desktop/handlers/novels/[id]/outline/volumes/[volumeId]/chapters/route.ts",
       "testIds": [
         "API-novels_id_outline_volumes_volumeId_chapters-POST"
       ],
@@ -2836,7 +2836,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/outline/volumes/[volumeId].ts",
+      "local": "desktop/handlers/novels/[id]/outline/volumes/[volumeId]/route.ts",
       "testIds": [
         "API-novels_id_outline_volumes_volumeId-PATCH"
       ],
@@ -2849,7 +2849,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/outline/volumes.ts",
+      "local": "desktop/handlers/novels/[id]/outline/volumes/route.ts",
       "testIds": [
         "API-novels_id_outline_volumes-POST"
       ],
@@ -2863,7 +2863,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/planning.ts",
+      "local": "desktop/handlers/novels/[id]/planning/route.ts",
       "testIds": [
         "API-novels_id_planning-GET",
         "API-novels_id_planning-POST"
@@ -2877,7 +2877,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/review/ai.ts",
+      "local": "desktop/handlers/novels/[id]/review/ai/route.ts",
       "testIds": [
         "API-novels_id_review_ai-POST"
       ],
@@ -2890,7 +2890,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/review/human.ts",
+      "local": "desktop/handlers/novels/[id]/review/human/route.ts",
       "testIds": [
         "API-novels_id_review_human-POST"
       ],
@@ -2903,7 +2903,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/review.ts",
+      "local": "desktop/handlers/novels/[id]/review/route.ts",
       "testIds": [
         "API-novels_id_review-GET"
       ],
@@ -2918,7 +2918,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id].ts",
+      "local": "desktop/handlers/novels/[id]/route.ts",
       "testIds": [
         "API-novels_id-GET",
         "API-novels_id-PATCH",
@@ -2933,7 +2933,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/advance.ts",
+      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/advance/route.ts",
       "testIds": [
         "API-novels_id_scenarios_labId_advance-POST"
       ],
@@ -2947,7 +2947,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/cards/[cardId].ts",
+      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/cards/[cardId]/route.ts",
       "testIds": [
         "API-novels_id_scenarios_labId_cards_cardId-PATCH",
         "API-novels_id_scenarios_labId_cards_cardId-DELETE"
@@ -2962,7 +2962,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/nodes/[nodeId].ts",
+      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/nodes/[nodeId]/route.ts",
       "testIds": [
         "API-novels_id_scenarios_labId_nodes_nodeId-PATCH",
         "API-novels_id_scenarios_labId_nodes_nodeId-DELETE"
@@ -2976,7 +2976,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/organize.ts",
+      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/organize/route.ts",
       "testIds": [
         "API-novels_id_scenarios_labId_organize-POST"
       ],
@@ -2989,7 +2989,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/prose.ts",
+      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/prose/route.ts",
       "testIds": [
         "API-novels_id_scenarios_labId_prose-POST"
       ],
@@ -3002,7 +3002,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/reset.ts",
+      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/reset/route.ts",
       "testIds": [
         "API-novels_id_scenarios_labId_reset-POST"
       ],
@@ -3017,7 +3017,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenarios/[labId].ts",
+      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/route.ts",
       "testIds": [
         "API-novels_id_scenarios_labId-GET",
         "API-novels_id_scenarios_labId-PATCH",
@@ -3032,7 +3032,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/runs.ts",
+      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/runs/route.ts",
       "testIds": [
         "API-novels_id_scenarios_labId_runs-GET"
       ],
@@ -3045,7 +3045,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/start.ts",
+      "local": "desktop/handlers/novels/[id]/scenarios/[labId]/start/route.ts",
       "testIds": [
         "API-novels_id_scenarios_labId_start-POST"
       ],
@@ -3059,7 +3059,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenarios.ts",
+      "local": "desktop/handlers/novels/[id]/scenarios/route.ts",
       "testIds": [
         "API-novels_id_scenarios-GET",
         "API-novels_id_scenarios-POST"
@@ -3074,7 +3074,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenes/[sceneId]/image.ts",
+      "local": "desktop/handlers/novels/[id]/scenes/[sceneId]/image/route.ts",
       "testIds": [
         "API-novels_id_scenes_sceneId_image-POST",
         "API-novels_id_scenes_sceneId_image-PATCH"
@@ -3088,7 +3088,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenes/[sceneId]/image-prompt.ts",
+      "local": "desktop/handlers/novels/[id]/scenes/[sceneId]/image-prompt/route.ts",
       "testIds": [
         "API-novels_id_scenes_sceneId_image-prompt-POST"
       ],
@@ -3101,7 +3101,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenes/[sceneId]/images/[imageId]/asset.ts",
+      "local": "desktop/handlers/novels/[id]/scenes/[sceneId]/images/[imageId]/asset/route.ts",
       "testIds": [
         "API-novels_id_scenes_sceneId_images_imageId_asset-GET"
       ],
@@ -3115,7 +3115,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenes/[sceneId]/images.ts",
+      "local": "desktop/handlers/novels/[id]/scenes/[sceneId]/images/route.ts",
       "testIds": [
         "API-novels_id_scenes_sceneId_images-GET",
         "API-novels_id_scenes_sceneId_images-POST"
@@ -3131,7 +3131,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenes/[sceneId].ts",
+      "local": "desktop/handlers/novels/[id]/scenes/[sceneId]/route.ts",
       "testIds": [
         "API-novels_id_scenes_sceneId-GET",
         "API-novels_id_scenes_sceneId-PATCH",
@@ -3147,7 +3147,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenes/[sceneId]/versions.ts",
+      "local": "desktop/handlers/novels/[id]/scenes/[sceneId]/versions/route.ts",
       "testIds": [
         "API-novels_id_scenes_sceneId_versions-GET",
         "API-novels_id_scenes_sceneId_versions-POST"
@@ -3161,7 +3161,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenes/factions.ts",
+      "local": "desktop/handlers/novels/[id]/scenes/factions/route.ts",
       "testIds": [
         "API-novels_id_scenes_factions-GET"
       ],
@@ -3175,7 +3175,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/scenes.ts",
+      "local": "desktop/handlers/novels/[id]/scenes/route.ts",
       "testIds": [
         "API-novels_id_scenes-GET",
         "API-novels_id_scenes-POST"
@@ -3189,7 +3189,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/score-report/improve-items.ts",
+      "local": "desktop/handlers/novels/[id]/score-report/improve-items/route.ts",
       "testIds": [
         "API-novels_id_score-report_improve-items-GET"
       ],
@@ -3202,7 +3202,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/score-report.ts",
+      "local": "desktop/handlers/novels/[id]/score-report/route.ts",
       "testIds": [
         "API-novels_id_score-report-GET"
       ],
@@ -3216,7 +3216,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/score-review.ts",
+      "local": "desktop/handlers/novels/[id]/score-review/route.ts",
       "testIds": [
         "API-novels_id_score-review-DELETE",
         "API-novels_id_score-review-POST"
@@ -3232,7 +3232,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/settings/[settingId].ts",
+      "local": "desktop/handlers/novels/[id]/settings/[settingId]/route.ts",
       "testIds": [
         "API-novels_id_settings_settingId-GET",
         "API-novels_id_settings_settingId-PATCH",
@@ -3247,7 +3247,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/settings/assist.ts",
+      "local": "desktop/handlers/novels/[id]/settings/assist/route.ts",
       "testIds": [
         "API-novels_id_settings_assist-POST"
       ],
@@ -3261,7 +3261,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/settings.ts",
+      "local": "desktop/handlers/novels/[id]/settings/route.ts",
       "testIds": [
         "API-novels_id_settings-GET",
         "API-novels_id_settings-POST"
@@ -3275,7 +3275,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/story-workflow.ts",
+      "local": "desktop/handlers/novels/[id]/story-workflow/route.ts",
       "testIds": [
         "API-novels_id_story-workflow-GET"
       ],
@@ -3289,7 +3289,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/theme.ts",
+      "local": "desktop/handlers/novels/[id]/theme/route.ts",
       "testIds": [
         "API-novels_id_theme-GET",
         "API-novels_id_theme-PATCH"
@@ -3304,7 +3304,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/tropes/[tropeId].ts",
+      "local": "desktop/handlers/novels/[id]/tropes/[tropeId]/route.ts",
       "testIds": [
         "API-novels_id_tropes_tropeId-PATCH",
         "API-novels_id_tropes_tropeId-DELETE"
@@ -3319,7 +3319,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/tropes.ts",
+      "local": "desktop/handlers/novels/[id]/tropes/route.ts",
       "testIds": [
         "API-novels_id_tropes-GET",
         "API-novels_id_tropes-POST"
@@ -3333,7 +3333,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/tropes/select.ts",
+      "local": "desktop/handlers/novels/[id]/tropes/select/route.ts",
       "testIds": [
         "API-novels_id_tropes_select-POST"
       ],
@@ -3347,7 +3347,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/worlds/[worldId].ts",
+      "local": "desktop/handlers/novels/[id]/worlds/[worldId]/route.ts",
       "testIds": [
         "API-novels_id_worlds_worldId-PATCH",
         "API-novels_id_worlds_worldId-DELETE"
@@ -3362,7 +3362,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/novels/[id]/worlds.ts",
+      "local": "desktop/handlers/novels/[id]/worlds/route.ts",
       "testIds": [
         "API-novels_id_worlds-GET",
         "API-novels_id_worlds-POST"
@@ -3377,7 +3377,7 @@
       ],
       "disposition": "replace-boundary",
       "reason": "迁为本地设置/目录聚合/模板/模型command，保留相关能力",
-      "local": "desktop/handlers/novels.ts",
+      "local": "desktop/handlers/novels/route.ts",
       "testIds": [
         "API-novels-GET",
         "API-novels-POST"
@@ -3402,7 +3402,7 @@
       ],
       "disposition": "migrate-handler",
       "reason": "保留原payload与领域服务，提取为本地handler，不提供HTTP路由",
-      "local": "desktop/handlers/subagent-runs/[id].ts",
+      "local": "desktop/handlers/subagent-runs/[id]/route.ts",
       "testIds": [
         "API-subagent-runs_id-GET"
       ],

@@ -1,0 +1,25 @@
+✖ ADAPTER-08: invalid statements without words still fail and roll back the entire migration (2078.634042ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2621.661958
+
+✖ failing tests:
+
+test at tests/integration/local-database.test.ts:2:9657
+✖ ADAPTER-08: invalid statements without words still fail and roll back the entire migration (2078.634042ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (<repository>/tests/integration/local-database.test.ts:117:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

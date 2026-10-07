@@ -1,0 +1,125 @@
+TAP version 13
+# Subtest: DESK-D04: trusted database scope never leaks to work outside a request
+ok 1 - DESK-D04: trusted database scope never leaks to work outside a request
+  ---
+  duration_ms: 2235.965708
+  type: 'test'
+  ...
+# Subtest: DESK-D04: simultaneous work requests keep their own database after asynchronous suspension
+ok 2 - DESK-D04: simultaneous work requests keep their own database after asynchronous suspension
+  ---
+  duration_ms: 108.681125
+  type: 'test'
+  ...
+# Subtest: ADAPTER-06: using the default client inside an interactive tx is rejected instead of self-deadlocking
+ok 3 - ADAPTER-06: using the default client inside an interactive tx is rejected instead of self-deadlocking
+  ---
+  duration_ms: 3.032375
+  type: 'test'
+  ...
+# Subtest: ADAPTER-08: migration failure rolls back the whole pending batch and does not advance checksums
+ok 4 - ADAPTER-08: migration failure rolls back the whole pending batch and does not advance checksums
+  ---
+  duration_ms: 16.364833
+  type: 'test'
+  ...
+# Subtest: DESK-D04/ADAPTER-06: captured methods resolve the current scope and cannot bypass a transaction
+not ok 5 - DESK-D04/ADAPTER-06: captured methods resolve the current scope and cannot bypass a transaction
+  ---
+  duration_ms: 2.989625
+  type: 'test'
+  location: '<repo>/tests/integration/local-database.test.ts:2:5140'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      [
+        {
+    +     name: 'A'
+    -     name: 'B'
+        }
+      ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      name: 'B'
+  actual:
+    0:
+      name: 'A'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (<repo>/tests/integration/local-database.test.ts:64:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: ADAPTER-08: top-level transaction control is rejected before changing the database
+not ok 6 - ADAPTER-08: top-level transaction control is rejected before changing the database
+  ---
+  duration_ms: 1.605833
+  type: 'test'
+  location: '<repo>/tests/integration/local-database.test.ts:2:5919'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /transaction control/i. Input:
+
+    'error: relation "nonexistent_table" does not exist'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'relation "nonexistent_table" does not exist'
+  stack: |-
+    Ie.la (<repo>/node_modules/@electric-sql/pglite/dist/index.cjs:4:22506)
+    Ie.Qa (<repo>/node_modules/@electric-sql/pglite/dist/index.cjs:4:19876)
+    Ie.parse (<repo>/node_modules/@electric-sql/pglite/dist/index.cjs:4:18520)
+    _e.Ia (<repo>/node_modules/@electric-sql/pglite/dist/index.cjs:15:1788)
+    <anonymous> (<repo>/node_modules/@electric-sql/pglite/dist/index.cjs:15:1161)
+    wasm://wasm/0267bb86:wasm-function[10930]:0x5a5ccf
+    wasm://wasm/0267bb86:wasm-function[3585]:0x27eaeb
+    wasm://wasm/0267bb86:wasm-function[3627]:0x2869d1
+    wasm://wasm/0267bb86:wasm-function[3637]:0x286c2d
+    wasm://wasm/0267bb86:wasm-function[9914]:0x54fd4d
+  operator: 'rejects'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (<repo>/tests/integration/local-database.test.ts:74:3)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: ADAPTER-08: caller mutation while waiting for the engine cannot change the verified migration
+not ok 7 - ADAPTER-08: caller mutation while waiting for the engine cannot change the verified migration
+  ---
+  duration_ms: 6.303417
+  type: 'test'
+  location: '<repo>/tests/integration/local-database.test.ts:2:6479'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (<repo>/tests/integration/local-database.test.ts:87:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 4
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2833.229167

@@ -11,8 +11,8 @@
 交付严格按以下顺序进行：
 
 1. [调研文档](docs/01-research.md)及[供应商目录补充](docs/provider-catalog-research.md)
-2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/19-product-desktop-interactions-review.md)
-3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/20-ui-desktop-interactions-review.md) → 等待用户审核
+2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/21-product-settings-shell-review.md)
+3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/22-ui-settings-shell-review.md) → 等待用户审核
 4. 技术方案 → 子代理审核
 5. 测试用例（含真实桌面用户场景）→ 子代理审核
 6. TDD 实现 → 子代理 code review
@@ -23,7 +23,7 @@
 
 ## 查看 UI 设计稿
 
-[交互稿源码](design/desktop-preview.html)包含两平台、两套色板与三种主题模式、十三个页面及异常状态；[截图与检查记录](design/preview-verification.md)用于复核。所有数据均为内存演示，请勿输入真实 Key。UI v0.12 将主题移入界面首项；快捷键直接捕获键盘，冲突支持取消、转移绑定与定位命令；设置有外部阴影并支持外点关闭。首次启动按实际任务需要引导模型配置，迁移/父目录先选择目录，两平台菜单关于使用独立面板。本版61项浏览器检查和7项按键规则检查通过，14张截图。原生目录选择、关于窗口、系统快捷键、磁盘持久化与真实模型调用仍待Electron实现与验收。
+[交互稿源码](design/desktop-preview.html)包含两平台、两套色板与三种主题模式、十三个页面及异常状态；[截图与检查记录](design/preview-verification.md)用于复核。所有数据均为内存演示，请勿输入真实 Key。UI v0.13 设置为纯左右结构：标题放在左导航顶部，关闭按钮在右内容右上；去掉重复分类大标题及跟随系统示意图的棕色圆形装饰。内容滚动区域避开固定关闭/状态区域；保留即时反馈、失败重试和原有子编辑行为。本版23项定向界面检查通过，6张截图。其他原生窗口、系统目录选择和真实模型等状态见交付进度。
 
 在仓库根目录启动仅用于设计审核的静态预览：
 

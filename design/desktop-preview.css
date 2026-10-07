@@ -116,3 +116,34 @@ body{font-family:var(--preview-ui-font,var(--font-ui))}.mac-system-menubar{displ
  .settings-body .model-list{gap:6px;padding:12px 9px}.settings-body .model-row-actions{gap:3px}.settings-body .model-row-actions .button{padding:4px 7px}
  .model-dialog .field{grid-template-columns:110px minmax(0,1fr);column-gap:12px}
 }
+
+
+/* v0.11: long preferences use their own full-width control row. */
+.settings-body .setting-row.setting-row-stacked{display:flex;flex-direction:column;align-items:stretch;gap:11px}
+.setting-row-stacked .setting-control{width:100%}
+.theme-setting-row.setting-row-stacked .theme-cards{gap:14px}
+.theme-setting-row.setting-row-stacked .theme-card{padding:8px}
+.theme-setting-row.setting-row-stacked .theme-preview{height:112px}
+.theme-setting-row.setting-row-stacked .mini-side{padding:14px 8px}
+.theme-setting-row.setting-row-stacked .mini-side img{width:18px;height:18px;margin-bottom:11px}
+.theme-setting-row.setting-row-stacked .mini-chat,.theme-setting-row.setting-row-stacked .mini-page{padding:17px 8px}
+.theme-setting-row.setting-row-stacked .mini-card{height:32px;padding:7px 4px}
+.theme-setting-row.setting-row-stacked .mini-bubble{height:20px;margin-bottom:12px}
+.theme-setting-row.setting-row-stacked .mini-input{height:15px;bottom:9px}
+.theme-setting-row.setting-row-stacked .theme-card strong{font-size:12px;padding:9px 0 3px}
+.model-dialog .field{display:flex;flex-direction:column;align-items:stretch;gap:7px;padding:15px 0}
+.model-dialog .field>label{font-size:13px}.model-dialog .field>small{font-size:11px;line-height:1.7}
+.model-dialog .field>input,.model-dialog .field>select,.model-dialog .field>.provider-trigger,.model-dialog .field>.model-select-trigger{width:100%}
+.settings-body .model-list{min-height:86px;padding:20px 16px;gap:12px}
+.settings-body .model-list .grow{gap:4px}
+.user-card{gap:20px;min-height:140px;padding:26px;border-color:color-mix(in srgb,var(--primary) 24%,var(--border));background:linear-gradient(115deg,color-mix(in srgb,var(--primary) 10%,var(--card)),color-mix(in srgb,var(--primary) 3%,var(--card)));box-shadow:var(--shadow-1)}
+.user-card .profile-avatar{width:72px;height:72px;background:var(--card);border:1px solid color-mix(in srgb,var(--primary) 20%,var(--border));box-shadow:0 0 0 5px color-mix(in srgb,var(--card) 55%,transparent);font-size:27px}
+.user-card strong{display:block;font-size:20px;font-weight:500;line-height:1.6;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-card small{font-size:12px;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-card .profile-edit-button{width:34px;height:34px;border:1px solid var(--input);background:var(--card);color:var(--muted-foreground);border-radius:8px}
+.user-card .profile-edit-button:hover{background:var(--hover-wash);color:var(--foreground)}
+@media(max-width:700px){
+ .theme-setting-row.setting-row-stacked .theme-cards{gap:9px}.theme-setting-row.setting-row-stacked .theme-card{padding:5px}.theme-setting-row.setting-row-stacked .theme-preview{height:86px}.theme-setting-row.setting-row-stacked .mini-side{padding:11px 5px}.theme-setting-row.setting-row-stacked .mini-chat,.theme-setting-row.setting-row-stacked .mini-page{padding:14px 5px}.theme-setting-row.setting-row-stacked .mini-card{height:24px;padding:5px 3px}.theme-setting-row.setting-row-stacked .mini-bubble{height:14px;margin-bottom:10px}
+ .settings-body .model-list{min-height:80px;padding:18px 12px;gap:8px}
+ .user-card{padding:20px;gap:16px;min-height:128px}.user-card .profile-avatar{width:64px;height:64px;font-size:24px}.user-card strong{font-size:18px}
+}

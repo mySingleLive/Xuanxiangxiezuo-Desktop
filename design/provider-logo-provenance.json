@@ -1,6 +1,6 @@
 {
   "version": "1.95.1",
-  "license": "MIT",
+  "license": "MIT for package-sourced assets; official Z.ai entry has separate brand attribution",
   "tarball": "https://registry.npmjs.org/@lobehub/icons-static-svg/-/icons-static-svg-1.95.1.tgz",
   "integrity": "sha512-Hw7EPPgVnC4NZLXBfTNJG6hyQgqECfUPC11VVXodPSr1aebKcFxDZlSpxhWwYNdCc6bhxps/x5TtXoPmfKH2ag==",
   "assets": [
@@ -48,12 +48,12 @@
     },
     {
       "target": "design/assets/providers/zai.svg",
-      "packageAsset": "zai.svg",
-      "originalSha256": "e748cb5108ce37b116d7a5ba97d37e0ae97eadf6849b0de11afb248e244a01e1",
-      "sha256": "124c0fe24165440ba7f57fffdc67cdf20324e89ef237b2b32b3313b076f7f70a",
-      "method": "modern Z.ai mark; original monochrome paths; desktop preview tint #3859FF",
-      "shapeReference": "https://www.zhipuai.cn/logo-en.svg",
-      "shapeReferenceSha256": "af5f01534523a053f23d4b330af1f64b730707c3ef289b16e8278403531a76dd"
+      "source": "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+      "originalSha256": "07a45e8e35b0b631ed2c68cd1cb041f9721b1ceeb0bd0e34f1459b0304a741c7",
+      "sha256": "eb435d18666db2076777efd1b6a46bd8eecc46740d69c136bf092c3c41778d33",
+      "method": "official black rounded tile and white Z; retain visible path/polygon and original paint, omit unused Illustrator styles",
+      "license": "Official brand asset; no open-source license asserted; trademark belongs to Z.ai",
+      "reference": "https://chat.z.ai/ (favicon and apple-touch-icon)"
     },
     {
       "target": "design/assets/providers/xiaomi.svg",

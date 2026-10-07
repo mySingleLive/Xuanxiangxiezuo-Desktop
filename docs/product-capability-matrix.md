@@ -92,4 +92,4 @@
 | C29 | 伏笔 | `createForeshadowCharacter`, `listForeshadows`, `getForeshadow`, `createForeshadow`, `updateForeshadow`, `deleteForeshadow`, `addForeshadowTouch`, `removeForeshadowTouch` |
 | C26/X07 | 暂存与连锁修订 | `analyzeStagedImpact`, `commitStagedChanges`, `triggerCascadeRevision` |
 
-本次修订：D03 修正智谱与图形，按类别筛供应商，测试直接逐项执行已选草稿并弹出结果；保留前次新增彩色供应商与完整目录设计、简化预设字段、模型手动保存；D09 智能体默认设置；D04 用户编辑独立草稿，保存后更新，取消/X/Escape 不提交；D05 底部沿用 Web 用户菜单，新增设置并移除旁侧齿轮。其余 Web UI 完全复用，来源绑定见 UI 文档第 8 节。
+本次修订：D03 模型家族Logo覆盖所有选择/目录列表，智谱改官方黑底圆角图形；D04/D09模型选择边界保持；D04外观分类名及纯图形主题示例；审核工具默认展示仅属设计审核辅助，不新增安装版能力ID。保留前次修订：D03 修正智谱与图形，按类别筛供应商，测试直接逐项执行已选草稿并弹出结果；保留前次新增彩色供应商与完整目录设计、简化预设字段、模型手动保存；D09 智能体默认设置；D04 用户编辑独立草稿，保存后更新，取消/X/Escape 不提交；D05 底部沿用 Web 用户菜单，新增设置并移除旁侧齿轮。其余 Web UI 完全复用，来源绑定见 UI 文档第 8 节。

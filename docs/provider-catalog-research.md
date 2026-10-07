@@ -1,6 +1,6 @@
 # 供应商目录与图标补充调研
 
-日期：2026-10-07；用于产品 v0.6 / UI v0.7 修订，不是技术方案或真实接口验收。
+日期：2026-10-07；用于产品 v0.7 / UI v0.8 修订，不是技术方案或真实接口验收。
 
 用户要求：预设供应商配置只显示 API Key 与模型列表，列表覆盖供应商全部可用模型；自定义供应商保留接口字段。新增腾讯、字节跳动，并为每家供应商提供对应彩色 Logo。
 
@@ -26,7 +26,9 @@
 
 采用 [LobeHub Icons](https://github.com/lobehub/lobe-icons) 的 npm 官方注册表包 @lobehub/icons-static-svg@1.95.1 中静态 SVG。仅解包资产，没有安装或运行包代码。包版本、完整性值、原始/处理后 SHA-256 与逐 Logo 映射见 `design/provider-logo-provenance.json`；MIT 原文随本地资产保存。已有彩色 SVG 保留原色；单色图形按原形着色，色值是桌面预览处理，不声明为官方品牌标准色。
 
-月之暗面对应 Moonshot 图形、阿里巴巴对应 Alibaba、腾讯对应 Tencent、字节跳动对应 ByteDance，不以模型家族图标替代供应商主体。用户本次修正为「智谱」。改用包内 `zai.svg` 的现代斜向 Z 图形，着色 #3859FF；形状与 [智谱 / Z.ai 官网 SVG](https://www.zhipuai.cn/logo-en.svg) 交叉核对，官方图仅用于核对而未复制进仓库，资产仍来自 MIT 包。Logo 在本地提供，不从 CDN 请求。
+月之暗面对应 Moonshot 图形、阿里巴巴对应 Alibaba、腾讯对应 Tencent、字节跳动对应 ByteDance，不以模型家族图标替代供应商主体。智谱采用用户本轮指定的 z.ai 黑底圆角块、白色 Z。z.ai 官网当前 favicon/apple-touch-icon 引用 [官方 SVG](https://z-cdn.chatglm.cn/z-ai/static/logo.svg)，与原 Web `provider-logos.tsx` 的来源一致。仅保留SVG可见路径/多边形及原配色，省略未使用的Illustrator样式，原始/输出指纹及独立品牌资产归属在清单中记录，不将官方资产误称 MIT。其他十一家供应商仍为原 MIT 包。
+
+模型家族图标从同版本 MIT 包提供，Claude/Gemini/Grok/Kimi/Qwen/混元/豆包与供应商主体图标分开；其余复用已对应家族的供应商图形。映射和逐图指纹见 `model-logo-provenance.json`，未知/自定义保留通用图标，不通过名称猜测。Logo 在本地提供，不从 CDN 请求。
 
 ## 原型证据限制
 

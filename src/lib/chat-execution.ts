@@ -4,6 +4,8 @@ import { isLocalAttemptRunning } from "./local-chat-cancellation"
 import { ContentError } from "./content-errors"
 import { CHAT_LEASE_MS, RECLAIM_GRACE_MS } from "./chat-protocol"
 import type { ResolvedModel } from "./ai/provider"
+import type { TaskDefaults } from "@desktop/shared/task-defaults"
+import { runWithTaskDefaults } from "@desktop/service/task-defaults"
 
 export interface ChatExecutionScope {
   userId: string
@@ -13,8 +15,10 @@ export interface ChatExecutionScope {
   epoch: number
   toolExecutionId?: string
   operationId?: string
-  /** 生成与评审继承主聊天本次解析出的模型；不因子任务 tier 偷换模型。 */
+  /** Main text resolution for this invocation; review/image use separate frozen role IDs. */
   resolvedModel?: ResolvedModel
+  /** Keyless defaults frozen when this turn began; children inherit the same IDs. */
+  taskDefaults?: TaskDefaults
   networkRetry?: { maxRetries: number; canRetry: () => boolean; notify: () => void; fetch: typeof fetch }
   signal?: AbortSignal
   progress?: (event: Record<string, unknown>) => void
@@ -34,7 +38,8 @@ export async function retryChatControlTransaction<T>(run: () => Promise<T>): Pro
   }
 }
 export const currentChatExecution = () => context.getStore()
-export const runInChatExecution = <T>(scope: ChatExecutionScope, run: () => T) => context.run(scope, run)
+export const runInChatExecution = <T>(scope: ChatExecutionScope, run: () => T): T => scope.taskDefaults
+  ? runWithTaskDefaults(scope.taskDefaults, () => context.run(scope, run)) : context.run(scope, run)
 /** 仅供不可变候选、实际用量及控制面审计；禁止包住正文/评论/评分写入。 */
 export const outsideChatExecution = <T>(run: () => T) => context.run(undefined, run)
 

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { Check, Loader2 } from "lucide-react"
 import { AutosaveController, type SaveAttempt, type SaveStatus } from "@/lib/autosave-controller"
+import { desktopSaveCoordinator } from "@/lib/desktop/save-coordinator"
 import { useStagedChangesStore } from "@/stores/staged-changes"
 
 export type { SaveStatus } from "@/lib/autosave-controller"
@@ -12,7 +13,8 @@ export type { SaveStatus } from "@/lib/autosave-controller"
  * - schedule(value)：内容变化时调用，delay 毫秒无新变化后保存
  * - saveNow()：失焦时只刷新已有修改，不为单纯浏览创建一次写入
  * - saveNow(value)：明确产生新内容时安排修改并立即保存
- * 组件卸载时停止定时保存；路由/评论等依赖动作通过 flush 确认保存。
+ * Web卸载时停止定时保存；桌面卸载由协调器保留待落盘草稿。
+ * 路由/评论等依赖动作仍通过原 flush 确认保存。
  */
 export function useAutosave<T>(saveFn: (value: T, attempt: SaveAttempt<T>) => Promise<void>, delay = 800) {
   const [status, setStatus] = useState<SaveStatus>("idle")
@@ -20,8 +22,9 @@ export function useAutosave<T>(saveFn: (value: T, attempt: SaveAttempt<T>) => Pr
   useEffect(() => { controller.updateSave(saveFn) }, [controller, saveFn])
   useEffect(() => {
     controller.activate()
+    const release = typeof window !== "undefined" && window.desktop ? desktopSaveCoordinator.register(controller) : undefined
     const unsubscribe = controller.subscribe(setStatus)
-    return () => { unsubscribe(); controller.dispose() }
+    return () => { unsubscribe(); if (release) release(); else controller.dispose() }
   }, [controller])
   const schedule = useCallback((value: T) => controller.schedule(value), [controller])
   const flush = useCallback(() => controller.flush(), [controller])

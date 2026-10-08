@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-import { forbidden, requireAdmin, serverError } from "@/app/api/admin/lib"
+import { forbidden, requireAdmin, serverError } from "@desktop/handlers/admin/lib"
 import { prisma } from "@/lib/db"
 import { INTENT_ROUTES, SOP_EDGES, SOP_NODES, SOP_ROLE_LABELS } from "@/lib/sop/graph"
 

@@ -31254,5 +31254,16 @@
     "真实供应商API Key/调用授权及预算未提供时，相应主清单用例待验收，不以mock当真实模型通过。",
     "macOS arm64/x64与Windows x64安装产物和真实OS动作证据尚未取得。",
     "业务implementation尚未开始；任何源schema与技术替代边界发生改变需同步本附录并复审，不自动删除失败用例。"
-  ]
+  ],
+  "acceptanceScope": {
+    "retirementId": "USER-2026-10-08-CANCEL-BACKUPS",
+    "updatedAt": "2026-10-08",
+    "retirementManifest": "docs/backup-scope-retirement.json",
+    "activeManifest": "docs/acceptance-active-scope.json",
+    "policy": "retired是范围生命周期，不是passed/skipped；原status/results/executionMatrix均不变。activeDefinition只覆盖title/steps/expected，其余前置/平台/证据继承原条目。",
+    "historicalCaseCount": 424,
+    "activeCaseCount": 424,
+    "retiredCaseIds": [],
+    "note": "全部原业务case及executionMatrix保留；领域事务快照/回收恢复/聊天checkpoint不是数据备份。"
+  }
 }

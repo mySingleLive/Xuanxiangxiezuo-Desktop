@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { getOwnedNovel, firstIssueMessage } from "@/app/api/novels/[id]/lib"
+import { getOwnedNovel, firstIssueMessage } from "@desktop/handlers/novels/[id]/lib"
 import { addReference, referenceInputSchema } from "@/lib/services/foreshadow-reference"
 import { referenceErrorResponse } from "./response"
 

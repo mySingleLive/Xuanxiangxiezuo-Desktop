@@ -4,7 +4,7 @@ import { dirname, join } from "node:path"
 
 export interface Snapshot<T> { revision: number; value: T }
 export class RevisionConflict extends Error { constructor() { super("设置已变更，请重新读取后保存"); this.name = "RevisionConflict" } }
-export interface StoreOptions { beforeRename?: () => Promise<void>; beforeDirectorySync?: () => Promise<void> }
+export interface StoreOptions { beforeRename?: () => Promise<void>; beforeDirectorySync?: () => Promise<void>; withWrite?: <T>(run: () => Promise<T>) => Promise<T> }
 export class CommitDurabilityError extends Error {
   readonly committed = true
   constructor(cause: unknown) { super("设置已替换，但无法确认目录同步，请重新读取并重试", { cause }) }
@@ -18,7 +18,11 @@ async function syncDirectory(directory: string) {
   try { await handle.sync() } finally { await handle.close() }
 }
 
-export async function atomicWrite(path: string, content: string, options: StoreOptions = {}) {
+export async function atomicWrite(path: string, content: string, options: StoreOptions = {}): Promise<void> {
+  if (options.withWrite) {
+    const { withWrite, ...writeOptions } = options
+    return withWrite(() => atomicWrite(path, content, writeOptions))
+  }
   const temporary = join(dirname(path), `.${randomUUID()}.tmp`)
   let committed = false
   let ownsTemporary = false
@@ -62,13 +66,13 @@ export class VersionedStore<T> {
     return { revision: row.revision as number, value: this.validate(row.value) }
   }
   async read(): Promise<Snapshot<T>> { return this.enqueue(() => this.readDisk()) }
-  async update(revision: number, value: T): Promise<Snapshot<T>> {
+  async update(revision: number, value: T, beforeCommit?: () => void): Promise<Snapshot<T>> {
     const validated = structuredClone(this.validate(value))
     return this.enqueue(async () => {
       const before = await this.readDisk()
       if (!Number.isSafeInteger(revision) || before.revision !== revision || revision >= Number.MAX_SAFE_INTEGER) throw new RevisionConflict()
       const next = { revision: revision + 1, value: validated }
-      await atomicWrite(this.path, JSON.stringify({ schemaVersion: 1, ...next }) + "\n", this.options)
+      await atomicWrite(this.path, JSON.stringify({ schemaVersion: 1, ...next }) + "\n", { ...this.options, beforeRename: async()=>{await this.options.beforeRename?.();beforeCommit?.()} })
       return structuredClone(next)
     })
   }

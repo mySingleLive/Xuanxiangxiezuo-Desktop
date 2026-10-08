@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-import { getOwnedNovel } from "@/app/api/novels/[id]/lib"
+import { getOwnedNovel } from "@desktop/handlers/novels/[id]/lib"
 import { getRun } from "@/lib/services/subagent-run"
 
 type RouteContext = { params: Promise<{ id: string }> }

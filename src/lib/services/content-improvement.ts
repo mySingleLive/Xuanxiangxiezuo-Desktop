@@ -19,6 +19,7 @@ import { bindProposedCommentActions, commentRepliesHash, type CommentSnapshot } 
 import { createChapterReviewConfiguration, reviewChapterReference, type ChapterReviewConfiguration } from "./content-review"
 import type { ChapterScope } from "./chapter-history"
 import { completeRun, failRun, startRun } from "./subagent-run"
+import { taskDefaults } from "@desktop/service/task-defaults"
 
 const json = (value: unknown): Prisma.InputJsonValue => JSON.parse(JSON.stringify(value))
 const knownFailure = (error: unknown, fallback: string) => error instanceof ContentError || error instanceof QuotaExceededError || error instanceof NoModelAvailableError || error instanceof PlanRestrictedError ? error.message : fallback
@@ -46,6 +47,7 @@ export async function beginContentImprovement(input: ImproveChapterInput) {
   const intent = await chapterImprovementIntent(input, input.authorInstructions)
   const execution = currentChatExecution()
   const hash = requestHash({ chapterId: input.chapterId, novelId: input.novelId, expectedVersion: input.expectedVersion, instructions: intent.instructions })
+  const defaultsSnapshot = execution?.taskDefaults ?? await taskDefaults()
   const boundaries = await readChapterBoundaries(input)
   return prisma.$transaction(async tx => {
     await ownedChapter(tx, input.userId, input.novelId, input.chapterId)
@@ -70,6 +72,7 @@ export async function beginContentImprovement(input: ImproveChapterInput) {
     })
     const wordRequirement = inferWordRequirement(intent.instructions, chapter.outline, countChineseWords(chapter.content))
     const run = await tx.contentImprovementRun.create({ data: { userId: input.userId, novelId: input.novelId, chapterId: input.chapterId, operationId: input.operationId, requestHash: hash, turnId: execution?.turnId, attemptId: execution?.attemptId,
+      defaultsSnapshot,
       baseVersion: chapter.version, baseHash: contentHash(chapter.content), baseContent: chapter.content, authorInstructions: intent.instructions, comments: json(comments), boundaries: json(boundaries), wordRequirement: json(wordRequirement) } })
     return { run, created: true, authorized: intent.authorized }
   })

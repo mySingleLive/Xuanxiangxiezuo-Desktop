@@ -1,5 +1,10 @@
 # 桌面菜单、外观与快捷键产品补充
 
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE BEGIN -->
+> **当前范围（2026-10-08）：用户取消全部备份功能。** 设置分组行中的“备份”项退役，配置导入/导出仍各占一行；两平台菜单/窗控/快捷键、外观、模型/用户编辑契约不变。备份控件/命令不得在安装版重新出现，下面旧原文保留历史。
+> 活动清单：[acceptance-active-scope.json](acceptance-active-scope.json)；原文和退役明细：[backup-scope-retirement.json](backup-scope-retirement.json)。此处不声明实现完成或验收通过。
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE END -->
+
 版本：0.5；对应产品 v0.12 / UI v0.13；日期：2026-10-07。此文档是产品/UI 修订，技术方案仍待用户批准 UI 后产出。
 
 ## 菜单位置和命令

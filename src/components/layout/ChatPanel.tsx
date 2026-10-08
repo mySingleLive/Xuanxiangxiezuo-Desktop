@@ -3,6 +3,12 @@ import { useSceneUiStore } from "@/stores/scene-ui"
 import { parseSceneIdentity } from "@/lib/scene-context"
 import { splitMentionToken } from "@/lib/mention-token"
 import { positionForCreation } from "@/lib/creation-wizard/position"
+import { useDesktopCommands } from "@/lib/desktop/use-command-target"
+import { useDesktopStore,updateDesktopSettings } from "@/stores/desktop"
+import { ComposerHistory } from "@/lib/desktop/composer-history"
+import {composerBindingHint,composerSendPreset,setComposerSendPreset} from "@/lib/desktop/composer-shortcuts"
+import {desktopCommandCatalog} from "@/lib/desktop/command-runtime"
+import {consumeDesktopComposerPaste} from "@/lib/desktop/native-text-edits"
 
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
@@ -118,6 +124,7 @@ import {
   getDropTextOffset,
   insertMentionChip,
   insertDraftAtCaret,
+  deleteDraftSelection,
   insertTextAtCaret,
   renderDraftIntoEditor,
   type ChipData,
@@ -933,13 +940,25 @@ export function ChatPanel({
   const setMode = useChatStore((s) => s.setMode)
   const enterToSend = useChatStore((s) => s.enterToSend)
   const setEnterToSend = useChatStore((s) => s.setEnterToSend)
+  const desktopBootstrap=useDesktopStore(state=>state.bootstrap)
+  const sendPreset=desktopBootstrap?composerSendPreset(desktopCommandCatalog(desktopBootstrap.platform),desktopBootstrap.settings.shortcuts[desktopBootstrap.platform]):enterToSend?"enter":"shift"
+  const saveSendPreset=async(value:boolean)=>{
+    const desktop=useDesktopStore.getState().bootstrap
+    if(!desktop){setEnterToSend(value);return}
+    try{await updateDesktopSettings(before=>({...before,shortcuts:{...before.shortcuts,[desktop.platform]:setComposerSendPreset(desktopCommandCatalog(desktop.platform),before.shortcuts[desktop.platform],value)}}))}
+    catch(error){toast.error(error instanceof Error?error.message:"发送方式保存失败",{action:{label:"快捷键设置",onClick:()=>window.dispatchEvent(new CustomEvent("desktop:settings",{detail:"shortcuts"}))}})}
+  }
   const pendingQuestion = useChatStore((s) => s.pendingQuestion)
   const pendingRequest = useChatStore(s => s.pendingRequest)
   const pendingPlan = useChatStore(s => s.pendingPlan)
   /** 创建作品向导对话入口留下的待创建书名（首条消息发送时才真正落库） */
   const pendingNovelTitle = useChatStore((s) => s.pendingNovelTitle)
-  const { messages, loadConversation, resetConversation, send, stop, retryTurn, skipQuestion, reconcilePending, cancelFollowing, following, approvePlan, skipPlan, activeNovelId: conversationNovelId, setActiveNovelId: setConversationNovelId } =
+  const { messages, loadConversation, resetConversation, send, stop, retryTurn, skipQuestion, reconcilePending, cancelFollowing, following, approvePlan, skipPlan, isLoadingConversation, activeNovelId: conversationNovelId, setActiveNovelId: setConversationNovelId } =
     useAgentChat(userId)
+  const [inputHistory]=useState(()=>new ComposerHistory())
+  useEffect(()=>{
+    if(conversationId&&recoveryStatus==="ready"&&!isLoadingConversation)inputHistory.seed(conversationId,messages.filter(message=>message.role==="user").map(message=>message.content))
+  },[conversationId,messages,inputHistory,recoveryStatus,isLoadingConversation])
 
   /** 参谋提问待回答且生成已结束（历史标记/摘要语义；不受选卡覆盖影响） */
   const askPanelPending = pendingQuestion !== null && !isGenerating
@@ -1197,7 +1216,9 @@ export function ChatPanel({
   useEffect(() => {
     if (!isGenerating) return
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== "Escape" || e.defaultPrevented) return
+      const desktop=useDesktopStore.getState().bootstrap
+      if (desktop) return
+      if (e.key !== "Escape" || e.defaultPrevented || e.isComposing || e.keyCode===229) return
       const target = e.target as HTMLElement | null
       if (target?.closest('[role="menu"], [role="dialog"], [role="listbox"]')) return
       e.preventDefault()
@@ -1263,6 +1284,7 @@ export function ChatPanel({
     const text = useChatStore.getState().draft.trim()
     // 三阶段保存：气泡存在时即使无文本也可发送（仅发气泡）
     if ((!text && stagedChipCount === 0) || !canSend || sendBusyRef.current) return
+    const before=useChatStore.getState(),sourceDraft=before.draftId
     // 生成中点击发送 → 进入队列（§2.5），当前轮流结束后自动按序发送
     if (useChatStore.getState().isGenerating) {
       useChatStore.getState().enqueueMessage({
@@ -1270,9 +1292,12 @@ export function ChatPanel({
         text,
       })
       setDraft("")
+      inputHistory.remember(before.conversationId??sourceDraft,text)
       return
     }
     await sendText(text)
+    const current=useChatStore.getState()
+    if(current.draftId===sourceDraft)inputHistory.remember(current.conversationId??sourceDraft,text)
   }
 
   // 面板 [发送] 桥：StagedSaveSurface 经暂存仓请求发送 → 走与手动发送完全相同的 sendText 入口
@@ -1332,7 +1357,10 @@ export function ChatPanel({
   const [searchOpen, setSearchOpen] = useState(false)
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      const desktop=useDesktopStore.getState().bootstrap
+      if(desktop)return
       if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "k" || e.defaultPrevented) return
+      if(e.isComposing||e.keyCode===229)return
       e.preventDefault()
       setSearchOpen((v) => !v)
     }
@@ -1487,6 +1515,7 @@ export function ChatPanel({
     if (draft === lastSyncedRef.current) return
     lastSyncedRef.current = draft
     renderDraftIntoEditor(el, draft, chipHydrate)
+    if (window.desktop) el.dataset.desktopEmpty = draft === "" ? "true" : "false"
   }, [draft, chipHydrate])
 
   // 草稿变化时自适应输入框高度（上限 140px；须在上面的 DOM 重建之后执行）
@@ -1503,7 +1532,8 @@ export function ChatPanel({
     if (!el) return
     const text = editorToText(el)
     // 清空内容时清掉残留 <br> 等空节点，保证 :empty 占位样式生效
-    if (text === "" && el.innerHTML !== "") el.innerHTML = ""
+    if (window.desktop) el.dataset.desktopEmpty = text === "" ? "true" : "false"
+    else if (text === "" && el.innerHTML !== "") el.innerHTML = ""
     lastSyncedRef.current = text
     setDraft(text)
     updateMention()
@@ -1601,9 +1631,34 @@ export function ChatPanel({
   }), [canSend, composerNovelId, setConversationNovelId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const currentConversation = conversations?.find((c) => c.id === conversationId)
+  const historyInput=(direction:-1|1)=>{
+    const current=useChatStore.getState(),element=textareaRef.current
+    const text=inputHistory.move(current.conversationId??current.draftId,direction,current.draft)
+    if(!element||text===current.draft)return
+    renderDraftIntoEditor(element,text,chipHydrate);syncFromEditor();element.focus()
+    const selection=window.getSelection(),range=document.createRange();range.selectNodeContents(element);range.collapse(false);selection?.removeAllRanges();selection?.addRange(range)
+  }
+  useDesktopCommands({
+    "composer.focus":()=>{useChatStore.getState().requestChatFocus();textareaRef.current?.scrollIntoView({block:"nearest"});textareaRef.current?.focus()},
+    "chat.search":()=>setSearchOpen(value=>!value),
+    "ai.stop":{enabled:()=>isGenerating&&!mention,run:stop},
+  })
+  useDesktopCommands({
+    "ai.send":{enabled:()=>canSend&&!mention,run:handleSend},
+    "ai.newline":{enabled:()=>canSend&&!mention,run:()=>{textareaRef.current?.focus();document.execCommand("insertLineBreak");syncFromEditor()}},
+    "ai.models":()=>dispatchChatUiEvent(CHAT_OPEN_MODEL_PICKER_EVENT),
+    "ai.mention":{enabled:()=>canSend,run:()=>insertToken("@")},
+    "ai.mentionNext":{enabled:()=>!!mention&&flatMentionItems.length>0,run:()=>setMentionIndex(index=>(index+1)%flatMentionItems.length)},
+    "ai.mentionPrev":{enabled:()=>!!mention&&flatMentionItems.length>0,run:()=>setMentionIndex(index=>(index-1+flatMentionItems.length)%flatMentionItems.length)},
+    "ai.mentionConfirm":{enabled:()=>!!mention&&flatMentionItems.length>0,run:()=>selectMention(flatMentionItems[Math.min(mentionIndex,flatMentionItems.length-1)])},
+    "ai.mentionClose":{enabled:()=>!!mention,run:()=>{mentionDismissedRef.current=mention;setMention(null)}},
+    "ai.clear":{enabled:()=>canSend,run:()=>{const element=textareaRef.current;if(!element)return;element.focus();const selection=window.getSelection(),range=document.createRange();range.selectNodeContents(element);selection?.removeAllRanges();selection?.addRange(range);document.execCommand("delete");syncFromEditor()}},
+    "ai.historyPrev":{enabled:()=>canSend,run:()=>historyInput(-1)},
+    "ai.historyNext":{enabled:()=>canSend,run:()=>historyInput(1)},
+  },textareaRef)
 
   /** W7 输入提示：随 enterToSend 设置反转（placeholder 与发送方式菜单同文案） */
-  const composerEnterHint = enterToSend ? "Enter 发送，Shift+Enter 换行" : "Shift+Enter 发送，Enter 换行"
+  const composerEnterHint = desktopBootstrap?composerBindingHint(desktopCommandCatalog(desktopBootstrap.platform),desktopBootstrap.settings.shortcuts[desktopBootstrap.platform]):enterToSend ? "Enter 发送，Shift+Enter 换行" : "Shift+Enter 发送，Enter 换行"
 
   return (
     <div className="chatpane flex h-full flex-col bg-chat-bg" aria-busy={!canSend}>
@@ -1868,11 +1923,25 @@ export function ChatPanel({
               e.preventDefault()
             }}
             onPaste={(e) => {
+              const pasteText = (text: string) => {
+                if (!canSend) throw new Error("当前消息输入框只读，未粘贴内容")
+                if (text) insertDraftAtCaret(e.currentTarget, text, chipHydrate, { nativeUndo: !!window.desktop })
+                syncFromEditor()
+              }
+              if (consumeDesktopComposerPaste(e.nativeEvent, pasteText)) { e.preventDefault(); return }
               e.preventDefault()
               if (!canSend) return
               const text = e.clipboardData.getData("text/plain")
-              if (text) insertDraftAtCaret(e.currentTarget, text, chipHydrate)
-              syncFromEditor()
+              try { pasteText(text) } catch { toast.error("消息输入框无法粘贴，请重试") }
+            }}
+            onCut={(e) => {
+              if (!window.desktop) return
+              e.preventDefault()
+              if (!canSend) return
+              const text = selectedEditorText(e.currentTarget)
+              if (text === null) return
+              e.clipboardData.setData("text/plain", text)
+              try { deleteDraftSelection(e.currentTarget); syncFromEditor() } catch { toast.error("消息输入框无法剪切，请重试") }
             }}
             // 实体卡片拖拽（chip-drag payload：等级/角色等）：dragover 只读 types 放行；
             // drop 在释放点插入引用芯片（落点无效时追加到草稿末尾），复用单向同步
@@ -1900,6 +1969,9 @@ export function ChatPanel({
             }}
             onBlur={() => {composerCaret.current = textareaRef.current ? getCaretTextOffset(textareaRef.current) : null; setMention(null)}}
             onKeyDown={(e) => {
+              // Desktop bindings (including mention contexts) are dispatched
+              // once by the shared capture listener, from committed settings.
+              if(useDesktopStore.getState().bootstrap)return
               // @ 弹窗打开期间：↑/↓ 导航、Enter/Tab 选中（不发送）、Esc 关闭
               if (mention && !e.nativeEvent.isComposing) {
                 if (e.key === "ArrowDown" && flatMentionItems.length > 0) {
@@ -1945,6 +2017,7 @@ export function ChatPanel({
             }}
             className={cn(
               "chat-composer-editable max-h-[140px] w-full overflow-y-auto bg-transparent px-3.5 pt-3 pb-1 text-[13.5px] leading-[1.6] wrap-break-word whitespace-pre-wrap text-foreground outline-none",
+              "data-[desktop-empty=true]:before:content-[attr(data-placeholder)] data-[desktop-empty=true]:before:text-muted-foreground/70 data-[desktop-empty=true]:before:pointer-events-none",
               messages.length === 0 ? "min-h-[92px]" : "min-h-[52px]"
             )}
           />
@@ -2063,15 +2136,15 @@ export function ChatPanel({
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
                     <DropdownMenuLabel>发送方式</DropdownMenuLabel>
-                    <DropdownMenuItem onClick={() => setEnterToSend(true)}>
+                    <DropdownMenuItem onClick={() => {void saveSendPreset(true)}}>
                       <Keyboard className="size-3.5" />
                       <span className="min-w-0 flex-1">Enter 发送，Shift+Enter 换行</span>
-                      {enterToSend && <Check className="size-3.5 text-primary" />}
+                      {sendPreset==="enter" && <Check className="size-3.5 text-primary" />}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setEnterToSend(false)}>
+                    <DropdownMenuItem onClick={() => {void saveSendPreset(false)}}>
                       <Keyboard className="size-3.5" />
                       <span className="min-w-0 flex-1">Shift+Enter 发送，Enter 换行</span>
-                      {!enterToSend && <Check className="size-3.5 text-primary" />}
+                      {sendPreset==="shift" && <Check className="size-3.5 text-primary" />}
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                 </DropdownMenuContent>

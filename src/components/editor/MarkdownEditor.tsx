@@ -31,6 +31,8 @@ import type { MonacoMarkdownEditorProps } from "./MonacoMarkdownEditor"
 import { ScoreReportPanel } from "../score/ScoreReportPanel"
 import type { ScoreTargetType } from "../score/use-score-report"
 import { useEditorCommands, type MarkdownEditorHandle } from "./use-editor-commands"
+import { useDesktopCommands } from "@/lib/desktop/use-command-target"
+import { installPreviewTextCommands } from "@/lib/desktop/preview-text-commands"
 export type { MarkdownEditorHandle } from "./use-editor-commands"
 
 const MonacoMarkdownEditor = dynamic(() => import("./MonacoMarkdownEditor"), {
@@ -127,11 +129,22 @@ export function MarkdownEditor({
   const [editorInstance, setEditorInstance] = useState<MonacoInstance | null>(null)
   const previewRef = useRef<HTMLDivElement>(null)
   const rootRef = useRef<HTMLDivElement>(null)
-  const applyPendingCommand = useEditorCommands({ ref, value, readOnly, mode: effectiveMode, setMode, editorRef, previewRef, rootRef })
+  const editingMode = !modes || modes.includes("edit") ? "edit" : modes.includes("split") ? "split" : null
+  const applyPendingCommand = useEditorCommands({ ref, value, readOnly, mode: effectiveMode, editingMode, setMode, editorRef, previewRef, rootRef })
+  const commandHandle = useRef(applyPendingCommand.handle)
+  commandHandle.current = applyPendingCommand.handle
+  useEffect(() => installPreviewTextCommands({ preview: () => previewRef.current, handle: () => commandHandle.current }), [previewRef])
+  useDesktopCommands({
+    "view.edit":{enabled:()=>!modes||modes.includes("edit"),run:()=>setMode("edit")},
+    "view.preview":{enabled:()=>!modes||modes.includes("preview"),run:()=>setMode("preview")},
+    "view.split":{enabled:()=>!modes||modes.includes("split"),run:()=>setMode("split")},
+    "editor.focus":()=>{if(effectiveMode==="preview"||effectiveMode==="review"){rootRef.current?.focus()}else editorRef.current?.focus()},
+  },rootRef)
 
   const references = useReferences(foreshadowTarget)
   const [referenceSelection, setReferenceSelection] = useState<ReferenceSelection | null>(null)
   const [referencePicker, setReferencePicker] = useState(false)
+  useDesktopCommands({"md.reference":{enabled:()=>!!foreshadowTarget&&!!referenceSelection&&referenceSelection.sourceText===value,run:()=>setReferencePicker(true)}},rootRef)
   const localFocus = usePanelFocusRequest(foreshadowTarget
     ? buildTabId(foreshadowTarget.targetType === "CHAPTER_OUTLINE" ? "chapter-outline" : "chapter-content", foreshadowTarget.novelId, { refId: foreshadowTarget.targetId }) : undefined)
   const activeReferenceFocus = referenceFocus ?? localFocus
@@ -258,7 +271,7 @@ export function MarkdownEditor({
 
   return (
     <CommentDraftProvider target={commentsTarget ?? null} source={value}>
-    <div ref={rootRef} className={cn("flex min-h-0 flex-col overflow-hidden rounded-lg border bg-editor", className)}>
+    <div ref={rootRef} tabIndex={-1} className={cn("desktop-markdown-editor flex min-h-0 flex-col overflow-hidden rounded-lg border bg-editor", className)}>
       {/* 工具条：字数 + 评论开关 + 三态切换 */}
       <div className="flex h-9 shrink-0 items-center justify-between gap-2 border-b bg-editor px-3">
         <div className="flex items-center gap-2">
@@ -366,7 +379,7 @@ export function MarkdownEditor({
         )}
         {mode === "split" && <div className="bg-border" />}
         {mode !== "edit" && (
-          <div ref={previewRef} className="min-h-0 min-w-0">
+          <div ref={previewRef} tabIndex={-1} className="min-h-0 min-w-0">
             {commentsTarget || foreshadowTarget ? (
               <CommentablePreview
                 foreshadows={previewReferences}

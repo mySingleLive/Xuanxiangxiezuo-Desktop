@@ -1,5 +1,10 @@
 # 桌面 UI 设计
 
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE BEGIN -->
+> **当前范围（2026-10-08）：用户取消全部备份功能。** 通用页的备份间隔/份数/立即备份/查看备份退役；恢复对话框保留草稿列表/预览/复制/导出。备份恢复选包/启用页面退役；目录选择/迁移进度/失联重定位、保存失败重试/导出/取消关闭保持。下方旧UI备份项是历史，不能进安装版；其它Web复用/窗控/菜单/设置契约不变。
+> 活动清单：[acceptance-active-scope.json](acceptance-active-scope.json)；原文和退役明细：[backup-scope-retirement.json](backup-scope-retirement.json)。此处不声明实现完成或验收通过。
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE END -->
+
 版本：0.13；日期：2026-10-07；状态：本次修订子代理复审通过（`reviews/22-ui-settings-shell-review.md`），用户已于2026-10-07批准（实施边界见 implementation-boundaries.md）。前序 UI v0.4 / 产品 v0.3 的通过记录保留于 `reviews/04-ui-revision-review.md`、`reviews/03-product-revision-review.md`。
 
 ## 1. 审核材料与边界

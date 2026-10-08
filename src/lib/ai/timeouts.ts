@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db"
+import { globalPrisma as prisma } from "@/lib/db"
 import { waitWithAbort } from "@/lib/abortable-stream"
 
 /** 仅限制一次连接/读响应连续无数据的时间，不限制生成或业务任务总时长。 */

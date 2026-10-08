@@ -6,6 +6,7 @@
 import type { Prisma } from "@/generated/prisma/client"
 import { prisma, controlPrisma } from "@/lib/db"
 import { currentChatExecution } from "@/lib/chat-execution"
+import { taskDefaults } from "@desktop/service/task-defaults"
 
 export type SubAgentKind =
   | "judge"
@@ -42,9 +43,11 @@ export async function startRun(input: {
   reviewConfigHash?: string | null
 }) {
   const scope = currentChatExecution()
+  const defaultsSnapshot = scope?.taskDefaults ?? await taskDefaults()
   const run = await prisma.subAgentRun.create({
     data: {
       novelId: input.novelId,
+      defaultsSnapshot,
       attemptId: scope?.attemptId ?? null,
       conversationId: input.conversationId ?? null,
       agentKind: input.agentKind,

@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { FileText, Plus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
@@ -22,25 +22,21 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { apiFetch, EmptyState, TableSkeleton } from "./shared"
+import { extractPromptVariables } from "@/lib/prompts/variables"
+import type { LocalPromptItem } from "@desktop/shared/template-library"
 
-type PromptTemplateItem = {
-  id: string
-  key: string
-  name: string
-  content: string
-  variables: string[]
-  version: number
-  enabled: boolean
-  updatedAt: string
+type PromptTemplateItem = LocalPromptItem
+type CreatePromptForm = { key: string; name: string; content: string }
+type CreatePromptSubmission = {
+  body: CreatePromptForm
+  draft: CreatePromptForm
+  epoch: number
+  selectedId: string | null
 }
 
 /** 从内容中提取 {{变量}} 名 */
 export function extractVariables(content: string): string[] {
-  const found = new Set<string>()
-  for (const match of content.matchAll(/\{\{\s*([\w.-]+)\s*\}\}/g)) {
-    found.add(match[1])
-  }
-  return [...found]
+  return extractPromptVariables(content)
 }
 
 /** 把 {{var}} 高亮渲染 */
@@ -66,8 +62,21 @@ export function PromptsClient() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [draft, setDraft] = useState<PromptTemplateItem | null>(null)
   const [createOpen, setCreateOpen] = useState(false)
-  const [createForm, setCreateForm] = useState({ key: "", name: "", content: "" })
+  const [createForm, setCreateForm] = useState<CreatePromptForm>({ key: "", name: "", content: "" })
   const [deleting, setDeleting] = useState(false)
+  const createEpoch = useRef(0)
+  const live = useRef({ createOpen, createForm, selectedId })
+  live.current = { createOpen, createForm, selectedId }
+
+  const changeCreateOpen = (open: boolean) => {
+    if (open !== live.current.createOpen) createEpoch.current++
+    live.current.createOpen = open
+    setCreateOpen(open)
+  }
+  const changeCreateForm = (form: CreatePromptForm) => {
+    live.current.createForm = form
+    setCreateForm(form)
+  }
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "prompts"],
@@ -95,39 +104,57 @@ export function PromptsClient() {
           content: item.content,
           variables: extractVariables(item.content),
           enabled: item.enabled,
+          expectedVersion: item.version,
         }),
       }),
-    onSuccess: (res) => {
+    onSuccess: (res, submitted) => {
       invalidate()
-      setDraft(null)
+      setDraft(previous => previous === submitted ? null : previous?.id === submitted.id && previous.version === submitted.version ? { ...previous, version: res.prompt.version } : previous)
       toast.success(`已保存，版本升至 v${res.prompt.version}`)
     },
     onError: (err) => toast.error(err.message),
   })
 
   const createMutation = useMutation({
-    mutationFn: (body: { key: string; name: string; content: string }) =>
+    mutationFn: ({ body }: CreatePromptSubmission) =>
       apiFetch<{ prompt: PromptTemplateItem }>("/api/admin/prompts", {
         method: "POST",
         body: JSON.stringify({ ...body, variables: extractVariables(body.content) }),
       }),
-    onSuccess: (res) => {
+    onSuccess: (res, submitted) => {
       invalidate()
-      setCreateOpen(false)
-      setCreateForm({ key: "", name: "", content: "" })
-      setSelectedId(res.prompt.id)
+      // A committed row may refresh the list, but only the same still-open
+      // creation session owns the selected editor. A changed key remains a new
+      // creation draft; newer text for the accepted key follows its new version.
+      const form = live.current.createForm
+      if (
+        live.current.createOpen &&
+        createEpoch.current === submitted.epoch &&
+        live.current.selectedId === submitted.selectedId &&
+        (form === submitted.draft || form.key.trim() === submitted.body.key)
+      ) {
+        changeCreateOpen(false)
+        changeCreateForm({ key: "", name: "", content: "" })
+        live.current.selectedId = res.prompt.id
+        setSelectedId(res.prompt.id)
+        setDraft(form === submitted.draft ? null : {
+          ...res.prompt,
+          name: form.name,
+          content: form.content,
+        })
+      }
       toast.success("已创建")
     },
     onError: (err) => toast.error(err.message),
   })
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) =>
-      apiFetch(`/api/admin/prompts/${id}`, { method: "DELETE" }),
-    onSuccess: () => {
+    mutationFn: (item: PromptTemplateItem) =>
+      apiFetch(`/api/admin/prompts/${item.id}`, { method: "DELETE", body: JSON.stringify({ expectedVersion: item.version }) }),
+    onSuccess: (_res, item) => {
       invalidate()
-      setSelectedId(null)
-      setDraft(null)
+      setSelectedId(previous => previous === item.id ? null : previous)
+      setDraft(previous => previous?.id === item.id ? null : previous)
       setDeleting(false)
       toast.success("已删除")
     },
@@ -142,12 +169,12 @@ export function PromptsClient() {
       draft.enabled !== selected.enabled)
 
   return (
-    <div className="flex gap-6">
+    <div className="flex flex-col gap-6 sm:flex-row">
       {/* 左侧模板列表 */}
-      <div className="w-64 shrink-0 rounded-lg border">
+      <div className="w-full shrink-0 rounded-lg border sm:w-64">
         <div className="flex items-center justify-between border-b px-3 py-2">
           <span className="text-sm font-medium">模板列表</span>
-          <Button variant="ghost" size="sm" onClick={() => setCreateOpen(true)}>
+          <Button variant="ghost" size="sm" onClick={() => changeCreateOpen(true)}>
             <Plus className="size-4" />
             新建
           </Button>
@@ -164,6 +191,7 @@ export function PromptsClient() {
                   key={p.id}
                   type="button"
                   onClick={() => {
+                    live.current.selectedId = p.id
                     setSelectedId(p.id)
                     setDraft(null)
                   }}
@@ -210,13 +238,16 @@ export function PromptsClient() {
                 <span className="text-xs text-muted-foreground">
                   保存后版本自动 +1，旧版本存入历史
                 </span>
+                <Badge variant="outline">{current.source === "builtin" ? "内置模板" : current.source === "customized" ? "已自定义" : "用户模板"}</Badge>
               </div>
               <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => { changeCreateForm({key:`${current.key}.copy`,name:`${current.name}（副本）`,content:current.content});changeCreateOpen(true) }}>另存为</Button>
                 <Button
                   variant="ghost"
                   size="sm"
                   className="text-destructive hover:text-destructive"
                   onClick={() => setDeleting(true)}
+                  disabled={current.source !== "user" || deleteMutation.isPending}
                 >
                   <Trash2 className="size-4" />
                   删除
@@ -234,6 +265,7 @@ export function PromptsClient() {
             <div className="grid gap-2">
               <Label>名称</Label>
               <Input
+                aria-label="提示词名称"
                 value={current.name}
                 onChange={(e) => setDraft({ ...current, name: e.target.value })}
               />
@@ -242,6 +274,7 @@ export function PromptsClient() {
             <div className="grid gap-2">
               <Label>内容（{"{{变量}}"} 语法）</Label>
               <Textarea
+                aria-label="提示词内容"
                 value={current.content}
                 onChange={(e) => setDraft({ ...current, content: e.target.value })}
                 rows={14}
@@ -281,7 +314,7 @@ export function PromptsClient() {
       </div>
 
       {/* 新建模板 */}
-      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+      <Dialog open={createOpen} onOpenChange={changeCreateOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>新建提示词模板</DialogTitle>
@@ -291,8 +324,9 @@ export function PromptsClient() {
             <div className="grid gap-2">
               <Label>Key（唯一标识）</Label>
               <Input
+                aria-label="提示词Key"
                 value={createForm.key}
-                onChange={(e) => setCreateForm({ ...createForm, key: e.target.value })}
+                onChange={(e) => changeCreateForm({ ...createForm, key: e.target.value })}
                 placeholder="如 outline.generate"
                 className="font-mono"
               />
@@ -300,17 +334,19 @@ export function PromptsClient() {
             <div className="grid gap-2">
               <Label>名称</Label>
               <Input
+                aria-label="新提示词名称"
                 value={createForm.name}
-                onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
+                onChange={(e) => changeCreateForm({ ...createForm, name: e.target.value })}
                 placeholder="如 大纲生成"
               />
             </div>
             <div className="grid gap-2">
               <Label>内容</Label>
               <Textarea
+                aria-label="新提示词内容"
                 value={createForm.content}
                 onChange={(e) =>
-                  setCreateForm({ ...createForm, content: e.target.value })
+                  changeCreateForm({ ...createForm, content: e.target.value })
                 }
                 rows={8}
                 className="font-mono text-sm"
@@ -319,7 +355,7 @@ export function PromptsClient() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setCreateOpen(false)}>
+            <Button variant="outline" onClick={() => changeCreateOpen(false)}>
               取消
             </Button>
             <Button
@@ -331,9 +367,14 @@ export function PromptsClient() {
               }
               onClick={() =>
                 createMutation.mutate({
-                  key: createForm.key.trim(),
-                  name: createForm.name.trim(),
-                  content: createForm.content,
+                  body: {
+                    key: createForm.key.trim(),
+                    name: createForm.name.trim(),
+                    content: createForm.content,
+                  },
+                  draft: createForm,
+                  epoch: createEpoch.current,
+                  selectedId,
                 })
               }
             >
@@ -359,7 +400,7 @@ export function PromptsClient() {
             <Button
               variant="destructive"
               disabled={deleteMutation.isPending}
-              onClick={() => current && deleteMutation.mutate(current.id)}
+              onClick={() => current && deleteMutation.mutate(current)}
             >
               确认删除
             </Button>

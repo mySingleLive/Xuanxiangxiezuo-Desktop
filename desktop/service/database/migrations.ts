@@ -4,7 +4,8 @@ import { join } from "node:path"
 import type { PGlite } from "@electric-sql/pglite"
 import { migrationStatements } from "./sql-boundary"
 export interface Migration { id: string; sql: string; checksum: string }
-export async function migrateDatabase(engine: PGlite, migrations: Migration[]): Promise<void> {
+export async function migrateDatabase(engine: PGlite, migrations: Migration[],assertCreation?:()=>void): Promise<void> {
+  assertCreation?.()
   const snapshot = migrations.map(migration => Object.freeze({ id: migration.id, sql: migration.sql, checksum: migration.checksum }))
   const ids = new Set<string>()
   const prepared = new Map<string, string[]>()
@@ -14,8 +15,11 @@ export async function migrateDatabase(engine: PGlite, migrations: Migration[]): 
     ids.add(migration.id)
   }
   await engine.transaction(async tx => {
+    assertCreation?.()
     await tx.exec('CREATE TABLE IF NOT EXISTS "_desktop_migrations" (id TEXT PRIMARY KEY, checksum TEXT NOT NULL, "appliedAt" TIMESTAMPTZ NOT NULL DEFAULT now())')
+    assertCreation?.()
     const applied = await tx.query<{ id: string; checksum: string }>('SELECT id, checksum FROM "_desktop_migrations" ORDER BY id')
+    assertCreation?.()
     const recorded = new Map(applied.rows.map(row => [row.id, row.checksum]))
     for (const row of applied.rows) {
       if (snapshot.find(item => item.id === row.id)?.checksum !== row.checksum) throw new Error("Installed migration checksum differs; keep the original database")
@@ -27,10 +31,14 @@ export async function migrateDatabase(engine: PGlite, migrations: Migration[]): 
         // set_config(). Extended-protocol query accepts one statement only:
         // an accidental lexical merge cannot execute a hidden COMMIT batch.
         await tx.query("SET LOCAL standard_conforming_strings = on")
+        assertCreation?.()
         await tx.query(statement)
+        assertCreation?.()
       }
       await tx.query('INSERT INTO "_desktop_migrations" (id,checksum) VALUES ($1,$2)', [migration.id, migration.checksum])
+      assertCreation?.()
     }
+    assertCreation?.()
   })
 }
 

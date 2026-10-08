@@ -53,7 +53,7 @@ export async function reviewStoryMaterial(input: {
   lightReview?: boolean;
 }) {
   const generate = input.generate ?? generateJSON
-  const resolvedModel = generate === generateJSON ? withLightReviewThinking(await (input.lightReview ? resolveModelForUser(input.scope.userId, { tier: "NORMAL" }) : getModelForUser(input.scope.userId))) : undefined
+  const resolvedModel = generate === generateJSON ? withLightReviewThinking(await (input.lightReview ? resolveModelForUser(input.scope.userId, { tier: "NORMAL" }) : getModelForUser(input.scope.userId, { role: "review", ignoreChatSession: true }))) : undefined
   const capacity = effectiveBudget(input.contextWindow ?? resolvedModel?.modelRecord.contextWindow ?? 24000)
   const budget = Math.max(600, Math.min(12000, Math.floor(capacity * .75) - estimateTokens(input.prompt) - 4000))
   const parts = packStoryReviewMaterial(input.material, budget)

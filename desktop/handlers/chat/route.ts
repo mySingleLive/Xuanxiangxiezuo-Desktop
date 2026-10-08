@@ -15,12 +15,11 @@ import { buildTaskNovelContext } from "@/lib/ai/task-context"
 import { assertPromptFits, compactCompletedMessages, estimateToolTokens } from "@/lib/ai/prompt-budget"
 import { manageConversationContext } from "@/lib/ai/context-compression"
 import { toErrorResponse } from "@/lib/ai/errors"
-import { AUTO_MODEL_IDENTITY_NOTE, isAutoModelChoice } from "@/lib/ai/auto-model"
+import { snapshotForRecord } from "@desktop/service/models"
 import { chatTerminalError, ERROR_TEXT, isInternalToolErrorCode } from "@/lib/ai/error-classification"
 import { createNetworkRetryFetch, getMaxNetworkRetries, networkRetryDelayMs, runWithNetworkRetry } from "@/lib/ai/network-retry"
-import { getAutoModelForUser, getModelByIdForUser } from "@/lib/ai/provider"
-import { isOpenRouterAuto } from "@/lib/ai/openrouter"
-import { buildThinkingProviderOptions, isValidThinkingEffort } from "@/lib/ai/thinking-effort"
+import { getModelByIdForUser } from "@/lib/ai/provider"
+import { buildThinkingProviderOptions } from "@/lib/ai/thinking-effort"
 import { WRITE_TOOL_NAMES } from "@/lib/ai/tool-names"
 import { createAgentTools } from "@/lib/ai/tools"
 import { auth } from "@/lib/auth"
@@ -40,6 +39,7 @@ import { drawResultOf } from "@/lib/draw-redraw"
 import { STORY_APPROVAL_OPTIONS } from "@/lib/story-workflow"
 import { compactCreationTools } from "@/lib/ai/compact-tools"
 import { planningAdjustmentOf, planningAdjustmentQuestion, planningAdjustmentToolAllowed } from "@/lib/planning-adjustment"
+import {runConversationTask,refreshConversationTask,finishConversationTask} from "@desktop/service/conversation-runtime"
 
 /** SSE 只是跟随通道；数据库中的 turn/attempt/回执才是恢复依据。 */
 export async function POST(request: Request) {
@@ -64,7 +64,10 @@ export async function POST(request: Request) {
     const signal = abort.signal
     let current = binding
     let scope: ChatExecutionScope = { ...scopeFor(current.conversation, current.turn, current.attempt), signal }
+    input.mode = scope.taskDefaults?.mode ?? input.mode
+    return await runConversationTask(scope,async()=>{
     let unregisterAbort = registerAttemptAbort(scope.attemptId, abort)
+    try{
     const encoder = new TextEncoder()
     let listening = true
     const stream = new ReadableStream<Uint8Array>({
@@ -104,6 +107,10 @@ export async function POST(request: Request) {
           emit({ type: data.runId ? "data-subagent-progress" : "data-turn-status", data: { ...data, stage, startedAt: current.attempt.createdAt.toISOString() } })
           snapshot.parts.push({ type: "status", id: `${scope.attemptId}:${seq}`, seq, ...JSON.parse(JSON.stringify(data)), stage })
         }
+        emit({ type: "data-conversation", data: { conversationId: current.conversation.id,
+          modelId: scope.taskDefaults ? scope.taskDefaults.textModelId : current.conversation.modelId,
+          thinkingEffort: scope.taskDefaults ? scope.taskDefaults.thinking === "default" ? null : scope.taskDefaults.thinking : current.conversation.thinkingEffort,
+          defaultsSnapshot: scope.taskDefaults } }, false)
         scope.progress = status
         scope.onToolError = (toolCallId, code) => { toolErrorCodes.set(toolCallId, code) }
         // 提交前一次性快照：parts 中只有末尾 text 会原地增长，浅拷贝数组并克隆末段即可，
@@ -145,13 +152,14 @@ export async function POST(request: Request) {
         let lastLeaseSuccessAt = Date.now()
         // 心跳走独立轻量路径（幂等、只写租约字段、无顺序要求），不排入 serial()/io 业务串行队列；
         // 在飞去重：上一次心跳未回则跳过本次。瞬时失败维持租约窗口内 3s 快速补租。
-        let heartbeatInFlight = false
+        let heartbeatInFlight: Promise<void> | undefined
+        let heartbeatRetry: ReturnType<typeof setTimeout> | undefined
+        let stopping = false
         const renewLease = (retrying = false) => {
-          if (heartbeatInFlight) return
-          heartbeatInFlight = true
+          if (stopping || heartbeatInFlight) return
           const owner = scope, progress = progressed, heartbeatSeq = seq, heartbeatStartedAt = Date.now()
           progressed = false
-          void heartbeatChatAttempt(owner, { seq: heartbeatSeq, stage, progress, retryUsed }).then(() => {
+          heartbeatInFlight = heartbeatChatAttempt(owner, { seq: heartbeatSeq, stage, progress, retryUsed }).then(() => {
             if (owner.attemptId !== scope.attemptId) return
             if (Date.now() - lastLeaseSuccessAt >= CHAT_LEASE_MS) console.warn("[chat] 续租延迟后恢复", JSON.stringify({ attemptId: owner.attemptId, elapsedMs: Date.now() - heartbeatStartedAt, sinceLastSuccessMs: Date.now() - lastLeaseSuccessAt }))
             leaseFailures = 0
@@ -163,8 +171,8 @@ export async function POST(request: Request) {
             leaseFailures += 1
             console.warn("[chat] 心跳续租暂未成功，等待重试", JSON.stringify({ attemptId: owner.attemptId, failures: leaseFailures, elapsedMs: Date.now() - heartbeatStartedAt, sinceLastSuccessMs: Date.now() - lastLeaseSuccessAt, name: error instanceof Error ? error.name : "Unknown", code: error && typeof error === "object" && "code" in error ? String(error.code) : undefined }))
             // 短时故障尽快补租；本机存活证明可跨过宽限，取消/执行权变更仍立即停止。
-            if (!retrying && leaseFailures * CHAT_HEARTBEAT_MS < CHAT_LEASE_MS) setTimeout(() => { if (!signal.aborted) renewLease(true) }, 3_000)
-          }).finally(() => { heartbeatInFlight = false })
+            if (!stopping && !retrying && leaseFailures * CHAT_HEARTBEAT_MS < CHAT_LEASE_MS) heartbeatRetry = setTimeout(() => { if (!signal.aborted) renewLease(true) }, 3_000)
+          }).finally(() => { heartbeatInFlight = undefined })
         }
         const heartbeat = setInterval(() => renewLease(), CHAT_HEARTBEAT_MS)
         const checkpoints = setInterval(() => {
@@ -214,15 +222,16 @@ export async function POST(request: Request) {
             const retryFetch = createNetworkRetryFetch({ fetch: measuredFetch, onRetry: () => retry("request"), canRetry: () => retryUsed < maxRetries && !signal.aborted, nextDelayMs: () => networkRetryDelayMs(retryUsed), signal })
             scope.networkRetry = { maxRetries, canRetry: () => retryUsed < maxRetries && !signal.aborted, notify: () => retry("request"), fetch: retryFetch }
             const conversation = current.conversation
-            autoRoute = isAutoModelChoice(conversation.modelId)
-            const modelOptions = { fetch: retryFetch, conversationId: conversation.id }
-            const { model, modelRecord } = autoRoute ? await getAutoModelForUser(userId, modelOptions) : await getModelByIdForUser(userId, conversation.modelId!, modelOptions)
-            autoRoute = isOpenRouterAuto(modelRecord)
+            autoRoute = false
+            const configuredThinking = scope.taskDefaults?.thinking ?? conversation.thinkingEffort ?? "default"
+            const modelOptions = { fetch: retryFetch, conversationId: conversation.id, thinkingEffort: configuredThinking === "default" ? null : configuredThinking }
+            const resolved = await getModelByIdForUser(userId, scope.taskDefaults ? scope.taskDefaults.textModelId : conversation.modelId, modelOptions)
+            const { model, modelRecord } = resolved
             observedModel = modelRecord
-            const effort = conversation.thinkingEffort && isValidThinkingEffort(modelRecord.provider, modelRecord.modelId, conversation.thinkingEffort) ? conversation.thinkingEffort : null
+            const effort = configuredThinking !== "default" && snapshotForRecord(modelRecord).thinkingLevels.includes(configuredThinking) ? configuredThinking : null
             Object.assign(meter.data, { modelName: modelRecord.modelId, effort, costStrategy: costConfig.enabled,
               configHash: requestHash({ modelId: modelRecord.id, provider: modelRecord.provider, model: modelRecord.modelId, effort, costConfig }) })
-            const providerOptions = buildThinkingProviderOptions(modelRecord.provider, effort, modelRecord.modelId)
+            const providerOptions = effort ? buildThinkingProviderOptions(modelRecord.provider, effort, modelRecord.modelId) : resolved.providerOptions
             scope.resolvedModel = { model, modelRecord, providerOptions }
             const history = await prisma.message.findMany({ where: { conversationId: conversation.id, id: { not: current.attempt.assistantMessageId } }, orderBy: [{ createdAt: "asc" }, { id: "asc" }], take: -HISTORY_LOAD_LIMIT })
             const action = current.turn.action as ChatAction | null
@@ -239,7 +248,7 @@ export async function POST(request: Request) {
             // 自由回答也是当前任务的后续，继续压缩上下文；它仍不构成任何认可。
             const taskMode = action?.kind === "storyTask" || !!adjustment || Boolean(answeredQuestion?.success && answeredQuestion.data.storyNavigation)
             const taskContext = (costConfig.enabled || taskMode) && conversation.novelId ? await buildTaskNovelContext(conversation.novelId, input.message ?? history.findLast(message => message.role === "USER")?.content ?? "", action?.kind === "storyTask" ? action.targetKey?.split(":").slice(1).join(":") : adjustment?.focusKeys[0]?.split(":").slice(1).join(":") ?? (action && "targetId" in action ? action.targetId : undefined)) : undefined
-            const extraNote = chatActionNote(action) + (autoRoute ? AUTO_MODEL_IDENTITY_NOTE : "") + (input.retryOfTurnId ? await chatContinuationContext(userId, current.turn.id) : "")
+            const extraNote = chatActionNote(action) + (input.retryOfTurnId ? await chatContinuationContext(userId, current.turn.id) : "")
             const renderSystem = async (summary: string) => await buildChatSystemPrompt(conversation.novelId, input.mode, summary, taskContext, input.message ?? history.findLast(message => message.role === "USER")?.content ?? "") + extraNote
             const all = createAgentTools({ userId, novelId: conversation.novelId, conversationId: conversation.id })
             const allowedTools = adjustment ? Object.fromEntries(Object.entries(all).filter(([name]) => planningAdjustmentToolAllowed(adjustment, name, WRITE_TOOL_NAMES.has(name)))) : all
@@ -258,7 +267,7 @@ export async function POST(request: Request) {
                 costBudgetTokens: costConfig.enabled || taskMode ? costConfig.inputBudgetTokens : undefined,
                 extraTokens: toolTokens + estimateTokens(turnFormatReminder(input.mode)),
                 validateFinal: (system, messages) => assertPromptFits(system, withTurnReminder(toModelMessages(messages, costConfig.enabled || !!compact), input.mode), toolTokens, modelRecord.contextWindow, calibrationFactor(conversation)),
-                onCompactUsage: async usage => { await recordUsage({ turnId: scope.turnId, attemptId: scope.attemptId, userId, novelId: conversation.novelId ?? undefined, modelId: modelRecord.id, action: "chat.compact", promptTokens: usage.input, completionTokens: usage.output }) },
+                onCompactUsage: async usage => { await recordUsage({ turnId: scope.turnId, attemptId: scope.attemptId, userId, novelId: conversation.novelId ?? undefined, modelId: modelRecord.id, modelSnapshot: snapshotForRecord(modelRecord), action: "chat.compact", promptTokens: usage.input, completionTokens: usage.output }) },
               })
             })
             const system = managed.system
@@ -368,7 +377,7 @@ export async function POST(request: Request) {
                 }
                 // 用量只记录已报告的实际调用；失败流没有 usage 时不臆造。
                 usage = await Promise.resolve(result.totalUsage).catch(() => null)
-                if (usage && (usage.inputTokens !== undefined || usage.outputTokens !== undefined)) await recordUsage({ turnId: scope.turnId, attemptId: scope.attemptId, userId, novelId: conversation.novelId ?? undefined, modelId: modelRecord.id, action: "chat", promptTokens: usage.inputTokens ?? 0, completionTokens: usage.outputTokens ?? 0 }).catch(console.error)
+                if (usage && (usage.inputTokens !== undefined || usage.outputTokens !== undefined)) await recordUsage({ turnId: scope.turnId, attemptId: scope.attemptId, userId, novelId: conversation.novelId ?? undefined, modelId: modelRecord.id, modelSnapshot: snapshotForRecord(modelRecord), action: "chat", promptTokens: usage.inputTokens ?? 0, completionTokens: usage.outputTokens ?? 0 }).catch(console.error)
                 if (error || !finish || signal.aborted) throw error ?? new TypeError("network stream interrupted")
                 if (interaction) break
                 // 只检查最后一步，早先的采用/保存不能冒充后面宣布的评审回执。
@@ -470,6 +479,7 @@ export async function POST(request: Request) {
                 current = { ...next, replay: false }
                 scope = { ...scopeFor(next.conversation, next.turn, next.attempt), signal, progress: status, onToolError: scope.onToolError, networkRetry: scope.networkRetry, resolvedModel: scope.resolvedModel }
                 unregisterAbort(); unregisterAbort = registerAttemptAbort(scope.attemptId, abort)
+                await refreshConversationTask(scope)
                 seq = 0; snapshot = { content: "", toolCalls: [], parts: [], seq: 0 }; calls.clear(); interaction = undefined; checkpointSeq = 0
                 status({ stage: "retrying", status: "running", assistantMessageId: next.attempt.assistantMessageId, userMessageId: next.turn.userMessageId })
               },
@@ -495,14 +505,20 @@ export async function POST(request: Request) {
             emit({ type: "data-chat-error", data: { code, retryUsed, hasWriteEffects: writeStarted, diagnosticId } })
             emit({ type: "error", errorText: message })
           } finally {
-            unregisterAbort()
-            releaseSlot?.()
-            clearInterval(heartbeat); clearInterval(checkpoints)
-            meter.end(meter.data.status, retryUsed)
-            await saveAttemptObservation(scope, meter, observedModel, autoRoute).catch(console.error)
-            await io
-            if (listening) { try { controller.enqueue(encoder.encode("data: [DONE]\n\n")); controller.close() } catch {} }
-            listening = false; abort.abort()
+            stopping = true
+            clearInterval(heartbeat); clearInterval(checkpoints); clearTimeout(heartbeatRetry)
+            try {
+              await Promise.allSettled([heartbeatInFlight, checkpointPending])
+              meter.end(meter.data.status, retryUsed)
+              await saveAttemptObservation(scope, meter, observedModel, autoRoute).catch(console.error)
+              await io
+            } finally {
+              await finishConversationTask().catch(error=>console.error("[chat] 目录任务授权释放失败",error))
+              unregisterAbort()
+              releaseSlot?.()
+              if (listening) { try { controller.enqueue(encoder.encode("data: [DONE]\n\n")); controller.close() } catch {} }
+              listening = false; abort.abort()
+            }
           }
         }
         void run()
@@ -512,6 +528,8 @@ export async function POST(request: Request) {
     })
     return new Response(stream, { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache, no-transform", "X-Conversation-Id": binding.conversation.id,
       "X-Turn-Id": binding.turn.id, "X-Attempt-Id": binding.attempt.id, "X-User-Message-Id": binding.turn.userMessageId, "X-Assistant-Message-Id": binding.attempt.assistantMessageId } })
+    }catch(error){unregisterAbort();throw error}
+    })
   } catch (error) {
     if (error instanceof ChatProtocolError) return NextResponse.json({ error: error.message, code: error.code, ...(error.turnId ? { turnId: error.turnId, statusUrl: `/api/chat/turns/${error.turnId}` } : {}) }, { status: error.status })
     return toErrorResponse(error)

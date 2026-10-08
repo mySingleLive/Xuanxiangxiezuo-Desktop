@@ -68,6 +68,8 @@ function ChapterContentEditor({
   const [selection, setSelection] = useState<EditorSelectionState>({ hasSelection: false, canReplace: true })
   const [clipboardBusy, setClipboardBusy] = useState(false)
   const [exporting, setExporting] = useState(false)
+  const exportJob = useRef<AbortController | null>(null)
+  useEffect(() => { setExporting(false); return () => { exportJob.current?.abort(); exportJob.current = null } }, [novelId, chapter.id])
   const [finalization, setFinalization] = useState<ChapterBoundary | null>(null)
   const [comparison, setComparison] = useState<{ current: ChapterDetail; draft: string; localRevision: number } | null>(null)
   const [draftPreview, setDraftPreview] = useState("")
@@ -250,6 +252,8 @@ function ChapterContentEditor({
   }
 
   const exportManuscript = async (format: ManuscriptExportFormat) => {
+    if (exportJob.current) return
+    const job = new AbortController(); exportJob.current = job
     // Snapshot the current draft before loading converters; no save or model call is needed.
     const source = contentRef.current
     setExporting(true)
@@ -259,11 +263,13 @@ function ChapterContentEditor({
       const title = manuscriptTitle(chapter.index, chapter.title)
       const metadata = format === "docx" || format === "pdf"
         ? await apiGet<NovelExportMetadata>(`/api/novels/${novelId}/manuscript?kind=metadata`, "读取小说简介失败") : undefined
-      downloadManuscript(await createManuscriptExport(format, title, source, undefined, metadata), manuscriptFilename(title, format))
-      toast.success("导出文件已生成", { id: notification })
+      if (job.signal.aborted) return
+      const saved = await downloadManuscript(await createManuscriptExport(format, title, source, undefined, metadata), manuscriptFilename(title, format), { signal: job.signal })
+      if (saved && !job.signal.aborted) toast.success(window.desktop ? "导出文件已保存" : "导出文件已生成", { id: notification })
+      else toast.dismiss(notification)
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "导出失败，请稍后重试", { id: notification })
-    } finally { setExporting(false) }
+      if (!job.signal.aborted) toast.error(error instanceof Error ? error.message : "导出失败，请稍后重试", { id: notification })
+    } finally { if (job.signal.aborted) toast.dismiss(notification); if (exportJob.current === job) { exportJob.current = null; setExporting(false) } }
   }
 
   return (

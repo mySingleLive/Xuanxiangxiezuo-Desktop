@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import type { Session } from "next-auth"
+import type { Session } from "@/lib/auth"
 
 import type { Novel } from "@/generated/prisma/client"
 import { auth } from "@/lib/auth"

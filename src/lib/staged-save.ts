@@ -415,7 +415,7 @@ export function deriveStagedOpItem(input: {
 
 /* ============================== 合成回执 ============================== */
 
-/** 影子合并：数据字段合入快照，版本令牌推进，包络键包装。面板令牌机制据此照常工作。 */
+/** 影子合并不代表落库；保留快照的真实版本令牌，正式提交回执才推进令牌。 */
 export function buildSyntheticReceipt(input: {
   snapshot: unknown
   body: unknown
@@ -423,9 +423,9 @@ export function buildSyntheticReceipt(input: {
 }): Record<string, unknown> {
   const base = (input.snapshot && typeof input.snapshot === "object" ? { ...(input.snapshot as Record<string, unknown>) } : {}) as Record<string, unknown>
   const data = stagedDataFields(input.body)
+  delete data.version
+  delete data.updatedAt
   const merged: Record<string, unknown> = { ...base, ...data }
-  if (typeof base.version === "number") merged.version = base.version + 1
-  if ("updatedAt" in base || "version" in base) merged.updatedAt = new Date().toISOString()
   return { [input.envelope]: merged }
 }
 

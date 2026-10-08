@@ -1,8 +1,12 @@
+import { fetchImageResource, type ImageResourceOptions } from "./image-resource"
+
 export type ModelKind = "TEXT" | "IMAGE"
 export interface AuthorizedModel { id: string; authRevision: number; endpoint: string; kind: ModelKind; enabled: boolean; protocol?: "openai" | "anthropic" | "google" }
 export interface ModelLease { modelId: string; authRevision: number; requestId: string; kind: ModelKind; signal: AbortSignal }
 export class ModelAuthorizationError extends Error { constructor(readonly code: string) { super(code); this.name = "ModelAuthorizationError" } }
-export interface ModelGatewayOptions { keyFor: (id: string, revision: number) => Promise<string>; fetch: typeof fetch }
+export interface ModelGatewayOptions { keyFor: (id: string, revision: number) => Promise<string>; fetch: typeof fetch; imageResource?: ImageResourceOptions }
+
+export interface ImageResourceGrant { readonly kind: "authorized-image-resource" }
 
 export function validateModelEndpoint(value: string) {
   let url: URL
@@ -32,6 +36,8 @@ export class ModelGateway {
   private records = new Map<string, AuthorizedModel>()
   private revisions = new Map<string, number>()
   private active = new Map<string, { lease: ModelLease; controller: AbortController }>()
+  private imageReceipts = new WeakMap<Response, ModelLease>()
+  private imageGrants = new WeakMap<ImageResourceGrant, { lease: ModelLease; url: URL; endpoint: string; expires: number; selfHosted: boolean }>()
   constructor(private readonly options: ModelGatewayOptions) {}
   replace(model: AuthorizedModel) {
     validateModelEndpoint(model.endpoint)
@@ -73,6 +79,44 @@ export class ModelGateway {
     this.active.delete(lease.requestId)
     entry.controller.abort(new ModelAuthorizationError("AUTHORIZATION_REVOKED"))
   }
+  async authorizeImageResource(lease: ModelLease, receipt: Response, value: string, options: { allowSelfHosted?: boolean } = {}): Promise<ImageResourceGrant> {
+    const model = this.current(lease)
+    if (lease.kind !== "IMAGE" || this.imageReceipts.get(receipt) !== lease || !receipt.ok) throw new ModelAuthorizationError("IMAGE_RECEIPT_INVALID")
+    let url: URL
+    try { url = new URL(value) } catch { throw new ModelAuthorizationError("IMAGE_RESOURCE_REJECTED") }
+    if (url.username || url.password || url.hash || url.href.length > 8192) throw new ModelAuthorizationError("IMAGE_RESOURCE_REJECTED")
+    const key = await this.options.keyFor(lease.modelId, lease.authRevision)
+    this.current(lease)
+    if (!key) throw new ModelAuthorizationError("IMAGE_RESOURCE_REJECTED")
+    // Signed resource URLs are valid; leaking this model's actual credential is not.
+    // Inspect nested percent encoding without changing the authorized request URL.
+    let decoded = url.href
+    for (let depth = 0; depth < 4; depth++) {
+      if (decoded.includes(key)) throw new ModelAuthorizationError("IMAGE_RESOURCE_REJECTED")
+      let next: string
+      try { next = decodeURIComponent(decoded) } catch { throw new ModelAuthorizationError("IMAGE_RESOURCE_REJECTED") }
+      if (next === decoded) break
+      decoded = next
+      if (depth === 3 && /%[a-f0-9]{2}/i.test(decoded)) throw new ModelAuthorizationError("IMAGE_RESOURCE_REJECTED")
+    }
+    if (decoded.includes(key)) throw new ModelAuthorizationError("IMAGE_RESOURCE_REJECTED")
+    const selfHosted = options.allowSelfHosted === true && url.origin === new URL(model.endpoint).origin
+    if (url.protocol !== "https:" && !(selfHosted && url.protocol === "http:")) throw new ModelAuthorizationError("IMAGE_RESOURCE_REJECTED")
+    const grant = Object.freeze({ kind: "authorized-image-resource" as const })
+    this.imageGrants.set(grant, { lease, url, endpoint: model.endpoint, expires: Date.now() + 30_000, selfHosted })
+    return grant
+  }
+  async readImageResource(lease: ModelLease, grant: ImageResourceGrant, externalSignal?: AbortSignal): Promise<Uint8Array> {
+    const model = this.current(lease), value = this.imageGrants.get(grant)
+    if (!value || value.lease !== lease || value.endpoint !== model.endpoint || value.expires < Date.now()) throw new ModelAuthorizationError("IMAGE_RESOURCE_GRANT_INVALID")
+    this.imageGrants.delete(grant)
+    const signal = externalSignal ? AbortSignal.any([lease.signal, externalSignal]) : lease.signal
+    return fetchImageResource(value.url, { signal, check: () => { this.current(lease) }, selfHostedOrigin: value.selfHosted ? new URL(model.endpoint).origin : undefined, options: this.options.imageResource })
+  }
+  private certifyImageResponse(lease: ModelLease, response: Response): Response {
+    if (lease.kind === "IMAGE") this.imageReceipts.set(response, lease)
+    return response
+  }
   async fetch(lease: ModelLease, input: string, init: RequestInit = {}): Promise<Response> {
     const model = this.current(lease)
     let url = requestUrl(input, model.endpoint)
@@ -104,7 +148,7 @@ export class ModelGateway {
         if (init.body instanceof ReadableStream || ![307, 308].includes(response.status)) throw new ModelAuthorizationError("MODEL_REDIRECT_REJECTED")
         continue
       }
-      if (!response.body) return response
+      if (!response.body) return this.certifyImageResponse(lease, response)
       const reader = response.body.getReader()
       let terminated = false
       let readerReleased = false
@@ -144,7 +188,7 @@ export class ModelGateway {
         },
         cancel: reason => { terminated = true; cleanup(); return cancelReader(reason) },
       })
-      return new Response(guarded, { status: response.status, statusText: response.statusText, headers: response.headers })
+      return this.certifyImageResponse(lease, new Response(guarded, { status: response.status, statusText: response.statusText, headers: response.headers }))
     }
     throw new ModelAuthorizationError("MODEL_REDIRECT_REJECTED")
   }

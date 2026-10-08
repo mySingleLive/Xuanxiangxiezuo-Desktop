@@ -1,5 +1,6 @@
 import type { AIModel } from "@/generated/prisma/client"
-import { QuotaExceededError } from "@/lib/ai/errors"
+import type { PublicModel } from "@desktop/core/settings"
+import { LOCAL_AUTHOR_ID, getDatabaseContext } from "@desktop/service/context"
 import { currentChatExecution, outsideChatExecution } from "@/lib/chat-execution"
 import { prisma } from "@/lib/db"
 
@@ -24,22 +25,12 @@ export interface QuotaInfo {
   remaining: number
 }
 
-/** 校验用户额度；超出时抛 QuotaExceededError，否则返回当前额度信息。ADMIN 角色不限额度。 */
+/** Desktop callers retain the service contract; their own API account controls usage. */
 export async function checkQuota(userId: string): Promise<QuotaInfo> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { role: true, tokenQuota: true, tokenUsed: true },
-  })
-  if (!user) {
-    throw new Error("用户不存在")
-  }
-  if (user.role !== "ADMIN" && user.tokenUsed >= user.tokenQuota) {
-    throw new QuotaExceededError()
-  }
-
-  const tokenQuota = Number(user.tokenQuota)
-  const tokenUsed = Number(user.tokenUsed)
-  return { tokenQuota, tokenUsed, remaining: tokenQuota - tokenUsed }
+  getDatabaseContext()
+  if (userId !== LOCAL_AUTHOR_ID) throw new Error("本地作者身份不匹配")
+  const user = await prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { tokenUsed: true } })
+  return { tokenQuota: Number.MAX_SAFE_INTEGER, tokenUsed: Number(user.tokenUsed), remaining: Number.MAX_SAFE_INTEGER }
 }
 
 export interface RecordUsageInput {
@@ -48,6 +39,7 @@ export interface RecordUsageInput {
   userId: string
   novelId?: string
   modelId: string
+  modelSnapshot: PublicModel
   /** 调用场景标识，如 outline.generate / chapter.generate / test.generate */
   action: string
   promptTokens: number
@@ -63,18 +55,16 @@ export function recordUsage(input: RecordUsageInput): Promise<number> {
   return outsideChatExecution(() => recordActualUsage({ ...input, turnId: input.turnId ?? scope?.turnId, attemptId: input.attemptId ?? scope?.attemptId }))
 }
 async function recordActualUsage(input: RecordUsageInput): Promise<number> {
-  const model = await prisma.aIModel.findUnique({
-    where: { id: input.modelId },
-    select: { inputCostPer1k: true, outputCostPer1k: true },
-  })
-  if (!model) {
-    throw new Error(`模型记录不存在：${input.modelId}`)
-  }
-
-  const cost = estimateCost(model, input.promptTokens, input.completionTokens)
+  const model = structuredClone(input.modelSnapshot)
+  if (model.id !== input.modelId || input.userId !== LOCAL_AUTHOR_ID) throw new Error("用量记录的模型或作者不匹配")
+  const priceConfigured = model.inputCostPer1k !== undefined && model.outputCostPer1k !== undefined
+  const cost = priceConfigured ? estimateCost({ inputCostPer1k: model.inputCostPer1k!, outputCostPer1k: model.outputCostPer1k! }, input.promptTokens, input.completionTokens) : 0
   const total = input.promptTokens + input.completionTokens
 
-  await prisma.$transaction(async tx => Promise.all([
+  await prisma.$transaction(async tx => {
+    // References are inert and local. Removing a configured model never deletes usage history.
+    await tx.aIModel.upsert({ where: { id: model.id }, create: { id: model.id, name: model.name, provider: model.provider, modelId: model.modelId, kind: model.kind, apiKeyEncrypted: "", baseUrl: null, enabled: false, free: false, inputCostPer1k: 0, outputCostPer1k: 0 }, update: {} })
+    await Promise.all([
     tx.usageRecord.create({
       data: {
         userId: input.userId,
@@ -82,6 +72,7 @@ async function recordActualUsage(input: RecordUsageInput): Promise<number> {
         attemptId: input.attemptId,
         novelId: input.novelId ?? null,
         modelId: input.modelId,
+        modelSnapshot: { id: model.id, name: model.name, provider: model.provider, modelId: model.modelId, kind: model.kind, authRevision: model.authRevision, priceConfigured, inputCostPer1k: model.inputCostPer1k ?? null, outputCostPer1k: model.outputCostPer1k ?? null },
         action: input.action,
         promptTokens: input.promptTokens,
         completionTokens: input.completionTokens,
@@ -92,7 +83,8 @@ async function recordActualUsage(input: RecordUsageInput): Promise<number> {
       where: { id: input.userId },
       data: { tokenUsed: { increment: total } },
     }),
-  ]))
+  ])
+  })
 
   return cost
 }

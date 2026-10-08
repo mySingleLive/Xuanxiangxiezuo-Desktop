@@ -1,3 +1,4 @@
+import { snapshotForRecord } from "@desktop/service/models"
 import { acquireLongTask, runInsideLongTask, withLongTask } from "@/lib/long-task"
 import { streamText } from "ai"
 import type { z } from "zod"
@@ -14,8 +15,10 @@ import { storyDraftText } from "@/lib/story-draft"
 interface GenerateBaseOptions {
   userId: string
   novelId?: string
-  /** 期望模型分级，默认 NORMAL；越级请求自动降级 */
+  /** Retained signature only; desktop never routes by platform tier. */
   tier?: ModelTier
+  /** Review boundaries declare their role; no action-name guessing or text fallback. */
+  role?: "text" | "review"
   /** 用量记录的场景标识，如 outline.generate / chapter.generate */
   action: string
   abortSignal?: AbortSignal
@@ -68,7 +71,7 @@ async function generateTextInSlot(opts: GenerateOptions): Promise<GenerateResult
   const signals = [opts.abortSignal, execution?.signal].filter((signal): signal is AbortSignal => !!signal)
   const abortSignal = AbortSignal.any(signals)
   await checkQuota(opts.userId)
-  const { model, modelRecord, providerOptions } = opts.resolvedModel ?? await getModelForUser(opts.userId, { tier: opts.tier, fetch: currentChatExecution()?.networkRetry?.fetch })
+  const { model, modelRecord, providerOptions } = opts.resolvedModel ?? await getModelForUser(opts.userId, { tier: opts.tier, role: opts.role, fetch: currentChatExecution()?.networkRetry?.fetch })
   const prompt = await resolvePrompt(opts)
 
   // 网络断连透明重试（见 lib/ai/network-retry.ts；次数后台可配，缺省 5）：
@@ -108,6 +111,7 @@ async function generateTextInSlot(opts: GenerateOptions): Promise<GenerateResult
     userId: opts.userId,
     novelId: opts.novelId,
     modelId: modelRecord.id,
+    modelSnapshot: snapshotForRecord(modelRecord),
     action: opts.action,
     promptTokens,
     completionTokens,
@@ -123,7 +127,7 @@ async function generateTextInSlot(opts: GenerateOptions): Promise<GenerateResult
  */
 export async function streamGeneration(opts: GenerateOptions) {
   await checkQuota(opts.userId)
-  const { model, modelRecord, providerOptions } = opts.resolvedModel ?? await getModelForUser(opts.userId, { tier: opts.tier, fetch: currentChatExecution()?.networkRetry?.fetch })
+  const { model, modelRecord, providerOptions } = opts.resolvedModel ?? await getModelForUser(opts.userId, { tier: opts.tier, role: opts.role, fetch: currentChatExecution()?.networkRetry?.fetch })
   const prompt = await resolvePrompt(opts)
 
   const executionSignal = currentChatExecution()?.signal
@@ -143,6 +147,7 @@ export async function streamGeneration(opts: GenerateOptions) {
           userId: opts.userId,
           novelId: opts.novelId,
           modelId: modelRecord.id,
+    modelSnapshot: snapshotForRecord(modelRecord),
           action: opts.action,
           promptTokens: event.usage.inputTokens ?? 0,
           completionTokens: event.usage.outputTokens ?? 0,
@@ -152,10 +157,10 @@ export async function streamGeneration(opts: GenerateOptions) {
       }
     },
   }))
-  const onAbort = () => release()
-  signal?.addEventListener("abort", onAbort, { once: true })
-  if (signal?.aborted) release()
-  void Promise.resolve(result.finishReason).then(() => { signal?.removeEventListener("abort", onAbort); release() }, () => { signal?.removeEventListener("abort", onAbort); release() })
+  // SDK finishReason resolves before the awaited onFinish callback. Keep the
+  // database lease until stream flush and its final usage transaction settle.
+  void Promise.resolve(result.consumeStream()).then(release, release)
+
   return result
   } catch (error) { release(); throw error }
 }

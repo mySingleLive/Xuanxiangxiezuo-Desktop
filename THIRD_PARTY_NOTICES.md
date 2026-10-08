@@ -14,3 +14,7 @@
 实现阶段新增依赖时扩展声明，并保存对应许可证。上游仓库本身的许可证不因本项目的许可证而改变。
 
 Kimi 家族本轮使用 [Kimi 官网](https://www.kimi.com/) 引用的官方图标集合 KforKimi_f1 字形，以官网应用图标为配色参考，放在用户指定的黑底圆角块上。只提取静态矢量路径，不执行官方脚本；该品牌资产不声明 MIT 许可，来源和处理指纹见 model-logo-provenance.json。GPT 使用 LobeHub 包内的原单色路径。
+
+安装包内运行资源的许可文本放在 `Contents/Resources/app/runtime-licenses/`（Windows 为 `resources/app/runtime-licenses/`）：NotoSansSC-OFL.txt、LobeHub-Icons-MIT.txt、Lucide-ISC.txt、Monaco-MIT.txt、Electron-MIT.txt、Electron-Chromium-LICENSES.html。`provenance.json` 记录原资源路径、许可文本SHA256以及原温玉SVG指纹。官方 Z.ai/Kimi 品牌声明仍按上述来源，不因资源拷贝变更许可。
+
+Sharp 的平台动态库及其依赖按各自许可发布，包内 `Sharp-libvips-THIRD-PARTY-NOTICES.md` 来自 [sharp-libvips v1.2.4 上游声明](https://github.com/lovell/sharp-libvips/blob/v1.2.4/THIRD-PARTY-NOTICES.md)；`provenance.json` 同时记录实际平台包版本与 `versions.json`。生产依赖自身的 LICENSE 保留在包内 `node_modules`。这份来源记录不代表已完成对全部第三方依赖的发行审核；完整对外发行许可核对仍属于发行前检查。

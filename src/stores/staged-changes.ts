@@ -243,7 +243,7 @@ async function fetchSnapshot(url: string, envelope: string): Promise<unknown> {
   return data?.[envelope]
 }
 
-/** 影子基座：暂存期间的连续修改基于上一次合成回执推进版本令牌（与面板 expectedVersion 链一致） */
+/** 影子基座累积暂存内容；版本令牌始终来自实际落库快照。 */
 function stagedSnapshot(url: string, envelope: string): Promise<unknown> {
   const key = `${url}#${envelope}`
   if (!snapshotCache.has(key)) {
@@ -376,7 +376,7 @@ export async function tryStageRequest(
     updatedAt: Date.now(),
   })
   const receipt = buildSyntheticReceipt({ snapshot, body, envelope: pattern.envelope! })
-  // 下一次拦截以本次合成结果为影子基座（版本链连续）
+  // 下一次拦截沿用本次影子内容，保留首次真实版本令牌。
   snapshotCache.set(`${url}#${pattern.envelope!}`, Promise.resolve(receipt[pattern.envelope!]))
   return receipt
 }

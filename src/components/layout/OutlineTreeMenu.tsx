@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Download, FilePlus2, FolderPlus, ListTree, Loader2, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
 import { toast } from "sonner"
@@ -29,6 +29,8 @@ export function OutlineTreeMenu({ novel, volume, kind }: {
   const [title, setTitle] = useState("")
   const [busy, setBusy] = useState(false)
   const [exporting, setExporting] = useState(false)
+  const exportJob = useRef<AbortController | null>(null)
+  useEffect(() => { setExporting(false); return () => { exportJob.current?.abort(); exportJob.current = null } }, [novel.id, volume?.id, kind])
   const [error, setError] = useState<string | null>(null)
   const deleteOperation = useRef("")
   const prefix = `/api/novels/${novel.id}`
@@ -97,11 +99,13 @@ export function OutlineTreeMenu({ novel, volume, kind }: {
   }
 
   const exportCollection = async (format: ManuscriptExportFormat, exportKind: OutlineExportKind) => {
-    if (exporting) return
+    if (exportJob.current) return
+    const job = new AbortController(); exportJob.current = job
     setExporting(true)
     const notification = toast.loading(`正在导出${scope}${exportKind === "content" ? "正文" : "大纲"}…`)
     try {
       const collection = await apiGet<OutlineCollection>(`${prefix}/manuscript?kind=${exportKind}${volume ? `&volumeId=${encodeURIComponent(volume.id)}` : ""}`, "读取导出内容失败")
+      if (job.signal.aborted) return
       // Like single-chapter export, include an open editor's current draft without saving it.
       for (const item of collection.volumes) for (const chapter of item.chapters) {
         const texts = new Set(commentEditors(novel.id, exportKind === "content" ? "CHAPTER_CONTENT" : "CHAPTER_OUTLINE", chapter.id).map(editor => editor.read().text))
@@ -111,10 +115,11 @@ export function OutlineTreeMenu({ novel, volume, kind }: {
       const { createCollectionExport } = await import("@/lib/collection-export")
       const { downloadManuscript, manuscriptFilename } = await import("@/lib/manuscript-export")
       const { blob, title: exportTitle } = await createCollectionExport(format, collection)
-      downloadManuscript(blob, manuscriptFilename(exportTitle, format))
-      toast.success("导出文件已生成", { id: notification })
-    } catch (cause) { toast.error(cause instanceof Error ? cause.message : "导出失败，请重试", { id: notification }) }
-    finally { setExporting(false) }
+      const saved = await downloadManuscript(blob, manuscriptFilename(exportTitle, format), { signal: job.signal })
+      if (saved && !job.signal.aborted) toast.success(window.desktop ? "导出文件已保存" : "导出文件已生成", { id: notification })
+      else toast.dismiss(notification)
+    } catch (cause) { if (!job.signal.aborted) toast.error(cause instanceof Error ? cause.message : "导出失败，请重试", { id: notification }) }
+    finally { if (job.signal.aborted) toast.dismiss(notification); if (exportJob.current === job) { exportJob.current = null; setExporting(false) } }
   }
 
   return <>

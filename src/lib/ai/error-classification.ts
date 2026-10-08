@@ -214,6 +214,7 @@ function findGenerationTimeoutNode(error: unknown): MaybeErrorNode | null {
  */
 export function isRetryableNetworkError(error: unknown): boolean {
   for (const err of walkErrorNodes(error)) {
+    if (err.message === "MODEL_NETWORK_ERROR" || err.code === "MODEL_NETWORK_ERROR") return true
     // 用户主动中断（停止按钮/断开页面）：不是网络故障，不重试
     if (err.name === "AbortError" || err.name === "ResponseAborted") continue
     // 读流/请求超时（SDK setAbortTimeout 与 undici 都用 TimeoutError）
@@ -257,9 +258,12 @@ export interface ClassifyContext {
   /** 观测到的 HTTP 状态分布 */
   statuses?: Record<string, number>
 }
+const MODEL_CONFIGURATION_CODES = new Set(["AUTHORIZATION_REVOKED", "MODEL_UNAVAILABLE", "MODEL_NOT_SELECTED", "MODEL_NOT_CONFIGURED", "MODEL_KIND_MISMATCH", "MODEL_THINKING_UNSUPPORTED", "MODEL_NOT_FOUND", "MODEL_DISABLED", "MODEL_KEY_MISSING"])
 
 /** 服务端异常 → 分类表唯一映射。识别顺序即优先级：配额 > 超时 > 审核 > 限流 > 网络 > 结构漂移 > 内部。 */
 export function classifyError(err: unknown, context: ClassifyContext = {}): ClassifiedError {
+  const modelFailure = findErrorNode(err, e => MODEL_CONFIGURATION_CODES.has(String(e.code ?? e.message)))
+  if (modelFailure) return { ...CATEGORY_DEFAULTS.model_unavailable, code: String(modelFailure.code ?? modelFailure.message) }
   if (findErrorNode(err, e => e.name === "NoModelAvailableError")) return { ...CATEGORY_DEFAULTS.model_unavailable }
   const retryUsed = context.retryUsed ?? 0
   const providerCodes = context.providerCodes ?? []
@@ -298,7 +302,7 @@ export function classifyError(err: unknown, context: ClassifyContext = {}): Clas
 /** 前端按 wire code + 服务端文案查同一张表（QUOTA_EXHAUSTED 由文案是否含「墨滴」区分平台/供应商两侧）。 */
 export function classifyWireError(code: string | null | undefined, message?: string | null): ClassifiedError {
   const text = typeof message === "string" && /[一-鿿]/.test(message) ? message : null
-  if (code === "MODEL_UNAVAILABLE") return { ...CATEGORY_DEFAULTS.model_unavailable, message: text ?? CATEGORY_DEFAULTS.model_unavailable.message }
+  if (code && MODEL_CONFIGURATION_CODES.has(code)) return { ...CATEGORY_DEFAULTS.model_unavailable, code, message: text ?? CATEGORY_DEFAULTS.model_unavailable.message }
   if (code === "QUOTA_EXHAUSTED") {
     const base = text && text.includes("墨滴") ? CATEGORY_DEFAULTS.quota_platform : CATEGORY_DEFAULTS.quota_provider
     return { ...base, message: text ?? base.message }

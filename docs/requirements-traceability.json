@@ -14,14 +14,22 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "src/components/layout/DashboardShell.tsx"
+        "src/components/layout/DashboardShell.tsx",
+        "src/lib/desktop/recovery-targets.ts"
       ],
       "testIds": [
         "DESK-B01"
       ],
       "verificationKind": "UI",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/reviews/56-recovery-integration-code-review.md"
+        ],
+        "note": "实现期有限范围证据；原生脚本的受控前置和平台限制见各记录。未代替本要求关联的正式用例。"
+      }
     },
     {
       "id": "B02",
@@ -90,14 +98,24 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "src/components/editor/MarkdownEditor.tsx"
+        "src/components/editor/MarkdownEditor.tsx",
+        "src/lib/desktop/save-coordinator.ts",
+        "desktop/main/draft-journal.ts"
       ],
       "testIds": [
         "DESK-B05"
       ],
       "verificationKind": "UI",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/reviews/50-save-coordinator-code-review.md",
+          "docs/reviews/51-draft-journal-code-review.md"
+        ],
+        "note": "实现期有限范围证据；原生脚本的受控前置和平台限制见各记录。未代替本要求关联的正式用例。"
+      }
     },
     {
       "id": "B06",
@@ -337,14 +355,25 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "desktop/main/lifecycle.ts"
+        "desktop/main/lifecycle.ts",
+        "desktop/main/close-coordinator.ts",
+        "desktop/main/renderer-close-channel.ts"
       ],
       "testIds": [
         "DESK-W11"
       ],
       "verificationKind": "NATIVE",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/reviews/53-desktop-close-code-review.md",
+          "docs/reviews/55-bootstrap-close-handshake-code-review.md",
+          "docs/evidence/implementation-08/native-recovery.json"
+        ],
+        "note": "实现期有限范围证据；原生脚本的受控前置和平台限制见各记录。未代替本要求关联的正式用例。"
+      }
     },
     {
       "id": "W12",
@@ -356,14 +385,27 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "desktop/main/lifecycle.ts"
+        "desktop/main/lifecycle.ts",
+        "desktop/main/index.ts",
+        "src/lib/desktop/draft-session.ts"
       ],
       "testIds": [
         "DESK-W12"
       ],
       "verificationKind": "NATIVE",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/reviews/54-draft-recovery-code-review.md",
+          "docs/reviews/55-bootstrap-close-handshake-code-review.md",
+          "docs/evidence/implementation-08/native-recovery.json",
+          "docs/evidence/implementation-12/native-runtime-migration.json",
+          "docs/reviews/70-root-handoff-code-review.md"
+        ],
+        "note": "实现期限定开发验证。真实 macOS 两次进程重启流程通过；目录选择/确认返回值受控。运行中故障恢复独立审核与全部正式打包/OS选择器/Windows用例尚未完成，不提升正式状态。"
+      }
     },
     {
       "id": "S01",
@@ -470,14 +512,23 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "src/components/desktop/SettingsDialog.tsx"
+        "src/components/desktop/SettingsDialog.tsx",
+        "src/components/desktop/ConfigurationTransfer.tsx"
       ],
       "testIds": [
         "DESK-S06"
       ],
       "verificationKind": "UI",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/reviews/61-configuration-files-code-review.md",
+          "docs/reviews/62-configuration-ui-catalog-code-review.md"
+        ],
+        "note": "实现期有限范围证据；原生脚本的受控前置和平台限制见各记录。未代替本要求关联的正式用例。"
+      }
     },
     {
       "id": "S07",
@@ -489,14 +540,24 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "src/components/desktop/SettingsDialog.tsx"
+        "src/components/desktop/SettingsDialog.tsx",
+        "src/components/desktop/DesktopCommandController.tsx",
+        "src/components/desktop/ConfigurationTransfer.tsx"
       ],
       "testIds": [
         "DESK-S07"
       ],
       "verificationKind": "UI",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/reviews/60-image-transport-modal-code-review.md",
+          "docs/reviews/62-configuration-ui-catalog-code-review.md"
+        ],
+        "note": "实现期有限范围证据；原生脚本的受控前置和平台限制见各记录。未代替本要求关联的正式用例。"
+      }
     },
     {
       "id": "S08",
@@ -546,14 +607,27 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "desktop/main/directories.ts"
+        "desktop/main/directories.ts",
+        "desktop/core/data-root.ts",
+        "desktop/main/owned-root-files.ts",
+        "desktop/shared/root-startup.ts",
+        "desktop/service/root-startup.ts"
       ],
       "testIds": [
         "DESK-G01"
       ],
       "verificationKind": "NATIVE",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/evidence/implementation-11/native-root-startup.json",
+          "docs/evidence/implementation-12/native-runtime-migration.json",
+          "docs/reviews/70-root-handoff-code-review.md"
+        ],
+        "note": "实现期限定开发验证。真实 macOS 两次进程重启流程通过；目录选择/确认返回值受控。运行中故障恢复独立审核与全部正式打包/OS选择器/Windows用例尚未完成，不提升正式状态。"
+      }
     },
     {
       "id": "G02",
@@ -584,14 +658,33 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "src/components/desktop/GeneralSettings.tsx"
+        "src/components/desktop/GeneralSettings.tsx",
+        "desktop/core/configuration-transfer.ts",
+        "desktop/main/configuration-files.ts",
+        "src/components/desktop/ConfigurationTransfer.tsx"
       ],
       "testIds": [
         "DESK-G03"
       ],
       "verificationKind": "INTEGRATION",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/reviews/58-configuration-transfer-code-review.md",
+          "docs/reviews/61-configuration-files-code-review.md",
+          "docs/reviews/62-configuration-ui-catalog-code-review.md",
+          "docs/evidence/implementation-09/native-configuration.json"
+        ],
+        "note": "实现期有限范围证据；原生脚本的受控前置和平台限制见各记录。未代替本要求关联的正式用例。"
+      },
+      "acceptanceScope": {
+        "retirementId": "USER-2026-10-08-CANCEL-BACKUPS",
+        "disposition": "mixed",
+        "active": true,
+        "activeRequirement": "启动时恢复工作台、配置导入导出和旧备份字段精确兼容；取消备份间隔/份数/立即备份/自动调度/保留清理"
+      }
     },
     {
       "id": "U01",
@@ -1173,14 +1266,25 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "desktop/core/commands.ts"
+        "desktop/core/commands.ts",
+        "scripts/generate-command-catalogs.mjs",
+        "scripts/verify-command-catalogs.mjs",
+        "desktop/shared/command-catalogs.generated.json"
       ],
       "testIds": [
         "DESK-K02"
       ],
       "verificationKind": "INTEGRATION",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/reviews/48-monaco-markdown-code-review.md",
+          "docs/reviews/62-configuration-ui-catalog-code-review.md"
+        ],
+        "note": "实现期有限范围证据；原生脚本的受控前置和平台限制见各记录。未代替本要求关联的正式用例。"
+      }
     },
     {
       "id": "K03",
@@ -1401,14 +1505,26 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "desktop/main/bootstrap.ts"
+        "desktop/main/bootstrap.ts",
+        "desktop/main/index.ts",
+        "desktop/service/root-startup.ts",
+        "desktop/main/session-directory.ts"
       ],
       "testIds": [
         "DESK-D01"
       ],
       "verificationKind": "INTEGRATION",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/evidence/implementation-11/native-root-startup.json",
+          "docs/evidence/implementation-12/native-runtime-migration.json",
+          "docs/reviews/70-root-handoff-code-review.md"
+        ],
+        "note": "实现期限定开发验证。真实 macOS 两次进程重启流程通过；目录选择/确认返回值受控。运行中故障恢复独立审核与全部正式打包/OS选择器/Windows用例尚未完成，不提升正式状态。"
+      }
     },
     {
       "id": "D02",
@@ -1477,14 +1593,27 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "desktop/core/migration.ts"
+        "desktop/core/migration.ts",
+        "desktop/core/data-root.ts",
+        "desktop/core/root-ownership.ts",
+        "desktop/main/owned-root-files.ts"
       ],
       "testIds": [
         "DESK-D05"
       ],
       "verificationKind": "INTEGRATION",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/reviews/59-data-root-code-review.md",
+          "docs/evidence/implementation-11/native-root-startup.json",
+          "docs/evidence/implementation-12/native-runtime-migration.json",
+          "docs/reviews/70-root-handoff-code-review.md"
+        ],
+        "note": "实现期限定开发验证。真实 macOS 两次进程重启流程通过；目录选择/确认返回值受控。运行中故障恢复独立审核与全部正式打包/OS选择器/Windows用例尚未完成，不提升正式状态。"
+      }
     },
     {
       "id": "D06",
@@ -1496,14 +1625,26 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "desktop/core/migration.ts"
+        "desktop/core/migration.ts",
+        "desktop/core/data-root.ts",
+        "desktop/main/root-migration-request.ts"
       ],
       "testIds": [
         "DESK-D06"
       ],
       "verificationKind": "INTEGRATION",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/reviews/59-data-root-code-review.md",
+          "docs/reviews/64-root-migration-request-implementation.md",
+          "docs/evidence/implementation-12/native-runtime-migration.json",
+          "docs/reviews/70-root-handoff-code-review.md"
+        ],
+        "note": "实现期限定开发验证。真实 macOS 两次进程重启流程通过；目录选择/确认返回值受控。运行中故障恢复独立审核与全部正式打包/OS选择器/Windows用例尚未完成，不提升正式状态。"
+      }
     },
     {
       "id": "D07",
@@ -1515,14 +1656,31 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "desktop/core/storage.ts"
+        "desktop/core/storage.ts",
+        "desktop/main/draft-journal.ts",
+        "desktop/main/close-coordinator.ts",
+        "src/lib/desktop/draft-session.ts"
       ],
       "testIds": [
         "DESK-D07"
       ],
       "verificationKind": "INTEGRATION",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/reviews/50-save-coordinator-code-review.md",
+          "docs/reviews/51-draft-journal-code-review.md",
+          "docs/reviews/53-desktop-close-code-review.md",
+          "docs/reviews/54-draft-recovery-code-review.md",
+          "docs/reviews/55-bootstrap-close-handshake-code-review.md",
+          "docs/evidence/implementation-08/native-recovery.json",
+          "docs/evidence/implementation-12/native-runtime-migration.json",
+          "docs/reviews/70-root-handoff-code-review.md"
+        ],
+        "note": "实现期限定开发验证。真实 macOS 两次进程重启流程通过；目录选择/确认返回值受控。运行中故障恢复独立审核与全部正式打包/OS选择器/Windows用例尚未完成，不提升正式状态。"
+      }
     },
     {
       "id": "D08",
@@ -1541,7 +1699,13 @@
       ],
       "verificationKind": "INTEGRATION",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "acceptanceScope": {
+        "retirementId": "USER-2026-10-08-CANCEL-BACKUPS",
+        "disposition": "retired",
+        "active": false,
+        "activeRequirement": null
+      }
     },
     {
       "id": "D09",
@@ -1591,14 +1755,24 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "desktop/core/export.ts"
+        "desktop/core/export.ts",
+        "desktop/core/configuration-transfer.ts",
+        "desktop/main/configuration-files.ts"
       ],
       "testIds": [
         "DESK-D11"
       ],
       "verificationKind": "INTEGRATION",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/reviews/58-configuration-transfer-code-review.md",
+          "docs/reviews/61-configuration-files-code-review.md"
+        ],
+        "note": "实现期有限范围证据；原生脚本的受控前置和平台限制见各记录。未代替本要求关联的正式用例。"
+      }
     },
     {
       "id": "E01",
@@ -1629,14 +1803,27 @@
         "desktop-menu-shortcut-contract.md"
       ],
       "implementation": [
-        "desktop/main/ipc.ts"
+        "desktop/main/ipc.ts",
+        "desktop/shared/local-images.ts",
+        "desktop/shared/request-limits.ts",
+        "desktop/service/workspace-assets.ts",
+        "src/lib/desktop/transport.ts"
       ],
       "testIds": [
         "DESK-E02"
       ],
       "verificationKind": "INTEGRATION",
       "status": "planned",
-      "evidence": []
+      "evidence": [],
+      "development": {
+        "status": "in-progress",
+        "evidence": [
+          "docs/reviews/57-workspace-assets-code-review.md",
+          "docs/reviews/60-image-transport-modal-code-review.md",
+          "docs/evidence/implementation-10/native-work-images.json"
+        ],
+        "note": "实现期有限范围证据；原生脚本的受控前置和平台限制见各记录。未代替本要求关联的正式用例。"
+      }
     },
     {
       "id": "E03",
@@ -1734,5 +1921,23 @@
       "status": "planned",
       "evidence": []
     }
-  ]
+  ],
+  "developmentRecordUpdated": "2026-10-08",
+  "acceptanceNote": "正式桌面与业务531项仍not-run；development与正式验收status/evidence分开，不能由单元、浏览器、模拟OS、受控picker或部分native脚本推断整条通过。",
+  "acceptanceScope": {
+    "retirementId": "USER-2026-10-08-CANCEL-BACKUPS",
+    "updatedAt": "2026-10-08",
+    "retirementManifest": "docs/backup-scope-retirement.json",
+    "activeManifest": "docs/acceptance-active-scope.json",
+    "policy": "retired是范围生命周期，不是passed/skipped；原status/results/executionMatrix均不变。activeDefinition只覆盖title/steps/expected，其余前置/平台/证据继承原条目。",
+    "historicalRequirementCount": 91,
+    "activeRequirementCount": 90,
+    "retiredRequirementIds": [
+      "D08"
+    ],
+    "mixedRequirementIds": [
+      "G03"
+    ],
+    "note": "D05/D06目录迁移、D07保存草稿、D09领域事务、E06实际TDD/review/验收等全部保留。"
+  }
 }

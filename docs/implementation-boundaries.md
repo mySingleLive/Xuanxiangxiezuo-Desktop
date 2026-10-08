@@ -1,5 +1,10 @@
 # UI 批准与实施边界
 
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE BEGIN -->
+> **当前范围（2026-10-08）：用户取消全部备份功能。** 最新用户scope覆盖下面“目录/备份/恢复”：仅备份/从备份恢复撤销；正常迁移/重定位、异常草稿恢复/导出、writer lease及其它已批准UI保持。原边界全文保留，旧备份字样不能复活功能。
+> 活动清单：[acceptance-active-scope.json](acceptance-active-scope.json)；原文和退役明细：[backup-scope-retirement.json](backup-scope-retirement.json)。此处不声明实现完成或验收通过。
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE END -->
+
 批准日期：2026-10-07（Asia/Shanghai）。用户明确批准 UI v0.13，基线提交 `6f79382a86f1cb2f81b3b3936492fa6dc66bb8cb`；Web 基线 `55a62560dc4818143469abb12717a23c752ade8c`。本记录绑定所有前序设计变更，并允许依原顺序推进后续工作。
 
 ## 实现的两个来源

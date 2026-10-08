@@ -219,6 +219,7 @@ async function defaultCheckFn(call: ScenarioCheckCall): Promise<ScenarioCheckRes
       userId: call.userId,
       novelId: call.novelId,
       action: "scenario.check",
+      role: "review",
       tier: "ADVANCED",
       prompt: call.prompt,
       schema: checkResultSchema,

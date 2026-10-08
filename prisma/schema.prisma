@@ -723,6 +723,7 @@ model ContentCandidate {
 
 /** 一次改进意图的持久预算；调用前占用次数，失败/新 toolCallId 均不重置预算。 */
 model ContentImprovementRun {
+  defaultsSnapshot Json?
   id String @id @default(cuid())
   userId String
   novelId String
@@ -862,6 +863,8 @@ model TargetTextRevision {
  * judge 审稿人 / reader 读者；sopNodeRunId 把单次调用串进 SOP 节点运行。
  */
 model SubAgentRun {
+  /** 本次任务五项桌面默认值，创建后不因设置变化重写。 */
+  defaultsSnapshot Json?
   contentHash String?
   contentVersion Int?
   candidateId String?
@@ -905,6 +908,7 @@ model SubAgentRun {
  * 纯标量无外键（同 TextComment/SubAgentRun 惯例）。
  */
 model SopPlan {
+  defaultsSnapshot Json?
   id             String   @id @default(cuid())
   novelId        String
   conversationId String
@@ -935,6 +939,7 @@ model SopPlan {
  * 纯标量无外键（同 TextComment/SubAgentRun 惯例）。
  */
 model SopNodeRun {
+  defaultsSnapshot Json?
   id           String   @id @default(cuid())
   novelId      String
   /** 图节点 id：theme / world / character / setting / outline / content / novel */
@@ -960,6 +965,7 @@ model SopNodeRun {
 }
 
 model CascadeJob {
+  defaultsSnapshot Json?
   id            String              @id @default(cuid())
   novelId       String
   triggerType   CascadeTriggerType
@@ -976,6 +982,8 @@ model CascadeJob {
 }
 
 model Conversation {
+  /** 会话创建时的桌面默认值；显式模型选择另存modelId，历史快照不重写。 */
+  defaultsSnapshot Json?
   activeAttemptId String?
   executionEpoch Int @default(0)
   leaseExpiresAt DateTime?
@@ -985,7 +993,7 @@ model Conversation {
   userId    String
   novelId   String?
   title     String
-  /** 作者为本会话选择的大模型（AIModel.id）；null=跟随系统默认（getModelForUser 解析）。纯标量无外键（同 TextComment 惯例） */
+  /** 作者为本会话选择的大模型；桌面null表示未选择，绝不隐式跟随全局默认。纯标量无外键。 */
   modelId   String?
   /** 思考强度档位（thinking-effort.ts 能力表的 value，如 off/low/medium/high）；null=默认档（各 provider 的现状行为） */
   thinkingEffort String?
@@ -1219,6 +1227,7 @@ model ScenarioLab {
 
 /** 情景试验场推演回合：开局叙述（kind=opening）与逐回合推演（kind=beat）。纯标量。 */
 model ScenarioTurn {
+  defaultsSnapshot Json?
   id        String   @id @default(cuid())
   labId     String
   /** 从 1 严格递增，开局=1 */
@@ -1287,6 +1296,8 @@ model NovelCreationRequest {
 
 
 model ChatTurn {
+  /** 任务开始时冻结模式/思考/文本/审核/图像选择；重试沿用此快照。 */
+  defaultsSnapshot Json?
   action Json?
   id String @id @default(cuid())
   userId String

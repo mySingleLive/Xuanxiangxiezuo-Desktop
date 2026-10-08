@@ -1,3 +1,4 @@
+import { retainDatabaseTask } from "@desktop/service/context"
 import { AsyncLocalStorage } from "node:async_hooks"
 import { getCostConfig } from "./ai/cost-config"
 
@@ -36,8 +37,12 @@ export const longTaskQueue = runtime.queue
 export const runInsideLongTask = <T>(work: () => T) => runtime.context.run(true, work)
 export async function acquireLongTask(signal?: AbortSignal, limit?: number) {
   if (runtime.context.getStore()) return () => {}
-  longTaskQueue.setLimit(limit ?? (await getCostConfig()).maxConcurrentTasks)
-  return longTaskQueue.acquire(signal)
+  const releaseDatabase = retainDatabaseTask()
+  try {
+    longTaskQueue.setLimit(limit ?? (await getCostConfig()).maxConcurrentTasks)
+    const release = await longTaskQueue.acquire(signal)
+    return () => { release(); releaseDatabase() }
+  } catch (error) { releaseDatabase(); throw error }
 }
 export async function withLongTask<T>(work: () => Promise<T>, signal?: AbortSignal) {
   const release = await acquireLongTask(signal)

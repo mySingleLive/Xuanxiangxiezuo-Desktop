@@ -40,36 +40,38 @@ import type { SettingType } from "@/generated/prisma/enums"
 export type CharacterImageKind = "avatar" | "portrait"
 
 /** 右侧内容区支持的 tab 类型 */
-export type TabType =
-  | "story-workflow"
-  | "story-review"
-  | "story-activity"
-  | "novel"
-  | "novel-cover"
-  | "theme"
-  | "world"
-  | "setting"
-  | "attributes"
-  | "characters"
-  | "character"
-  | "character-image"
-  | "items"
-  | "item"
-  | "item-image"
-  | "scenes"
-  | "scene"
-  | "scene-image"
-  | "trope"
-  | "worldline"
-  | "narrative"
-  | "outline"
-  | "chapter-outline"
-  | "chapter-content"
-  | "chapter-candidate"
-  | "cascade"
-  | "subagent"
-  | "scenario"
-  | "foreshadow"
+export const TAB_TYPES = [
+  "story-workflow",
+  "story-review",
+  "story-activity",
+  "novel",
+  "novel-cover",
+  "theme",
+  "world",
+  "setting",
+  "attributes",
+  "characters",
+  "character",
+  "character-image",
+  "items",
+  "item",
+  "item-image",
+  "scenes",
+  "scene",
+  "scene-image",
+  "trope",
+  "worldline",
+  "narrative",
+  "outline",
+  "chapter-outline",
+  "chapter-content",
+  "chapter-candidate",
+  "cascade",
+  "subagent",
+  "scenario",
+  "foreshadow",
+] as const
+export type TabType = (typeof TAB_TYPES)[number]
 
 export interface Tab {
   /** 唯一 id，如 `world:{worldId}`、`setting:STYLE:{novelId}`、`theme:{novelId}` */
@@ -213,6 +215,8 @@ interface TabsState {
   /** 关闭 tab：若关闭的是激活 tab，则激活相邻（优先左侧）tab */
   closeTab: (id: string) => void
   activateTab: (id: string) => void
+  /** Desktop history waits for the existing draft guard; stale/cancelled moves do not activate. */
+  activateTabForNavigation: (id: string, signal: AbortSignal) => Promise<boolean>
   /** 删除小说时关闭其所有 tab */
   closeAllTabsOfNovel: (novelId: string) => void
   /** 删除世界时关闭其 world tab */
@@ -235,6 +239,9 @@ function afterSceneLeave(action: () => void, destination?: string) {
   const guard = active !== destination ? sceneLeaveGuard(active) : undefined
   if (guard) void guard().then(action).catch(error => toast.error(error instanceof Error ? error.message : "草稿尚未保存，请重试或明确放弃"))
   else action()
+}
+function activation(state: TabsState, id: string) {
+  return state.tabs.some(tab => tab.id === id) ? { activeTabId: id, activationNonce: state.activationNonce + 1 } : state
 }
 export const useTabsStore = create<TabsState>((set, get) => ({
   tabs: [],
@@ -273,11 +280,19 @@ export const useTabsStore = create<TabsState>((set, get) => ({
     }), id !== get().activeTabId ? get().activeTabId ?? undefined : undefined),
 
   activateTab: (id) =>
-    afterSceneLeave(() => set((state) =>
-      state.tabs.some((t) => t.id === id)
-        ? { activeTabId: id, activationNonce: state.activationNonce + 1 }
-        : state
-    ), id),
+    afterSceneLeave(() => set(state => activation(state, id)), id),
+
+  activateTabForNavigation: async (id, signal) => {
+    const before = get(), target = before.tabs.find(tab => tab.id === id)
+    if (signal.aborted || !target) return false
+    if (before.activeTabId === id) { set(state => activation(state, id)); return true }
+    const guard = sceneLeaveGuard(before.activeTabId)
+    if (guard) await guard()
+    const current = get()
+    if (signal.aborted || current.activeTabId !== before.activeTabId || current.activationNonce !== before.activationNonce || current.tabs.find(tab => tab.id === id) !== target) return false
+    set(state => activation(state, id))
+    return true
+  },
 
   closeAllTabsOfNovel: (novelId) =>
     set((state) => {

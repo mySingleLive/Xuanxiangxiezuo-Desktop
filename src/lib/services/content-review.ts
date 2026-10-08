@@ -7,7 +7,7 @@ import { getModelForUser, type ResolvedModel } from "@/lib/ai/provider"
 import { currentChatExecution } from "@/lib/chat-execution"
 import { ContentError } from "@/lib/content-errors"
 import type { WordRequirement } from "@/lib/word-requirement"
-import { prisma } from "@/lib/db"
+import { prisma, globalPrisma } from "@/lib/db"
 import { contentHash, ownedChapter, requestHash } from "./content-commit"
 import { getContentCandidate } from "./content-candidate"
 import type { ChapterScope } from "./chapter-history"
@@ -56,8 +56,8 @@ export interface ChapterEvaluationContext { comments: CommentSnapshot[]; authorI
 export async function createChapterReviewConfiguration(scope: ChapterScope, sources: ChapterFactSource[], evaluationContext?: ChapterEvaluationContext): Promise<ChapterReviewConfiguration> {
   const chapter = await ownedChapter(prisma, scope.userId, scope.novelId, scope.chapterId)
   const [model, template, sections, foreshadows, planningRow] = await Promise.all([
-    getModelForUser(scope.userId, { tier: "ADVANCED", fetch: currentChatExecution()?.networkRetry?.fetch }),
-    prisma.promptTemplate.findFirst({ where: { key: "review.chapter", enabled: true } }),
+    getModelForUser(scope.userId, { role: "review", ignoreChatSession: true, fetch: currentChatExecution()?.networkRetry?.fetch }),
+    globalPrisma.promptTemplate.findFirst({ where: { key: "review.chapter", enabled: true } }),
     buildNovelSections(scope.novelId, scope.chapterId, undefined, [chapter.content, evaluationContext?.authorInstructions].filter(Boolean).join("\n")),
     buildChapterForeshadowSection(scope.novelId, scope.chapterId),
     prisma.planningDocument.findUnique({ where: { novelId: scope.novelId } }),

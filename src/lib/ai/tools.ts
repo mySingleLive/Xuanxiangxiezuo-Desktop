@@ -1,3 +1,4 @@
+import { taskDefaults } from "@desktop/service/task-defaults"
 import { createSceneSchema, sceneFieldsSchema } from "@/lib/scene-schema"
 import { sceneForest } from "@/lib/scene-tree"
 import { renderSceneContext } from "@/lib/scene-context"
@@ -314,10 +315,10 @@ export function createAgentTools(ctx: AgentToolContext): ToolSet {
         const conversation = await prisma.conversation.findFirst({ where: { id: ctx.conversationId, userId: ctx.userId }, select: { novelId: true } })
         if (!conversation) return fail("会话不存在或无权访问")
         if (conversation.novelId) return { ok: true, novel: await prisma.novel.findFirst({ where: { id: conversation.novelId, userId: ctx.userId, status: { not: "DELETED" } }, select: { id: true, title: true } }), message: "当前会话已有作品，请继续创作；若要新建另一部作品，请开始新会话" }
-        const { createNovelOnce } = await import("@/lib/services/novel-create")
-        const novel = await createNovelOnce(ctx.userId, { title: title?.trim() || tentativeNovelTitle(), premise: premise.trim(), requestId: scope.operationId })
-        const attached = await prisma.conversation.updateMany({ where: { id: ctx.conversationId, userId: ctx.userId, OR: [{ novelId: null }, { novelId: novel.id }] }, data: { novelId: novel.id } })
-        if (!attached.count) return fail("会话已关联另一部作品，请读取会话状态后继续")
+        const { startConversationNovel } = await import("@desktop/service/conversation-runtime")
+        const created = await startConversationNovel(scope, { title: title?.trim() || tentativeNovelTitle(), premise: premise.trim() })
+        if (!created) return { ok: false, message: "未选择作品目录，作品尚未创建；原聊天与草稿已保留。" }
+        const novel = created.receipt
         scope.progress?.({ novelCreated: { id: novel.id, title: novel.title } })
         return { ok: true, novel, message: "作品已创建并关联当前会话。继续使用创作工具，从作者已有灵感开始补齐故事。" }
       } catch (error) { return fail(error) }
@@ -1833,7 +1834,7 @@ export function createAgentTools(ctx: AgentToolContext): ToolSet {
           return fail(err)
         }
         const nodeRun = await prisma.sopNodeRun.create({
-          data: { novelId, nodeId: "content", targetId: chapterId, status: "running" },
+          data: { defaultsSnapshot: await taskDefaults(), novelId, nodeId: "content", targetId: chapterId, status: "running" },
         })
         const run = await subAgentRunService.startRun({
           novelId,
@@ -1912,7 +1913,7 @@ export function createAgentTools(ctx: AgentToolContext): ToolSet {
           return fail(err)
         }
         const nodeRun = await prisma.sopNodeRun.create({
-          data: { novelId, nodeId: "content", targetId: chapterId, status: "running" },
+          data: { defaultsSnapshot: await taskDefaults(), novelId, nodeId: "content", targetId: chapterId, status: "running" },
         })
         const run = await subAgentRunService.startRun({
           novelId,

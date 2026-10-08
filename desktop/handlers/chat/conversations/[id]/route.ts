@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-import { isValidThinkingEffort } from "@/lib/ai/thinking-effort"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { getChatTurn } from "@/lib/services/chat-turn"
 import { parseStagedSaveAction } from "@/lib/staged-save"
-import { availableTextModels } from "@/lib/ai/model-availability"
-import { getAutoModelForUser } from "@/lib/ai/provider"
-import { isOpenRouterAuto } from "@/lib/ai/openrouter"
+import { ContentError } from "@/lib/content-errors"
+import { restoreTaskDefaults } from "@desktop/shared/task-defaults"
+import {conversationLocation,conversationHistory,associateConversation,removeConversation} from "@desktop/service/conversation-runtime"
+import {conversationAssociationCommandSchema} from "@desktop/shared/conversation-transfer"
 
 type RouteContext = { params: Promise<{ id: string }> }
 
@@ -39,15 +39,17 @@ export async function GET(_request: Request, ctx: RouteContext) {
   const turns = await prisma.chatTurn.findMany({ where: { conversationId: id }, select: { id: true, interaction: true, action: true } })
   const attempts = await prisma.chatAttempt.findMany({ where: { turn: { conversationId: id } } })
   // 三阶段保存：turn.action 中的暂存批次随用户消息下发，历史气泡据此渲染芯片与悬停明细
-  return NextResponse.json({ conversation: result.conversation, messages: messages.map(message => ({ ...message, attempt: attempts.find(attempt => attempt.id === message.attemptId) ?? null, interaction: turns.find(turn => turn.id === message.turnId)?.interaction ?? null, stagedBatches: parseStagedSaveAction(turns.find(turn => turn.id === message.turnId)?.action)?.batches ?? null })), turnState })
+  const mode = restoreTaskDefaults(latest?.defaultsSnapshot)?.mode ?? restoreTaskDefaults(result.conversation.defaultsSnapshot)?.mode ?? "standard"
+  const location=await conversationLocation(id),history=await conversationHistory(id)
+  return NextResponse.json({ conversation: { ...result.conversation, mode,locationRevision:location?.revision??0 }, messages: messages.map(message => ({ ...message, attempt: attempts.find(attempt => attempt.id === message.attemptId) ?? null, interaction: turns.find(turn => turn.id === message.turnId)?.interaction ?? null, stagedBatches: parseStagedSaveAction(turns.find(turn => turn.id === message.turnId)?.action)?.batches ?? null })), turnState,history })
 }
 
 const patchSchema = z.object({
-  /** 选择的大模型（AIModel.id）；null=OpenRouter Auto 虚拟选择 */
+  /** Explicit desktop model; null is unselected and cannot run a task. */
   modelId: z.string().nullable(),
   /** 思考强度档位；null=默认档 */
   thinkingEffort: z.string().nullable(),
-})
+}).strict()
 
 /** 更新会话的模型选择（模型 + 思考强度）；后续轮次即按新选择生成 */
 export async function PATCH(request: Request, ctx: RouteContext) {
@@ -56,6 +58,15 @@ export async function PATCH(request: Request, ctx: RouteContext) {
   if ("error" in result) return result.error
 
   const body = await request.json().catch(() => null)
+  if(body&&typeof body==='object'&&'targetNovelId'in body){
+    const command=conversationAssociationCommandSchema.safeParse(body)
+    if(!command.success||command.data.conversationId!==id)return NextResponse.json({error:'会话关联参数不合法'},{status:400})
+    try{
+      const location=await associateConversation(id,{operationId:command.data.operationId,novelId:command.data.targetNovelId,expectedLocationRevision:command.data.expectedLocationRevision})
+      const conversation=await prisma.conversation.findUniqueOrThrow({where:{id}})
+      return NextResponse.json({conversation:{...conversation,locationRevision:location.revision}})
+    }catch(error){if(error instanceof ContentError)return NextResponse.json({error:error.message,code:error.code},{status:error.status});throw error}
+  }
   const parsed = patchSchema.safeParse(body)
   if (!parsed.success) {
     return NextResponse.json(
@@ -65,27 +76,12 @@ export async function PATCH(request: Request, ctx: RouteContext) {
   }
   const { modelId, thinkingEffort } = parsed.data
   let savedModelId = modelId
-
-  if (modelId !== null) {
-    const record = await prisma.aIModel.findUnique({ where: { id: modelId } })
-    const user = await prisma.user.findUnique({
-      where: { id: result.conversation.userId },
-      select: { plan: true },
-    })
-    const tierAllowed = record?.tier === "ADVANCED" ? user?.plan === "PRO" : true
-    if (!record || !tierAllowed || !(await availableTextModels([record])).length) {
-      return NextResponse.json({ error: "该模型不可用" }, { status: 400 })
-    }
-    if (thinkingEffort !== null && !isValidThinkingEffort(record.provider, record.modelId, thinkingEffort)) {
-      return NextResponse.json({ error: "该模型不支持此思考强度" }, { status: 400 })
-    }
-    if (isOpenRouterAuto(record)) savedModelId = null
-  } else if (thinkingEffort !== null) {
-    return NextResponse.json({ error: "Auto 模型不能单独指定思考强度" }, { status: 400 })
-  } else {
-    try { await getAutoModelForUser(result.conversation.userId) }
-    catch { return NextResponse.json({ error: "Auto 当前不可用，请选择其他可用模型" }, { status: 400 }) }
-  }
+  try {
+    const { resolveLocalModel } = await import("@desktop/service/models")
+    const model = await resolveLocalModel(result.conversation.userId, "text", modelId, "selection")
+    if (thinkingEffort !== null && !model.thinkingLevels.includes(thinkingEffort)) return NextResponse.json({ error: "该模型不支持此思考强度" }, { status: 400 })
+    savedModelId = model.id
+  } catch (error) { return NextResponse.json({ error: error instanceof ContentError ? error.message : "请选择已添加且启用的文本模型", ...(error instanceof ContentError ? { code: error.code } : {}) }, { status: error instanceof ContentError ? error.status : 400 }) }
 
   const conversation = await prisma.conversation.update({
     where: { id },
@@ -97,9 +93,8 @@ export async function PATCH(request: Request, ctx: RouteContext) {
 /** 删除会话（消息级联删除） */
 export async function DELETE(_request: Request, ctx: RouteContext) {
   const { id } = await ctx.params
-  const result = await getOwnedConversation(id)
-  if ("error" in result) return result.error
-
-  await prisma.conversation.delete({ where: { id } })
-  return NextResponse.json({ ok: true })
+  const session=await auth()
+  if(!session?.user?.id)return NextResponse.json({error:'未登录'},{status:401})
+  try{await removeConversation(id);return NextResponse.json({ok:true})}
+  catch(error){if(error instanceof ContentError)return NextResponse.json({error:error.message,code:error.code},{status:error.status});throw error}
 }

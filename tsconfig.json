@@ -22,16 +22,26 @@
       "@desktop/*": [
         "./desktop/*"
       ]
-    }
+    },
+    "allowJs": true,
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "desktop/**/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "tests/**/*.ts"
+    "tests/**/*.ts",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
-    "tests/generated"
+    "tests/generated",
+    "tests/retired"
   ]
 }

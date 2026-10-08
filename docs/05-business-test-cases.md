@@ -1,5 +1,10 @@
 # 业务迁移测试用例附录
 
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE BEGIN -->
+> **当前范围（2026-10-08）：用户取消全部备份功能。** 全部424业务case继续有效，仍not-run。事务快照、版本/撤销/回收、聊天checkpoint和草稿恢复不属于已撤销的数据备份功能；本附录未退役任何业务ID。与当前桌面106条合计530条，历史531仅代表退役前范围。
+> 活动清单：[acceptance-active-scope.json](acceptance-active-scope.json)；原文和退役明细：[backup-scope-retirement.json](backup-scope-retirement.json)。此处不声明实现完成或验收通过。
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE END -->
+
 版本：1.0；日期：2026-10-07；来源基线：`55a62560dc4818143469abb12717a23c752ade8c`；状态：**全部未执行（not-run）**。
 
 本附录与 `05-test-cases.md` / 主机器测试清单共同使用，不能替代桌面设置、模型供应商、安装/原生窗口等主用例。机器记录以 [test-cases-business.json](test-cases-business.json) 为准。所有迁移台账稳定 ID 保留，追加 WEB-X01–WEB-X11；不启动原 Next HTTP 服务，API 编号表示原能力在本地 command 的测试入口。

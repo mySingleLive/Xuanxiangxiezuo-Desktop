@@ -26,6 +26,7 @@ import { blockIndexAt, splitMarkdownBlocks } from "@/lib/comment-anchor"
 import { renderedTextMap, selectionSnapshot } from "@/lib/comment-selection"
 import { renderMarkdown } from "@/lib/markdown"
 import { cn } from "@/lib/utils"
+import {useDesktopCommands} from "@/lib/desktop/use-command-target"
 
 import { CommentComposer } from "./CommentComposer"
 import type { CreateCommentInput, ResolvedThread } from "./types"
@@ -363,6 +364,7 @@ export function CommentablePreview({
     setAddBtn(null)
     setBlockBtn(null)
   }
+  useDesktopCommands({"md.comment":{enabled:()=>!!commentsEnabled&&!readOnly&&!!addBtn&&!composer,run:openComposer}},innerRef)
 
   /** composer 提交:成功才关闭;失败(onCreateComment 上抛)由 CommentComposer 捕获,草稿保留 */
   const submitComposer = async (content: string) => {

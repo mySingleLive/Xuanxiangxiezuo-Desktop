@@ -1,5 +1,4 @@
-import { mkdir, writeFile } from "fs/promises"
-import path from "path"
+import {saveWorkImage} from "@desktop/service/image-assets"
 
 import { Prisma } from "@/generated/prisma/client"
 import { generateImageBuffer, resolveImageModel } from "@/lib/ai/image"
@@ -14,20 +13,15 @@ import {
 import { resolveImageContext } from "./character-image"
 
 /**
- * 把图标文件落盘到 public/uploads/items/{itemId}/，
- * 返回可公开访问的路径。历史版本文件全部保留（版本列表可回选）。
- * 与 saveCharacterImage 同规约；物品只有图标一种图，文件名不带 kind。
+ * 将图标保存在当前作品目录，返回仅桌面本地可读的不可变资产地址。
+ * 历史版本文件全部保留，原物品版本列表可回选。
  */
 export async function saveItemImage(
   itemId: string,
   buffer: Buffer,
   ext = "png"
 ): Promise<string> {
-  const dir = path.join(process.cwd(), "public", "uploads", "items", itemId)
-  await mkdir(dir, { recursive: true })
-  const filename = `icon-${Date.now()}.${ext}`
-  await writeFile(path.join(dir, filename), buffer)
-  return `/uploads/items/${itemId}/${filename}`
+  return (await saveWorkImage(buffer)).url
 }
 
 export interface GenerateItemImageInput {

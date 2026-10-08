@@ -9,6 +9,8 @@ import { LocalPGliteAdapter } from "../../desktop/service/database/pglite-adapte
 import { loadMigrations, migrateDatabase } from "../../desktop/service/database/migrations"
 import { LOCAL_AUTHOR_ID, runInDatabaseContext } from "../../desktop/service/context"
 import { commitChapterRevision, contentHash } from "../../src/lib/services/content-commit"
+import { auth } from "../../src/lib/auth"
+import { getOwnedNovel } from "../../desktop/handlers/novels/[id]/lib"
 
 let root: string; let engine: PGlite; let db: PrismaClient
 const scoped = <T>(run: () => T) => runInDatabaseContext({ workspaceId: "fixture-work", database: db }, run)
@@ -23,6 +25,18 @@ before(async () => {
   await db.chapter.create({ data: { id: "chapter-a", volumeId: "volume-a", index: 1, title: "首章", outline: "章纲", content: "初稿正文", status: "FINAL" } })
 })
 after(async () => { await db?.$disconnect(); await engine?.close(); if (root) await rm(root, { recursive: true, force: true }) })
+
+test("IPC-01: local identity requires trusted context and retains novel ownership checks", async () => {
+  assert.equal(await auth(), null)
+  await db.user.create({ data: { id: "foreign-author", email: "foreign@localhost.invalid", name: "其他作者", passwordHash: "" } })
+  await db.novel.create({ data: { id: "foreign-work", userId: "foreign-author", title: "不属于本地作者" } })
+  await scoped(async () => {
+    assert.deepEqual((await auth())?.user, { id: LOCAL_AUTHOR_ID, role: "USER" })
+    assert.equal("novel" in await getOwnedNovel("novel-a"), true)
+    const foreign = await getOwnedNovel("foreign-work")
+    assert.equal("error" in foreign ? foreign.error.status : null, 403)
+  })
+})
 
 test("SERVICE-content-commit: original CAS, idempotency and immutable snapshots execute on PGlite", () => scoped(async () => {
   const input = { userId: LOCAL_AUTHOR_ID, novelId: "novel-a", chapterId: "chapter-a", expectedVersion: 1, operationId: "manual-op-1", source: "manual" as const, reason: "手动修改", changes: { content: "改后的中文正文🖋️" } }

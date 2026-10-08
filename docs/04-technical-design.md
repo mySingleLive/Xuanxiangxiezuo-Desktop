@@ -1,5 +1,10 @@
 # 桌面技术方案
 
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE BEGIN -->
+> **当前范围（2026-10-08）：用户取消全部备份功能。** 备份scheduler/control/session/生成包、应用/作品备份恢复worker/preload/IPC/UI、升级dumpDataDir归档及迁移前额外数据备份快照退役。第5节下方备份导出/封包/候选启用协议仅作历史；schema迁移版本/事务、writer lease、关闭drain、草稿durability和目录迁移保持。旧authority/pointer/未知控制文件只能只读校验或安全拒绝，不能删除或当idle初始化空库；历史backups/snapshots目录不自动清理。
+> 活动清单：[acceptance-active-scope.json](acceptance-active-scope.json)；原文和退役明细：[backup-scope-retirement.json](backup-scope-retirement.json)。此处不声明实现完成或验收通过。
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE END -->
+
 版本：1.0；日期：2026-10-07。前置：UI v0.13 用户批准及附加边界见 `implementation-boundaries.md`。本方案及清单已经独立审核23、24通过；现在产出正式测试用例，经审核后开始App实现。
 
 ## 1. 架构与技术选择
@@ -81,11 +86,23 @@ worker 根据受信 catalog 与路由实体 ID 解析库，不相信 renderer �
 
 ## 5. 应用根迁移、备份与退出
 
-迁移状态机：idle → native-picking → validating → quiescing → copying → verifying → committed → cleanup → complete；提交前取消/失败→rollback，提交后清理失败→cleanup-pending。点迁移先原生目录选择，确认后才进入过程；选择前显示真实估计大小/旧根管理文件清理范围/作品不移动。默认作品父目录选择仅设置建议，不授予创建权限。
+迁移状态机：idle → native-picking → validating → quiescing → copying → verifying → committed → cleanup → complete；提交前取消/失败→rollback，提交后清理失败→cleanup-pending。点迁移先原生目录选择，确认后才进入过程；确认时说明旧根管理文件的清理范围与作品不移动；关闭后从实际清单显示文件总数，不在原生目录选择前展示虚构大小。默认作品父目录选择仅设置建议，不授予创建权限。
+
+运行中迁移采用完整进程交接：原工作台的请求准入门先停止新增业务写入，等待在途IPC、草稿/设置flush及数据库close，才把当前目录选择请求持久化为armed。`app.relaunch()`在当前实例退出后启动维护进程；维护分支在首个await前为sessionData设置固定bootstrap中的维护缓存位置，其窗口使用不持久化的独立session，绝不打开源数据库或源Chromium session。原生实例锁始终位于固定bootstrap。bootstrap只承载控制记录与临时维护缓存，作品/配置/密钥/常规会话仍存用户数据根。该生命周期依赖[Electron relaunch和sessionData时序](https://www.electronjs.org/docs/latest/api/app#apprelaunchoptions)及[非持久化session](https://www.electronjs.org/docs/latest/api/session#sessionfrompartitionpartition-options)。
+
+维护进程仅暴露状态与取消/继续/退出三种操作；prepared请求不自动迁移，armed转executing后用随机executionNonce作为核心migrationId。恢复必须校验同nonce、源指针及目标身份的journal，不将无journal的executing当成可重新执行。进度来自实际受管清单与复制回执，不复制设计示例数字。返回工作台先精确ACK已展示结果，再完整冷启动。取消写入未确认时保留交接所有权和关闭的业务准入门，提供重试取消；不能显示成功取消或继续编辑。新根合法保存后，旧迁移散列仅用于判断旧副本能否删除，不能当作新根启动版本限制。
 
 迁移使用单独 durable journal：写临时 journal + fsync + 同卷原子 rename；暂停新任务、flush 草稿/设置、关闭全局库；仅复制 app-owned allowlist 和会话缓存，拒绝 symlink 外逃；全量清单与散列校验；新根保存恢复快照；原子切换引导指针；旧根只删有匹配 ownership/散列的本应用文件，保留目录及未知文件。目录嵌套/同根/不可写/空间不足/非空冲突均在提交前拒绝。崩溃按 journal 阶段恢复权威根，不合并两份。根失联提供定位/恢复，不默认重新初始化。
 
 备份使用引擎一致性导出/暂停落盘后快照，加资源清单/校验和/schema/作品 UUID；不直接复制活跃数据库目录。保留数量清理只能在新备份完整且校验成功之后。恢复先校验，再导入隔离候选库，保留当前库和恢复前快照；经作者选择启用，原始正文候选/版本规则不绕过。
+
+作品备份封装为作品`backups/`下独立UUID命名的`.xxbackup`文件：有界JSON清单、gzip引擎导出、不可变附件、每段SHA256及覆盖清单/载荷的整体SHA256。密钥库和设置文件不进入作品封包；损坏或陌生文件不参与自动保留清理。当前单包上限512MiB、附件合计256MiB/4096个，超限明确失败且保持旧有效备份。恢复先有界解压并验证普通tar条目、路径和PostgreSQL主版本，再导入作品`.xuanxiang-restores/`内新UUID候选目录，核对迁移ID/校验和、作品归属及附件引用，关闭候选引擎后保存完整文件/目录身份与散列。候选的读取验证不打开引擎；启用前任何变化都需重新准备候选。
+
+作品的权威存储指针独立于原Web作品manifest；另写存储保护标记。保护标记存在而指针丢失时不得自动回退原库。启用恢复必须持有原作品writer lease、停止该作品新请求，并保留启用前最后状态。没有活跃引擎时不尝试打开坏库：将闭库database/assets按实际字节、目录、缺失项清单复制并校验到`.xuanxiang-preserved/UUID`，指针previous.kind明确记为closed-source；它不冒充可直接导入的健康数据库备份。未知作品文件不删除。lease只删除自己创建的owner文件与确认空的锁目录，部分解锁失败可由同一持有者显式重试。
+
+恢复启用使用完整应用交接：原生确认后复用关闭流程停止任务、确认草稿落盘、排空业务与自动备份并关闭worker；独立afterClose阶段写入`restore-draft-barrier.json`，启用候选、持久保存结果、再次闭库后冷重启。该阶段失败不得恢复旧编辑器，重试只继续交接，不再次flush旧缓存。新bootstrap绑定当前窗口/token，强制把旧草稿与缓存作为惰性副本保留，经两次checkpoint和精确DraftJournal回执才清保护标志；unknown pending不得重做activate，也不提示成功。保护标志随应用根迁移。
+
+PGlite的[官方导入导出API](https://pglite.dev/docs/api#dumpdatadir)只承诺供兼容PGlite加载的datadir包。实现结合锁定安装版本源码：0.5.8的`dumpDataDir`本身不获取查询/事务互斥锁，故按附件变更锁→事务锁→查询锁顺序导出，等待实际已开始事务结束；不在该锁内再借用默认数据库查询，防止自锁。备份版本来自项目锁定引擎版本及实际`SHOW server_version`，恢复不自动跨PostgreSQL主版本。
 
 快照metadata记录PGlite版本及内嵌PostgreSQL主版本。原始dataDir恢复只接受明确兼容的引擎版本；跨主版本先用旧引擎导出支持的逻辑数据到隔离新库并验证，不直接覆盖打开。升级失败保留旧引擎/原数据和导出包，包内版本不受信时拒绝恢复。
 

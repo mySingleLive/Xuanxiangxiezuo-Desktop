@@ -1,23 +1,15 @@
 "use client"
 
 /**
- * 对话模型选择器（两层列表）：
- * 第一层=大模型列表（首项为 OpenRouter Auto 虚拟选择（auto-model.ts），
- * 对外身份「玄香印 Auto 模型」），其后为 Admin 后台登记的 enabled 文本模型，按供应商分组），
- * 第二层=该模型的思考强度档位（thinking-effort.ts 能力表；Auto 无档位不出第二层）。
- * 选择落在会话上（PATCH 会话记录 / 新会话随发送落库），modelId=null 即 Auto，
- * 后续轮次按所选模型+强度生成。
- * 思考强度记忆（2026-09）：显式选档即记入 store 的 modelEffortMemory（localStorage 持久化）；
- * 再点模型行时恢复该模型上次档位，从未选过档位的模型默认「高」（无档位模型/Auto 落 null）。
- * 上次模型记忆（2026-09）：显式选择（含 Auto）即记入 store 的 lastModelChoice（localStorage 持久化），
- * 新会话/新打开页面时默认带出上次所选模型；若该模型已下架则回落 Auto。
+ * Reuse the Web conversation picker and thinking submenu with local models.
+ * Model choices remain explicit: unavailable references never fall back to a
+ * different model. New-task defaults are captured separately at task creation.
  */
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Check } from "lucide-react"
 import { toast } from "sonner"
 
-import { AUTO_MODEL_ID } from "@/lib/ai/auto-model"
 import { cn } from "@/lib/utils"
 import { CHAT_OPEN_MODEL_PICKER_EVENT } from "@/components/chat/ui-events"
 import { useChatStore, type ModelChoice } from "@/stores/chat"
@@ -71,6 +63,16 @@ export function ModelPicker() {
   const modelEffortMemory = useChatStore((s) => s.modelEffortMemory)
   const rememberModelEffort = useChatStore((s) => s.rememberModelEffort)
   const rememberModelChoice = useChatStore((s) => s.rememberModelChoice)
+  const accountId = useChatStore(s => s.accountId)
+  const draftId = useChatStore(s => s.draftId)
+  const owner = JSON.stringify([accountId,conversationId,draftId])
+  const selection = useRef({owner,epoch:0,ticket:0,confirmed:modelChoice,alive:true})
+  const writes = useRef<Promise<void>>(Promise.resolve())
+  if (selection.current.owner !== owner) selection.current = {owner,epoch:selection.current.epoch+1,ticket:selection.current.ticket+1,confirmed:modelChoice,alive:true}
+  useEffect(() => {
+    selection.current.alive=true
+    return () => {selection.current.alive=false;selection.current.ticket++}
+  },[])
 
   const { data } = useQuery({
     queryKey: ["chat-models"],
@@ -83,21 +85,11 @@ export function ModelPicker() {
   })
 
   const models = data?.models ?? []
-  /* 未选择（modelId=null）即虚拟 Auto 模型（历史「自动」语义的迁移）；pill 展示模型名（非默认强度附后缀） */
-  const effectiveModelId = modelChoice.modelId ?? AUTO_MODEL_ID
+  const effectiveModelId = modelChoice.modelId
   const currentModel = models.find((m) => m.id === effectiveModelId) ?? null
   const displayModel = currentModel
   const currentEffortOption =
     currentModel?.thinkingEfforts.find((o) => o.value === (modelChoice.effort ?? "default")) ?? null
-
-  /* 新会话恢复的上次模型若已下架：回落 Auto 并同步记忆（已加载会话按会话记录处理，不在此纠偏） */
-  useEffect(() => {
-    if (conversationId || !data || !modelChoice.modelId) return
-    if (data.models.some((m) => m.id === modelChoice.modelId)) return
-    const fallback = { modelId: null, effort: null }
-    setModelChoice(fallback)
-    rememberModelChoice(fallback)
-  }, [conversationId, data, modelChoice.modelId, setModelChoice, rememberModelChoice])
 
   /* 错误卡「切换模型」行动按钮经 UI 事件打开本选择器 */
   useEffect(() => {
@@ -106,31 +98,45 @@ export function ModelPicker() {
     return () => window.removeEventListener(CHAT_OPEN_MODEL_PICKER_EVENT, open)
   }, [])
 
-  /** 选择落库：store 先行（乐观），已有会话同步 PATCH；失败回滚并返回 false */
+  /** Serialize persisted choices. A late response owns only its original
+   * conversation/draft and can roll back only the latest still-visible choice. */
   const applyChoice = async (choice: ModelChoice): Promise<boolean> => {
-    const prev = modelChoice
+    const frame=selection.current,epoch=frame.epoch,ticket=++frame.ticket
+    const ownsContext=() => {
+      const current=useChatStore.getState()
+      return selection.current.alive && selection.current.epoch===epoch && JSON.stringify([current.accountId,current.conversationId,current.draftId])===owner
+    }
+    const ownsChoice=() => ownsContext() && selection.current.ticket===ticket && useChatStore.getState().modelChoice.modelId===choice.modelId && useChatStore.getState().modelChoice.effort===choice.effort
     setModelChoice(choice)
     if (!conversationId) {
-      rememberModelChoice(choice)
+      if (!ownsChoice()) return false
+      frame.confirmed=choice;rememberModelChoice(choice)
       return true
     }
-    try {
-      const res = await fetch(`/api/chat/conversations/${conversationId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ modelId: choice.modelId, thinkingEffort: choice.effort }),
-      })
-      if (!res.ok) {
-        const data = (await res.json().catch(() => null)) as { error?: string } | null
-        throw new Error(data?.error ?? "保存模型选择失败")
+    const pending=writes.current.then(async () => {
+      try {
+        const res = await fetch(`/api/chat/conversations/${conversationId}`, {
+          method: "PATCH", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ modelId: choice.modelId, thinkingEffort: choice.effort }),
+        })
+        if (!res.ok) {
+          const data = (await res.json().catch(() => null)) as { error?: string } | null
+          throw new Error(data?.error ?? "保存模型选择失败")
+        }
+        if (ownsContext()) selection.current.confirmed=choice
+        if (!ownsChoice()) return false
+        rememberModelChoice(choice)
+        return true
+      } catch (err) {
+        if (ownsChoice()) {
+          setModelChoice(selection.current.confirmed)
+          toast.error(err instanceof Error ? err.message : "保存模型选择失败")
+        }
+        return false
       }
-      rememberModelChoice(choice)
-      return true
-    } catch (err) {
-      setModelChoice(prev)
-      toast.error(err instanceof Error ? err.message : "保存模型选择失败")
-      return false
-    }
+    })
+    writes.current=pending.then(()=>undefined,()=>undefined)
+    return pending
   }
 
   /** 档位选择成功（含新会话无 PATCH 直通）后记入思考强度记忆 */
@@ -138,17 +144,9 @@ export function ModelPicker() {
     if (ok && effort) rememberModelEffort(modelId, effort)
   }
 
-  /**
-   * 点击模型行：选中并关闭菜单。
-   * 思考强度：之前选过该模型的档位则恢复上次选择；从未选过默认「高」（无档位模型落 null）；
-   * Auto 行落 null（虚拟模型的持久化语义，无档位）。
-   */
+  /** Preserve an explicit effort memory when supported; otherwise use the model default. */
   const selectModel = (m: SelectableModel) => {
     setMenuOpen(false)
-    if (m.id === AUTO_MODEL_ID) {
-      void applyChoice({ modelId: null, effort: null })
-      return
-    }
     const hasOption = (value: string | null | undefined): value is string =>
       m.thinkingEfforts.some((o) => o.value === value)
     const effort =
@@ -156,9 +154,7 @@ export function ModelPicker() {
         ? null
         : hasOption(modelEffortMemory[m.id])
           ? modelEffortMemory[m.id]
-          : hasOption("high")
-            ? "high"
-            : null
+          : null
     void applyChoice({ modelId: m.id, effort }).then((ok) => rememberAfterApply(m.id, effort, ok))
   }
 
@@ -182,7 +178,7 @@ export function ModelPicker() {
                   ? ` · ${currentEffortOption.label}`
                   : ""
               }`
-            : "选择模型"}
+            : effectiveModelId ? "模型已失效" : "选择模型"}
         </span>
       </DropdownMenuTrigger>
       <DropdownMenuContent side="top" align="end" sideOffset={6} className="w-60">
@@ -234,7 +230,7 @@ export function ModelPicker() {
                 <DropdownMenuSubContent className="w-52">
                   <DropdownMenuGroup>
                     <DropdownMenuLabel>
-                      思考强度 · 上下文 {formatWindow(m.contextWindow)}
+                      思考强度{m.contextWindow > 0 ? ` · 上下文 ${formatWindow(m.contextWindow)}` : ""}
                     </DropdownMenuLabel>
                     {m.thinkingEfforts.map((opt) => {
                       const effortActive =
@@ -267,9 +263,11 @@ export function ModelPicker() {
             )
           })}
           {models.length === 0 && (
-            <DropdownMenuItem disabled>暂无可用模型，请联系管理员配置</DropdownMenuItem>
+            <DropdownMenuItem disabled>暂无可用文本模型</DropdownMenuItem>
           )}
         </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => window.dispatchEvent(new CustomEvent("desktop:settings", { detail:"models" }))}>管理模型</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

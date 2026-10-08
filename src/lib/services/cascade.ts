@@ -9,6 +9,7 @@ import { updateChapterContent } from "@/lib/services/chapter"
 import { updateChapterOutline } from "@/lib/services/outline"
 import { ContentError } from "@/lib/content-errors"
 import { getContentReceipt, ownedChapter } from "./content-commit"
+import { runWithTaskDefaults, taskDefaults } from "@desktop/service/task-defaults"
 
 /** 级联修订目标类型：章大纲 / 章正文 */
 export type CascadeTargetType = "CHAPTER_OUTLINE" | "CHAPTER_CONTENT"
@@ -240,9 +241,11 @@ export async function triggerCascade(input: TriggerCascadeInput): Promise<Cascad
         volumeTitle,
       })
     )
+    const defaultsSnapshot = await taskDefaults()
     const job = await prisma.cascadeJob.create({
       data: {
         novelId: input.novelId,
+        defaultsSnapshot,
         triggerType: input.triggerType,
         triggerId: input.triggerId,
         status: "RUNNING",
@@ -251,13 +254,13 @@ export async function triggerCascade(input: TriggerCascadeInput): Promise<Cascad
     })
 
     // fire-and-forget：后台顺序执行修订，路由无需等待全部 AI 调用完成
-    void runCascadeRevision(
+    void runWithTaskDefaults(defaultsSnapshot, () => runCascadeRevision(
       job.id,
       novel.userId,
       input.novelId,
       input.changeDescription,
       affected
-    )
+    ))
 
     return job
   } catch (err) {

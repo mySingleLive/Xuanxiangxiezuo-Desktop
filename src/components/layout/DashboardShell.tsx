@@ -7,13 +7,16 @@ import { CommentDraftAccount } from "@/components/comments/comment-drafts"
 import { useTabsStore } from "@/stores/tabs"
 import { useChatStore } from "@/stores/chat"
 import { Button } from "@/components/ui/button"
+import { useDesktopCommands } from "@/lib/desktop/use-command-target"
+import {desktopWorkspaceDraftSource,registerWorkspaceLayoutAdapter,type WorkspaceLayout} from "@/lib/desktop/workspace-draft-source"
+import {settledWorkspaceLayout} from "@/lib/desktop/workspace-layout"
 
 import { ChatPanel } from "./ChatPanel"
 import { ContentTabs } from "./ContentTabs"
 import { SidebarTree } from "./SidebarTree"
 
 interface DashboardShellProps {
-  user: { id: string; name: string; email: string }
+  user: { id: string; name: string; email: string; avatarUrl?: string }
 }
 
 /**
@@ -51,28 +54,29 @@ function ResizeHandle({ withLine = false }: { withLine?: boolean }) {
 }
 
 export function DashboardShell({ user }: DashboardShellProps) {
-  const [narrowPane, setNarrowPane] = useState<"chat" | "content" | "sidebar">("chat")
+  const [initialLayout]=useState(()=>typeof window!=="undefined"&&window.desktop?desktopWorkspaceDraftSource.read().layout:null)
+  const [narrowPane, setNarrowPane] = useState<"chat" | "content" | "sidebar">(initialLayout?.narrowPane??"chat")
   // 初始只展示「侧栏 + AI 对话」，打开/激活任意内容 tab 时自动展开右侧内容区
-  const [contentVisible, setContentVisible] = useState(false)
+  const [contentVisible, setContentVisible] = useState(initialLayout?.contentVisible??false)
   // 内容区挂载状态：收起动画播放期间保持挂载，动画结束才卸载
-  const [contentMounted, setContentMounted] = useState(false)
+  const [contentMounted, setContentMounted] = useState(initialLayout?.contentVisible??false)
   // 动画播放中：临时放开 content 的 minSize，允许宽度经过 0~30% 区间
   const [animating, setAnimating] = useState(false)
   const groupRef = useGroupRef()
   /** 状态镜像（订阅/动画回调里读最新值） */
-  const visibleRef = useRef(false)
-  const mountedRef = useRef(false)
+  const visibleRef = useRef(initialLayout?.contentVisible??false)
+  const mountedRef = useRef(initialLayout?.contentVisible??false)
   /** 重新展开时恢复到的宽度百分比；null = 从未展开过（首次均分） */
-  const lastContentSizeRef = useRef<number | null>(null)
+  const lastContentSizeRef = useRef<number | null>(initialLayout?.lastContentSize??null)
   /** 进行中的布局动画（换向时取消） */
   const animRef = useRef<{ cancel: () => void } | null>(null)
   // 侧栏显示/隐藏：初始展开；面板保持挂载（面板集合不变，避免触发库的组合布局记忆），
   // 隐藏时宽度弹到 0 并保持 minSize 0，恢复时弹回上次宽度
-  const [sidebarVisible, setSidebarVisible] = useState(true)
+  const [sidebarVisible, setSidebarVisible] = useState(initialLayout?.sidebarVisible??true)
   const [sidebarAnimating, setSidebarAnimating] = useState(false)
-  const sidebarVisibleRef = useRef(true)
+  const sidebarVisibleRef = useRef(initialLayout?.sidebarVisible??true)
   /** 隐藏前的侧栏宽度百分比，供恢复；null = 从未隐藏过（用默认 260px 换算） */
-  const lastSidebarSizeRef = useRef<number | null>(null)
+  const lastSidebarSizeRef = useRef<number | null>(initialLayout?.lastSidebarSize??null)
   /** 进行中的侧栏动画（与内容区动画相互独立，可同时播放） */
   const sidebarAnimRef = useRef<{ cancel: () => void } | null>(null)
   /** 展开动画的目标宽度（动画途中收起时记为下次的恢复值） */
@@ -80,11 +84,17 @@ export function DashboardShell({ user }: DashboardShellProps) {
   // 内容区全屏（隐藏中间 AI 对话面板）：与侧栏隐藏同款——chat 面板保持挂载、宽度弹到 0
   // （面板集合不变，不触发库的组合布局记忆，无需钉回），content 吸收全部空间；
   // 退出全屏弹回隐藏前宽度
-  const [chatVisible, setChatVisible] = useState(true)
+  const [chatVisible, setChatVisible] = useState(initialLayout?.chatVisible??true)
   const [chatAnimating, setChatAnimating] = useState(false)
-  const chatVisibleRef = useRef(true)
+  const chatVisibleRef = useRef(initialLayout?.chatVisible??true)
   /** 隐藏前的 chat 宽度百分比，供退出全屏恢复；null = 从未隐藏过（用默认 560px 换算） */
-  const lastChatSizeRef = useRef<number | null>(null)
+  const lastChatSizeRef = useRef<number | null>(initialLayout?.lastChatSize??null)
+  const layoutListeners=useRef(new Set<()=>void>())
+  const narrowPaneRef=useRef(narrowPane);narrowPaneRef.current=narrowPane
+  const pendingLayout=useRef<WorkspaceLayout|null>(null)
+  const lastMeasuredSizes=useRef<WorkspaceLayout["sizes"]>(initialLayout?.sizes??{})
+  const restoredFrame=useRef<number|null>(null)
+  const announceLayout=useCallback(()=>{for(const listener of layoutListeners.current)listener()},[])
   /**
    * content 挂载前捕获的 sidebar 实时宽度（%）。库会按面板 id 组合记忆布局，
    * content 挂载导致面板集合变化时会恢复 "sidebar,chat,content" 组合记住的旧布局
@@ -398,6 +408,44 @@ export function DashboardShell({ user }: DashboardShellProps) {
     if (visibleRef.current) hideContent()
     else showContent()
   }, [hideContent, showContent])
+  useEffect(()=>{
+    if(!window.desktop)return
+    const release=registerWorkspaceLayoutAdapter({
+      read:()=>{
+        const measured=groupRef.current?.getLayout()
+        // Group clears its imperative ref before the parent's passive cleanup.
+        // Keep the last complete measurement instead of replacing it with {}.
+        if(measured?.sidebar!==undefined&&measured.chat!==undefined)lastMeasuredSizes.current=measured
+        return pendingLayout.current??settledWorkspaceLayout({version:1,narrowPane:narrowPaneRef.current,contentVisible:visibleRef.current,sidebarVisible:sidebarVisibleRef.current,chatVisible:chatVisibleRef.current,sizes:lastMeasuredSizes.current,lastContentSize:lastContentSizeRef.current,lastSidebarSize:lastSidebarSizeRef.current,lastChatSize:lastChatSizeRef.current})
+      },
+      subscribe:listener=>{layoutListeners.current.add(listener);return()=>{layoutListeners.current.delete(listener)}},
+      apply:input=>{
+        const layout=settledWorkspaceLayout(input);pendingLayout.current=layout
+        cancelAnimation();cancelSidebarAnimation()
+        if(restoredFrame.current!==null)cancelAnimationFrame(restoredFrame.current)
+        visibleRef.current=layout.contentVisible;mountedRef.current=layout.contentVisible;sidebarVisibleRef.current=layout.sidebarVisible;chatVisibleRef.current=layout.chatVisible
+        lastContentSizeRef.current=layout.lastContentSize;lastSidebarSizeRef.current=layout.lastSidebarSize;lastChatSizeRef.current=layout.lastChatSize
+        setContentVisible(layout.contentVisible);setContentMounted(layout.contentVisible);setSidebarVisible(layout.sidebarVisible);setChatVisible(layout.chatVisible);setNarrowPane(layout.narrowPane)
+        setAnimating(false);setSidebarAnimating(false);setChatAnimating(false)
+        let attempts=0
+        const apply=()=>{
+          const group=groupRef.current,current=group?.getLayout()
+          if(group&&current?.sidebar!==undefined&&current.chat!==undefined&&(!layout.contentVisible||current.content!==undefined)){
+            if(Object.keys(layout.sizes).length)group.setLayout(layout.sizes)
+            pendingLayout.current=null;restoredFrame.current=null;announceLayout()
+          }else if(++attempts<20)restoredFrame.current=requestAnimationFrame(apply)
+          else{pendingLayout.current=null;restoredFrame.current=null;announceLayout()}
+        }
+        restoredFrame.current=requestAnimationFrame(apply)
+      },
+    })
+    return()=>{release();if(restoredFrame.current!==null)cancelAnimationFrame(restoredFrame.current);pendingLayout.current=null}
+  },[groupRef,cancelAnimation,cancelSidebarAnimation,announceLayout])
+  useEffect(()=>{announceLayout()},[narrowPane,contentVisible,sidebarVisible,chatVisible,announceLayout])
+  useDesktopCommands({
+    "view.sidebar":()=>{if(sidebarVisibleRef.current)hideSidebar();else showSidebar()},
+    "view.content":toggleContent,
+  })
 
   useEffect(() => {
     return useTabsStore.subscribe((s, prev) => {
@@ -430,7 +478,7 @@ export function DashboardShell({ user }: DashboardShellProps) {
         <Button size="sm" variant="ghost" aria-pressed={narrowPane === "chat"} onClick={() => setNarrowPane("chat")}>返回对话</Button>
         <Button size="sm" variant="ghost" aria-pressed={narrowPane === "content"} disabled={!contentMounted} onClick={() => { showContent(); setNarrowPane("content") }}>查看内容</Button>
       </nav>
-      <Group orientation="horizontal" className="workspace-group min-h-0 flex-1" groupRef={groupRef}>
+      <Group orientation="horizontal" className="workspace-group min-h-0 flex-1" groupRef={groupRef} defaultLayout={initialLayout&&Object.keys(initialLayout.sizes).length?initialLayout.sizes:undefined} onLayoutChanged={announceLayout}>
         <Panel
           id="sidebar"
           defaultSize={260}

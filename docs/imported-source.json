@@ -378,7 +378,8 @@
       "destination": "prisma/schema.prisma",
       "sha256": "d081d3d878db70a7eb07e18060816887b47a9c74059c12c4d6f9754efe43593d",
       "status": "adapted-desktop-boundary",
-      "reason": "Add immutable-request usage metadata carrier modelSnapshot; no credentials in local model references"
+      "reason": "Add immutable-request usage metadata carrier modelSnapshot; no credentials in local model references",
+      "currentSha256": "8aa540edfb14209e98252fcd71d4c96ca99e1ab3b089e59792dea01891a52d37"
     },
     {
       "source": "prisma/seed-templates.ts",
@@ -498,7 +499,9 @@
       "source": "public/design-preview",
       "destination": "public/design-preview",
       "sha256": "7dc0af96805416277176fb456f2eee1495a4c22f18dff33ac123ac43048da1c9",
-      "status": "imported-unmodified"
+      "status": "removed-platform",
+      "currentSha256": null,
+      "reason": "Remove an imported serialized preview symlink; design fixtures and debugger are not shipped in the desktop app."
     },
     {
       "source": "public/file.svg",
@@ -582,7 +585,9 @@
       "source": "src/app/api/admin/sop/route.ts",
       "destination": "desktop/handlers/admin/sop/route.ts",
       "sha256": "656aa70de789396abc661010e8a1592a5fafe45c13c7a26d7b01161fca4e7578",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "3ab5626a85967449c9ad88f2c6f6efd6969ee23ea96ff19bcb84a538941241d7",
+      "reason": "Use shared local global-library database and relocated local-author helper."
     },
     {
       "source": "src/app/api/admin/usage/route.ts",
@@ -594,7 +599,9 @@
       "source": "src/app/api/chat/conversations/[id]/route.ts",
       "destination": "desktop/handlers/chat/conversations/[id]/route.ts",
       "sha256": "df75593e9f52f55c459b6fe9262a1a2af001aa5807482a6e5bea96deb25b03ba",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "325de2910cb5802c6014a3c6f6536303f69463a40fb59b1a0cadce0d67e56df5",
+      "reason": "Validate selected model through the main-process vault; remove platform tier/Auto fallback."
     },
     {
       "source": "src/app/api/chat/conversations/[id]/sop-plan/route.ts",
@@ -612,7 +619,9 @@
       "source": "src/app/api/chat/route.ts",
       "destination": "desktop/handlers/chat/route.ts",
       "sha256": "cf62ebeabb91ebdc7cdb2b2809990830bd1e2258c1926afa92b237984b8e7d79",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "74a7a390770182cbbf37cd71c8470c2f9f011ed1e798029dbc31d6480a8f7ecf",
+      "reason": "Use configured local text model; retain detached task through heartbeat/checkpoint/final writes, remove platform automatic routing."
     },
     {
       "source": "src/app/api/chat/turns/[turnId]/cancel/route.ts",
@@ -888,13 +897,17 @@
       "source": "src/app/api/novels/[id]/foreshadows/[fid]/touches/[tid]/references/[rid]/route.ts",
       "destination": "desktop/handlers/novels/[id]/foreshadows/[fid]/touches/[tid]/references/[rid]/route.ts",
       "sha256": "d1fe2df9db0c4b7fc0c9c6589d8f45ab7e8c22028e2b09986351bfadc4cf27bf",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "8719030e9bd522ccd63845c7c1971d3f99a905a6093c3f0d7a3b6330f4f274a5",
+      "reason": "Adapt relative local handler helper import after route relocation; preserve original behavior."
     },
     {
       "source": "src/app/api/novels/[id]/foreshadows/[fid]/touches/[tid]/references/route.ts",
       "destination": "desktop/handlers/novels/[id]/foreshadows/[fid]/touches/[tid]/references/route.ts",
       "sha256": "0d0982913797291e756f7df8d75ce05ca7298d271c000e95f6c8bd6346e14a51",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "bdb48c70cc15fdbd27ad22cc8f36339872f2602547c474c677724f1a54fe72da",
+      "reason": "Adapt relative local handler helper import after route relocation; preserve original behavior."
     },
     {
       "source": "src/app/api/novels/[id]/foreshadows/[fid]/touches/[tid]/route.ts",
@@ -1224,13 +1237,17 @@
       "source": "src/app/api/subagent-runs/[id]/route.ts",
       "destination": "desktop/handlers/subagent-runs/[id]/route.ts",
       "sha256": "81847c08bb92ce70de1e7e35fdaa5799199678d6938ea00bd38c1c295cef7513",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "e5b16d206864665b6f121fea714ce1ec933722071f93230f9baab02e64c8831b",
+      "reason": "Adapt relative local handler helper import after route relocation; preserve original behavior."
     },
     {
       "source": "src/app/globals.css",
       "destination": "src/app/globals.css",
       "sha256": "c1a4360e7d13a1031fbe16bd7f17cfd848011f438c06ce38c11be0581e6b499e",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "1c525396a7b2f6726b884be92395034ada375784495b860c895fc2b14258561c",
+      "reason": "Keep original semantic tokens and Web UI styles; exclude prototype fixtures from Tailwind scanning."
     },
     {
       "source": "src/app/providers.tsx",
@@ -1326,7 +1343,9 @@
       "source": "src/components/chat/ModelPicker.tsx",
       "destination": "src/components/chat/ModelPicker.tsx",
       "sha256": "8cee582ea868d5a2af112b8be70749cad2d702555f42da58d6969e8d0bff91eb",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "3ee706fa708c77687ccafcf4a89dd478536a7686ae3c02a48ebc32156dba82c1",
+      "reason": "Preserve the Web model-picker layout; add the desktop model-settings entry and replace platform-admin empty-state text."
     },
     {
       "source": "src/components/chat/NarrativeCheckCard.tsx",
@@ -1440,7 +1459,9 @@
       "source": "src/components/chat/provider-logos.tsx",
       "destination": "src/components/chat/provider-logos.tsx",
       "sha256": "41d90b0dd3c4afbc7414c79037debcc51bd538c49c7c2fbce91dfa0ec66407a8",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "676f7fd77a4e98afbe8c5cca1494641d106ae211eb68a1e72f6b2cb3580280f2",
+      "reason": "Use approved local supplier/family SVG assets and desktop aliases; preserve the original ProviderLogo component API."
     },
     {
       "source": "src/components/chat/scene-receipts.ts",
@@ -1602,7 +1623,9 @@
       "source": "src/components/content/CharacterImagePanel.tsx",
       "destination": "src/components/content/CharacterImagePanel.tsx",
       "sha256": "da1834c51eccd565e46f085d37fc1bebce0387e22e7129976cbbefbe8877fd05",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "31f6efadd16f377c6afec6df5f8c1dba6815be72d726ab3ade8b33d1324e0211",
+      "reason": "Keep the original image-panel UI and add the approved model Logo to existing model choices."
     },
     {
       "source": "src/components/content/CharacterPanel.tsx",
@@ -1662,7 +1685,9 @@
       "source": "src/components/content/ItemImagePanel.tsx",
       "destination": "src/components/content/ItemImagePanel.tsx",
       "sha256": "d796a4c6334f20f24b9f82893946ffd21f39aacb9221cc962a8c8d2fab8d8d9b",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "6038ff1b5bc8eb07270f455e1ddf550ca1a8517fcecc6fa09b446d6a652f306b",
+      "reason": "Keep the original image-panel UI and add the approved model Logo to existing model choices."
     },
     {
       "source": "src/components/content/ItemLevelPicker.tsx",
@@ -1698,7 +1723,9 @@
       "source": "src/components/content/NovelCoverPanel.tsx",
       "destination": "src/components/content/NovelCoverPanel.tsx",
       "sha256": "7f5a45b956f7ccbd202bf5979e2c50ab223f48b0f3afafc02bc1066873ed8c99",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "2a027342969c45fb3ac14b3ba8f90058c60686706b55ac36f4d5afdde1758970",
+      "reason": "Keep the original cover-panel UI and add the approved model Logo to existing model choices."
     },
     {
       "source": "src/components/content/NovelOverview.tsx",
@@ -1998,7 +2025,9 @@
       "source": "src/components/editor/MarkdownEditor.tsx",
       "destination": "src/components/editor/MarkdownEditor.tsx",
       "sha256": "c0ff2fb88e9dcae198fce26a658a7bad64526377c22f6cfbcb14c1d8fd1fdfaa",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "4acebd907863aa40eef7f630167b95ad51d52ed1f259df491ae7cbfb40d1e59f",
+      "reason": "Add a desktop-scoped wrapper for local body typography; preserve the original editor, autosave, modes and comments."
     },
     {
       "source": "src/components/editor/MarkdownPreview.tsx",
@@ -2010,7 +2039,9 @@
       "source": "src/components/editor/MonacoMarkdownEditor.tsx",
       "destination": "src/components/editor/MonacoMarkdownEditor.tsx",
       "sha256": "f2f97b391fbecb139b0ad8e95b48c21c6c58ff29af8b5534ef508ba5f603033c",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "87d5574537b3bc3e67c5cfe84a886ab9a2096a2e7a07963f60876795eb93f2c5",
+      "reason": "Apply desktop body font, size, line-height, line-number and wrapping preferences through the existing editor options without remounting its model or undo history."
     },
     {
       "source": "src/components/editor/monaco-setup.ts",
@@ -2070,7 +2101,9 @@
       "source": "src/components/layout/DashboardShell.tsx",
       "destination": "src/components/layout/DashboardShell.tsx",
       "sha256": "a527960ee848cad6723c29003d5e0fd941c6a48cec614be40fa2b0f57395e830",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "ea209083139e181a43a639c7dd44a2b94d4259f3417612cae7f3c5d4b50f1707",
+      "reason": "Pass an optional local avatar URL through the existing Web shell; retain its original panels, sizing and visibility animations."
     },
     {
       "source": "src/components/layout/OutlineTreeMenu.tsx",
@@ -2094,7 +2127,9 @@
       "source": "src/components/layout/SidebarTree.tsx",
       "destination": "src/components/layout/SidebarTree.tsx",
       "sha256": "6c4d58d3bce93d999536f423f625b59a33ab7739fc754651416fd01b85e9950b",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "91278f2d4347d4ef492d4f45e70348dbb5f1f9277512d39edad7366fe743b156",
+      "reason": "Keep the Web tree/account-menu layout, desktop window-controls/settings entry and confirmed local profile; render only the saved local avatar in the original account icon slots."
     },
     {
       "source": "src/components/marketing/seal.tsx",
@@ -2322,13 +2357,17 @@
       "source": "src/lib/ai/cost-config.ts",
       "destination": "src/lib/ai/cost-config.ts",
       "sha256": "ae74a3347acc2480aab7561da33f12961fb7285c0c1effd4a556af376a73f671",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "413e29aa85029cadf79bd2a5ced6bfe162b3c6ad5f8b5c2a3884116b14af88e7",
+      "reason": "Read and write application-level configuration/templates through the local global-library database rather than a work database."
     },
     {
       "source": "src/lib/ai/error-classification.ts",
       "destination": "src/lib/ai/error-classification.ts",
       "sha256": "a46e3408fc4268208d764fbb23c0aa282c2f00c767a8752622dca5c518c0d12b",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "3af6def35bbfb8d32f6ef7d11144aa06d5dc3087805315736e2208bef8410c70",
+      "reason": "Recognize safe RPC network and authorization-revocation codes while retaining original failure classification."
     },
     {
       "source": "src/lib/ai/errors.ts",
@@ -2340,7 +2379,9 @@
       "source": "src/lib/ai/generate.ts",
       "destination": "src/lib/ai/generate.ts",
       "sha256": "545425fc722872aa3b19291379e8f2645f1ef57e9f3914a4c66f46542eb49b72",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "8c3e0a88b8409b1e8ed4373f1f33713c40dbd2c0a15b8d3aaccb7394a85dc514",
+      "reason": "Retain local workspace until actual stream consumption and onFinish writes settle; persist immutable model usage snapshots."
     },
     {
       "source": "src/lib/ai/image.ts",
@@ -2364,7 +2405,9 @@
       "source": "src/lib/ai/network-retry.ts",
       "destination": "src/lib/ai/network-retry.ts",
       "sha256": "9ef6fc9623319356515905af19f6c5e1e79ba06343a2c26f2e437a5cbedce75a",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "3c130d4e15f98cd84d53d3beff4fcc449a0aee3f70adf1dca59a7833e76968d1",
+      "reason": "Read and write application-level configuration/templates through the local global-library database rather than a work database."
     },
     {
       "source": "src/lib/ai/openrouter.ts",
@@ -2388,7 +2431,9 @@
       "source": "src/lib/ai/provider.ts",
       "destination": "src/lib/ai/provider.ts",
       "sha256": "4ad393913b21b7d59e75d42ac309c2755af3c7310813137f0e36e6f7e2d53a3b",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "8d28fa50d6f5060e0af680a0ad5fb189ab0529f87f7ccf7d125e22ca5a3ff7d1",
+      "reason": "Resolve explicit local-vault model snapshots by task role; use the main-process authorized network transport without platform fallback or worker Key access; normalize only provider family aliases for existing SDK compatibility."
     },
     {
       "source": "src/lib/ai/soft-stop.ts",
@@ -2418,13 +2463,17 @@
       "source": "src/lib/ai/thinking-effort.ts",
       "destination": "src/lib/ai/thinking-effort.ts",
       "sha256": "ad9ab82d5be4bb63fdbf9f65cebce8fa8996dc48afbaf5615f297698b2120b5a",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "1076ee8a4d4ef6b0efba790cbf21a4fb2ae48ea2301e360c250bd5917cdd496f",
+      "reason": "Reuse the original thinking capability table with desktop supplier-family aliases; preserve stored supplier IDs and authorization scopes."
     },
     {
       "source": "src/lib/ai/timeouts.ts",
       "destination": "src/lib/ai/timeouts.ts",
       "sha256": "0442932ee9ea253feef0f996c563b7badc261685c40dca402b26d5a5f760372f",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "89a67baa538337f5d96c78b0fa34e1d6d1802915aa35271d2934c3da3246c8b9",
+      "reason": "Read and write application-level configuration/templates through the local global-library database rather than a work database."
     },
     {
       "source": "src/lib/ai/tool-compatible-model.ts",
@@ -2466,13 +2515,17 @@
       "source": "src/lib/auth.config.ts",
       "destination": "src/lib/auth.config.ts",
       "sha256": "22897d1cbc48a7a01adcd5ca341b07ca1125c77d46d302007b414d645e5f8696",
-      "status": "imported-unmodified"
+      "status": "removed-platform-boundary",
+      "currentSha256": null,
+      "reason": "Remove Web account/session auth configuration from the local-only application."
     },
     {
       "source": "src/lib/auth.ts",
       "destination": "src/lib/auth.ts",
       "sha256": "a6a7ce508890ea31ed9de296388427d793a3ac99fa3dbcac23cebf3c6d0e2fac",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "e07a174b23d6c82f3d2b25e09cba92f3234f0968d5bf574549fd64bac21481c1",
+      "reason": "Resolve the fixed local author only within trusted request database context; remove remote account authentication."
     },
     {
       "source": "src/lib/autosave-controller.ts",
@@ -2701,7 +2754,8 @@
       "destination": "src/lib/db.ts",
       "sha256": "9791c6ad18f3d59c51582e83d3ac0f6f9b148412624e0228bd4aede767bbdcb5",
       "status": "adapted-desktop-boundary",
-      "reason": "Replace remote singleton with request-scoped PGlite client; retain original chat write fence"
+      "reason": "Expose request-scoped and global-library Prisma facades over isolated per-work PGlite databases.",
+      "currentSha256": "e786ac6b2b6b9e630c96e698ee7648e779328802aac1fb4e6d127e5ed5780c5b"
     },
     {
       "source": "src/lib/draw-redraw.ts",
@@ -2773,13 +2827,17 @@
       "source": "src/lib/local-chat-cancellation.ts",
       "destination": "src/lib/local-chat-cancellation.ts",
       "sha256": "9efdbcb1ae2c7b736bb2748bc2ab6292143514cec4ba893ae09dffbc75b99add",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "99e3ce944f596aade4be3991e98aff3f301b945722b354559e092b93add9390d",
+      "reason": "Retain workspace for each active detached chat attempt and expose local attempt cancellation for app lifecycle."
     },
     {
       "source": "src/lib/long-task.ts",
       "destination": "src/lib/long-task.ts",
       "sha256": "7ef50bce06be8ee01075f03c05d29b82d2fb2ee95032182cb1088da35125b733",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "b5fcead1194200be91364a94f317f83a8680a974920d1e8b5d3cde02f2898b5c",
+      "reason": "Retain database lease during asynchronous queue acquisition and task lifetime, releasing on failure/completion."
     },
     {
       "source": "src/lib/manuscript-export-cover.ts",
@@ -2893,7 +2951,9 @@
       "source": "src/lib/prompts/render.ts",
       "destination": "src/lib/prompts/render.ts",
       "sha256": "68422196704060f24e443278000f31bd7e8d6d5c99e8068f16d50cb03cc60457",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "9240df0e37ec45c467ace9abf88a5ec6e39e83575cc4883fa9f71ac21187cc3a",
+      "reason": "Read and write application-level configuration/templates through the local global-library database rather than a work database."
     },
     {
       "source": "src/lib/prompts/scene-migration.ts",
@@ -2911,7 +2971,9 @@
       "source": "src/lib/quota.ts",
       "destination": "src/lib/quota.ts",
       "sha256": "b34f41eb38167aa00e92af85f4ad2c89800e25316ec15a7ba76fdbf288a88b42",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "44426cc37bc0fe1b7c00c278c6d60c96a1124369729a71338f8fc2fdf0d11f0f",
+      "reason": "Remove Web account quota checks and preserve local author validation; record local immutable per-call model and pricing snapshots."
     },
     {
       "source": "src/lib/review-dimensions.ts",
@@ -3073,7 +3135,9 @@
       "source": "src/lib/services/content-review.ts",
       "destination": "src/lib/services/content-review.ts",
       "sha256": "06cb1b8763946546f93654de747be9a0a68d48733791703979524811dc732203",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "af479faa90ee7121d0082db45fce470e1fab7e9a92f6183d2339cc26ec8e3e34",
+      "reason": "Use explicitly configured review model instead of inheriting the chat model or platform fallback."
     },
     {
       "source": "src/lib/services/cover-image.ts",
@@ -3133,7 +3197,9 @@
       "source": "src/lib/services/novel-create.ts",
       "destination": "src/lib/services/novel-create.ts",
       "sha256": "43b18f88e21375143b4c851b3a6fd331cd62d6e02d608164b1241a749ae0c323",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "1fde2a5242638c1e27282a00026f649ff8f1cf671e3353206458f772140236d6",
+      "reason": "Require the trusted native-directory creation context before original idempotent novel creation."
     },
     {
       "source": "src/lib/services/outline-structure.ts",
@@ -3391,7 +3457,9 @@
       "source": "src/lib/staged-save.ts",
       "destination": "src/lib/staged-save.ts",
       "sha256": "30a66f3ec648cdcc290e1317f5b459970cfa06c20829cddb4adc9911ce00d29a",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "8a2e985615bef7e0fdee3cd5aa4e1acc27303412855e700429d33c5cedce8025",
+      "reason": "Pending draft receipts retain the committed server version and timestamp, preventing false external-conflict alerts before an author-approved commit."
     },
     {
       "source": "src/lib/story-draft.ts",
@@ -3487,7 +3555,9 @@
       "source": "src/stores/staged-changes.ts",
       "destination": "src/stores/staged-changes.ts",
       "sha256": "49e6fd7130ac17ad69895797d24e360ea86e5285dc36a78783a96a9a0ac5bcd0",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "d6083296784088e5ab4528311f77d8ba7f008002e6ad0f3e49bf93dc2f905f80",
+      "reason": "Clarify that staged candidates do not increment committed version tokens; final approval and service CAS retain the original boundary."
     },
     {
       "source": "src/stores/story-activity.ts",
@@ -3505,7 +3575,9 @@
       "source": "src/app/api/admin/lib.ts",
       "destination": "desktop/handlers/admin/lib.ts",
       "sha256": "a4d2539348c417f77794a7e0f8d96c8fbc7145e6585e7ca5472592f6e5eb3cef",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "a87a2335c78f1d140b60eca89e4279693560935295fb9336e3408bb88e5225dc",
+      "reason": "Replace Web admin authorization with trusted local-author request context for retained local library handlers."
     },
     {
       "source": "src/app/api/novels/[id]/chapters/[chapterId]/history-api.ts",
@@ -3535,7 +3607,9 @@
       "source": "src/app/api/novels/[id]/lib.ts",
       "destination": "desktop/handlers/novels/[id]/lib.ts",
       "sha256": "54b50ecfb219d5282f243ad6ba6658718e92e56c6f0134273f457d81051522de",
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "6eaff44b0c4fbdd2b0cf5235017a022e42ed45ac67390aab1929e8dccf96387c",
+      "reason": "Use local-author context and relocated handler imports, retaining original work ownership checks."
     },
     {
       "source": "src/app/api/novels/[id]/scenarios/lib.ts",

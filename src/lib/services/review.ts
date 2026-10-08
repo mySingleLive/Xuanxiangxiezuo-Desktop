@@ -163,6 +163,7 @@ async function performAIReview(input: AIReviewInput) {
     novelId,
     tier: "ADVANCED",
     action: target.promptKey,
+    role: "review",
     prompt,
     schema: aiReviewSchema,
     abortSignal: input.abortSignal,
@@ -282,7 +283,7 @@ export async function runReaderReview(input: {
       characters: sections.characters,
       chapterContent: chapter.content,
     })
-    const model = await getModelForUser(userId, { tier: "ADVANCED", fetch: currentChatExecution()?.networkRetry?.fetch })
+    const model = await getModelForUser(userId, { role: "review", ignoreChatSession: true, fetch: currentChatExecution()?.networkRetry?.fetch })
     const reviewConfigHash = requestHash({ protocol: "reader-reference-v1", model: { id: model.modelRecord.id, updatedAt: model.modelRecord.updatedAt.toISOString(), optionsHash: requestHash(model.providerOptions ?? {}) }, promptHash: contentHash(prompt), schema: "score/impressions/summary" })
     await prisma.subAgentRun.update({ where: { id: run.id }, data: { reviewConfigHash } })
     const { data, promptTokens, completionTokens } = await withReviewAbort(run.id, undefined, abortSignal => generateJSON({

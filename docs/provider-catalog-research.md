@@ -16,7 +16,7 @@
 
 | 供应商 | 默认端点及依据 | 范围 |
 | --- | --- | --- |
-| 腾讯 | https://api.hunyuan.cloud.tencent.com/v1；[OpenAI 兼容文档](https://cloud.tencent.com/document/product/1729/111007) | 使用混元 API Key；不要求用户配置腾讯云旧式签名鉴权。另有 [Anthropic 兼容](https://cloud.tencent.com/document/product/1729/127293)，主预设采用 OpenAI |
+| 腾讯 | https://tokenhub.tencentmaas.com/v1；[旧平台停服及 TokenHub 迁移公告](https://cloud.tencent.com/document/product/1729/131925) | 2026-10-07 实现核验修正：旧混元平台已于2026-09-30停服。仅新增预设改为 TokenHub 国内站，需要该站 Key；已有记录/旧 Key 不自动迁移。主预设采用 OpenAI，不加入云签名凭据 |
 | 字节跳动 | https://ark.cn-beijing.volces.com/api/v3；[官方快速开始](https://docs.volcengine.com/docs/ark/quick-start?lang=zh) | 北京区域方舟 API Key；目录与模型/端点权限需分别核验 |
 | 阿里巴巴 | https://dashscope.aliyuncs.com/compatible-mode/v1；[官方区域端点](https://help.aliyun.com/en/model-studio/base-url) | 北京默认预设；[Key 按区域/工作空间区分](https://help.aliyun.cn/zh/model-studio/get-api-key)，其他区域/工作空间使用自定义供应商，不静默混用 Key |
 

@@ -11,6 +11,10 @@ for p in ['prisma/schema.prisma','prisma/seed-templates.ts','src/app/globals.css
  if p in files:selected[p]=p
 for r in items['routes']:
  if r['disposition']!='excluded-platform':selected[r['path']]=r['local']
+# Import sibling helpers used by retained routes, not only route entry files.
+retained_routes=[r['path'] for r in items['routes'] if r['disposition']!='excluded-platform']
+for p in files:
+ if p.startswith('src/app/api/') and p.endswith('.ts') and not p.endswith('/route.ts') and any(r.startswith(str(pathlib.PurePosixPath(p).parent)+'/') for r in retained_routes):selected[p]='desktop/handlers/'+p.removeprefix('src/app/api/')
 imported=[]
 for original,destination in sorted(selected.items()):
  out=root/destination

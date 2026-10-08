@@ -39,7 +39,7 @@ export interface NewConversationPayload {
   pendingNovelTitle?: string
 }
 
-/** 会话级模型选择：modelId=AIModel.id（null=跟随系统默认）；effort=思考强度档位（null=默认档） */
+/** 会话级模型选择：modelId 为本地模型 ID，显式 null 表示未选择；effort=null 为模型默认档。 */
 export interface ModelChoice {
   modelId: string | null
   effort: string | null
@@ -79,10 +79,12 @@ interface ChatState {
   queuePaused: boolean
   /** 对话模式（随下一条发送生效，逐轮随请求体提交） */
   mode: ChatMode
+  modeExplicit: boolean
   /** Enter 键行为（W7 输入交互）：true=Enter 发送/Shift+Enter 换行；false=反转。persist 持久化 */
   enterToSend: boolean
   /** 当前会话的模型选择（切换/新建会话时从会话记录同步或归零），随发送请求体提交 */
   modelChoice: ModelChoice
+  modelChoiceExplicit: boolean
   /**
    * 思考强度记忆（modelId → 上次所选档位）：选择器「再次选择该模型时恢复上次强度」
    * 的数据源，经 persist 落 localStorage（换浏览器/设备不同步）；
@@ -90,9 +92,7 @@ interface ChatState {
    */
   modelEffortMemory: Record<string, string>
   /**
-   * 上次选择的模型+强度：新会话（conversationId=null）的默认模型来源；
-   * null 表示从未显式选择过（落 Auto）。与 modelEffortMemory 同规则持久化，
-   * 同样仅选择器里的显式选择写入（含显式选 Auto，下次新会话仍是 Auto）
+   * 上次显式选择的模型+强度。只作选择历史，不能覆盖设置中的新任务默认值。
    */
   lastModelChoice: ModelChoice | null
   /** 参谋通过 askUserQuestion 发起的待回答问题；非空且生成结束时问答面板替换输入框 */
@@ -113,7 +113,7 @@ interface ChatState {
   setModelChoice: (choice: ModelChoice) => void
   /** 记录某模型上次选择的思考强度（选择器写入；模型重新登记换 id 后自然失效回默认） */
   rememberModelEffort: (modelId: string, effort: string) => void
-  /** 记录上次选择的模型+强度（选择器写入；新会话用它做默认模型） */
+  /** 记录上次显式选择的模型+强度。 */
   rememberModelChoice: (choice: ModelChoice) => void
   setPendingQuestion: (pending: PendingQuestion | null) => void
   setPendingNovelTitle: (title: string | null) => void
@@ -148,8 +148,10 @@ const chatStore: StateCreator<ChatState> = (set) => ({
   isGenerating: false,
   queuePaused: false,
   mode: "standard",
+  modeExplicit: false,
   enterToSend: true,
   modelChoice: { modelId: null, effort: null },
+  modelChoiceExplicit: false,
   modelEffortMemory: {},
   lastModelChoice: null,
   pendingQuestion: null,
@@ -171,9 +173,9 @@ const chatStore: StateCreator<ChatState> = (set) => ({
     set({ newConversationRequested: false, newConversationPayload: null }),
   setDraft: (draft) => set({ draft }),
   setIsGenerating: (isGenerating) => set({ isGenerating }),
-  setMode: (mode) => set({ mode }),
+  setMode: (mode) => set({ mode, modeExplicit: true }),
   setEnterToSend: (enterToSend) => set({ enterToSend }),
-  setModelChoice: (modelChoice) => set({ modelChoice }),
+  setModelChoice: (modelChoice) => set({ modelChoice, modelChoiceExplicit: true }),
   rememberModelEffort: (modelId, effort) =>
     set((s) => ({ modelEffortMemory: { ...s.modelEffortMemory, [modelId]: effort } })),
   rememberModelChoice: (lastModelChoice) => set({ lastModelChoice }),

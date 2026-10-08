@@ -17,3 +17,10 @@ playwright-report/
 src/generated/
 tests/generated/
 *.tsbuildinfo
+build/icon.png
+build/icon.ico
+build/icon.icns
+runtime-licenses/
+
+# Raw native acceptance logs contain local paths and test environment metadata.
+docs/evidence/

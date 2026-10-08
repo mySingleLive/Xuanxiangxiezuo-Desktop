@@ -58,7 +58,7 @@ import {
   type WizardTagGroup,
   type WizardTemplate,
 } from "@/lib/creation-wizard/taxonomy"
-import { WIZARD_TEMPLATES } from "@/lib/creation-wizard/templates"
+import { useWizardTemplates } from "@/lib/desktop/use-wizard-templates"
 import { cn } from "@/lib/utils"
 import { useChatStore } from "@/stores/chat"
 
@@ -69,7 +69,6 @@ const CATEGORY_META: Record<WizardCategory, { name: string; icon: LucideIcon }> 
   plot: { name: "剧情", icon: ListTree },
 }
 
-const TEMPLATE_BY_ID = new Map(WIZARD_TEMPLATES.map((t) => [t.id, t]))
 
 const BLANK_PICKS: WizardPicks = { theme: "blank", world: "blank", character: "blank", plot: "blank" }
 
@@ -181,6 +180,8 @@ export function CreateNovelDialog({
   onOpenChange: (open: boolean) => void
   novels: { id: string; title: string }[]
 }) {
+  const { templates, loading: templatesLoading, error: templatesError, reload: reloadTemplates } = useWizardTemplates(open)
+  const templateById = useMemo(() => new Map(templates.map(template => [template.id, template])), [templates])
   const [filters, setFilters] = useState<WizardFilters>(freshFilters)
   const [tagError, setTagError] = useState("")
   const [cat, setCat] = useState<WizardCategory>("theme")
@@ -191,25 +192,40 @@ export function CreateNovelDialog({
 
   const genres = useMemo(() => genresForChannel(filters.channel), [filters.channel])
   const styles = useMemo(() => stylesForChannel(filters.channel), [filters.channel])
-  const visible = useMemo(() => visibleTemplates(cat, filters), [cat, filters])
+  const visible = useMemo(() => visibleTemplates(cat, filters, templates), [cat, filters, templates])
   /** 边栏四项计数：一次遍历同时算出（与当前环节列表同一过滤口径） */
   const counts = useMemo(() => {
     const c: Record<WizardCategory, number> = { theme: 0, world: 0, character: 0, plot: 0 }
-    for (const t of WIZARD_TEMPLATES) if (isTemplateVisible(t, filters)) c[t.cat] += 1
+    for (const t of templates) if (isTemplateVisible(t, filters)) c[t.cat] += 1
     return c
-  }, [filters])
+  }, [filters, templates])
 
   // 过滤条件/环节变化后卡片网格滚动回顶
   useEffect(() => {
     if (gridRef.current) gridRef.current.scrollTop = 0
   }, [filters, cat])
 
+  // 本地模板库可在管理窗口被停用、删除或编辑；仍沿用原过滤裁剪规则。
+  useEffect(() => {
+    if (!open || templatesLoading || templatesError) return
+    setPicks(previous => {
+      const next = pruneInvisiblePicks(previous, filters, templates)
+      return WIZARD_CATEGORIES.every(category => next[category] === previous[category]) ? previous : next
+    })
+    setDetail(previous => {
+      if (previous === null || previous === "blank") return previous
+      const current = templateById.get(previous.id)
+      return current && current.cat === previous.cat && isTemplateVisible(current, filters) ? current : null
+    })
+    setConfirmReplace(false)
+  }, [open, templatesLoading, templatesError, templates, templateById, filters])
+
   /** 条件变更统一入口：联动裁剪已选不可见模板；任何条件/选卡变化都复位覆盖确认态 */
   const updateFilters = (next: WizardFilters) => {
     if (next === filters) return
     setTagError("")
     setFilters(next)
-    setPicks((p) => pruneInvisiblePicks(p, next))
+    setPicks((p) => pruneInvisiblePicks(p, next, templates))
     setConfirmReplace(false)
   }
 
@@ -241,13 +257,17 @@ export function CreateNovelDialog({
 
   const handleUseDetail = () => {
     if (detail === null) return
-    pickTemplate(detail === "blank" ? "blank" : detail.id)
+    if (detail === "blank") pickTemplate("blank")
+    else {
+      const current = templateById.get(detail.id)
+      if (current && current.cat === cat && isTemplateVisible(current, filters)) pickTemplate(current.id)
+    }
     setDetail(null)
   }
 
   const pickedName = (c: WizardCategory) => {
     const id = picks[c]
-    return id === "blank" ? "空白" : `《${TEMPLATE_BY_ID.get(id)?.title ?? "?"}》`
+    return id === "blank" ? "空白" : `《${templateById.get(id)?.title ?? "?"}》`
   }
 
   const reset = () => {
@@ -278,9 +298,10 @@ export function CreateNovelDialog({
 
   /** 确定：草稿非空时先经两步确认（任意 filters/picks 变化自动复位）；不自动发送 */
   const handleConfirm = () => {
+    if (templatesLoading || templatesError) return
     const resolved: Record<WizardCategory, WizardTemplate | null> = { theme: null, world: null, character: null, plot: null }
     for (const c of WIZARD_CATEGORIES) {
-      resolved[c] = picks[c] === "blank" ? null : (TEMPLATE_BY_ID.get(picks[c]) ?? null)
+      resolved[c] = picks[c] === "blank" ? null : (templateById.get(picks[c]) ?? null)
     }
     const draft = composeWizardDraft(filters, resolved)
     if (useChatStore.getState().draft.trim() && !confirmReplace) {
@@ -357,6 +378,7 @@ export function CreateNovelDialog({
           </FilterRow>
         </div>
 
+        {templatesError ? <div role="alert" className="flex items-center justify-between gap-2 px-[22px] py-2 text-sm text-destructive"><span>{templatesError.message}</span><Button variant="outline" size="sm" onClick={() => void reloadTemplates()}>重新加载模板</Button></div> : templatesLoading ? <p role="status" className="px-[22px] py-2 text-sm text-muted-foreground">正在读取本地模板…</p> : null}
         {/* 主体：左环节边栏（<760px 收窄纯图标列，圆点保留、计数隐藏）+ 右模板网格（独立滚动） */}
         <div className="flex min-h-0 flex-1">
           <nav className="flex w-[138px] shrink-0 flex-col gap-1 border-r border-border px-2.5 py-3.5 max-[760px]:w-16 max-[760px]:px-2">
@@ -430,14 +452,14 @@ export function CreateNovelDialog({
                 <Button variant="outline" onClick={() => setConfirmReplace(false)}>
                   返回
                 </Button>
-                <Button onClick={handleConfirm}>仍要替换</Button>
+                <Button disabled={templatesLoading || !!templatesError} onClick={handleConfirm}>仍要替换</Button>
               </>
             ) : (
               <>
                 <Button variant="outline" onClick={closeWizard}>
                   取消
                 </Button>
-                <Button onClick={handleConfirm}>确定</Button>
+                <Button disabled={templatesLoading || !!templatesError} onClick={handleConfirm}>确定</Button>
               </>
             )}
           </div>

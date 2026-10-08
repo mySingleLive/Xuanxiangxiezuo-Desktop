@@ -93,7 +93,12 @@ export async function createManuscriptExport(format: ManuscriptExportFormat, tit
   return createManuscriptPdf(title, documentBlocks, fontBytes, book)
 }
 
-export function downloadManuscript(blob: Blob, filename: string) {
+export async function downloadManuscript(blob: Blob, filename: string, options: { signal?: AbortSignal } = {}): Promise<boolean> {
+  if (options.signal?.aborted) return false
+  if (typeof window !== "undefined" && (window.desktop || window.location?.protocol === "xuanxiang:")) {
+    const { saveDesktopExport } = await import("./desktop/export")
+    return saveDesktopExport(blob, filename, options)
+  }
   const url = URL.createObjectURL(blob)
   const link = document.createElement("a")
   link.href = url
@@ -103,4 +108,5 @@ export function downloadManuscript(blob: Blob, filename: string) {
   link.remove()
   // Leave time for browsers to consume the object URL, including larger PDF files.
   setTimeout(() => URL.revokeObjectURL(url), 60_000)
+  return true
 }

@@ -191,7 +191,9 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "3ee706fa708c77687ccafcf4a89dd478536a7686ae3c02a48ebc32156dba82c1",
+      "reason": "Preserve the Web model-picker layout; add the desktop model-settings entry and replace platform-admin empty-state text."
     },
     {
       "source": "src/components/chat/NarrativeCheckCard.tsx",
@@ -362,7 +364,9 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "676f7fd77a4e98afbe8c5cca1494641d106ae211eb68a1e72f6b2cb3580280f2",
+      "reason": "Use approved local supplier/family SVG assets and desktop aliases; preserve the original ProviderLogo component API."
     },
     {
       "source": "src/components/chat/scene-receipts.ts",
@@ -605,7 +609,9 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "31f6efadd16f377c6afec6df5f8c1dba6815be72d726ab3ade8b33d1324e0211",
+      "reason": "Keep the original image-panel UI and add the approved model Logo to existing model choices."
     },
     {
       "source": "src/components/content/CharacterPanel.tsx",
@@ -695,7 +701,9 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "6038ff1b5bc8eb07270f455e1ddf550ca1a8517fcecc6fa09b446d6a652f306b",
+      "reason": "Keep the original image-panel UI and add the approved model Logo to existing model choices."
     },
     {
       "source": "src/components/content/ItemLevelPicker.tsx",
@@ -749,7 +757,9 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "2a027342969c45fb3ac14b3ba8f90058c60686706b55ac36f4d5afdde1758970",
+      "reason": "Keep the original cover-panel UI and add the approved model Logo to existing model choices."
     },
     {
       "source": "src/components/content/NovelOverview.tsx",
@@ -1199,7 +1209,9 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "4acebd907863aa40eef7f630167b95ad51d52ed1f259df491ae7cbfb40d1e59f",
+      "reason": "Add a desktop-scoped wrapper for local body typography; preserve the original editor, autosave, modes and comments."
     },
     {
       "source": "src/components/editor/MarkdownPreview.tsx",
@@ -1217,7 +1229,9 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "87d5574537b3bc3e67c5cfe84a886ab9a2096a2e7a07963f60876795eb93f2c5",
+      "reason": "Apply desktop body font, size, line-height, line-number and wrapping preferences through the existing editor options without remounting its model or undo history."
     },
     {
       "source": "src/components/editor/monaco-setup.ts",
@@ -1307,7 +1321,9 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "ea209083139e181a43a639c7dd44a2b94d4259f3417612cae7f3c5d4b50f1707",
+      "reason": "Pass an optional local avatar URL through the existing Web shell; retain its original panels, sizing and visibility animations."
     },
     {
       "source": "src/components/layout/OutlineTreeMenu.tsx",
@@ -1343,7 +1359,9 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "91278f2d4347d4ef492d4f45e70348dbb5f1f9277512d39edad7366fe743b156",
+      "reason": "Keep the Web tree/account-menu layout, desktop window-controls/settings entry and confirmed local profile; render only the saved local avatar in the original account icon slots."
     },
     {
       "source": "src/components/marketing/auth-shell.tsx",
@@ -1694,7 +1712,9 @@
       "allowedChanges": [
         "desktop platform adapter only; preserve original rendering/behavior"
       ],
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "d6083296784088e5ab4528311f77d8ba7f008002e6ad0f3e49bf93dc2f905f80",
+      "reason": "Clarify that staged candidates do not increment committed version tokens; final approval and service CAS retain the original boundary."
     },
     {
       "source": "src/stores/story-activity.ts",
@@ -1721,7 +1741,9 @@
       "allowedChanges": [
         "desktop theme/local resources integration"
       ],
-      "status": "imported-unmodified"
+      "status": "adapted-desktop-boundary",
+      "currentSha256": "1c525396a7b2f6726b884be92395034ada375784495b860c895fc2b14258561c",
+      "reason": "Keep original semantic tokens and Web UI styles; exclude prototype fixtures from Tailwind scanning."
     },
     {
       "source": "src/app/providers.tsx",

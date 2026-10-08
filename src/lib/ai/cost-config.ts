@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { prisma } from "@/lib/db"
+import { globalPrisma as prisma } from "@/lib/db"
 export const costConfigSchema = z.object({
   enabled: z.boolean(),
   inputBudgetTokens: z.number().int().min(4000).max(1000000),

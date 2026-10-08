@@ -1,5 +1,10 @@
 # 产品能力矩阵（产品设计组成部分）
 
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE BEGIN -->
+> **当前范围（2026-10-08）：用户取消全部备份功能。** 本矩阵D06“备份/恢复/崩溃”是混合历史行：一致性备份/从备份恢复退役，强制结束后durable草稿及实际数据事务保护保留。D02迁移前额外数据备份快照取消，但journal/指针故障续行保留；X05事务快照、X08原ID回收恢复等创作能力不退役。矩阵Dxx编号不能和requirements-traceability.json桌面Dxx误合并。
+> 活动清单：[acceptance-active-scope.json](acceptance-active-scope.json)；原文和退役明细：[backup-scope-retirement.json](backup-scope-retirement.json)。此处不声明实现完成或验收通过。
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE END -->
+
 基线提交：`55a62560dc4818143469abb12717a23c752ade8c`。所有下列条目均须迁移并在后续测试用例映射；表中“验证操作”定义产品能力，不是提前产出的测试用例文档。技术/实现/测试状态目前全部尚未开始。
 
 ## 完整内容 Tab 清单

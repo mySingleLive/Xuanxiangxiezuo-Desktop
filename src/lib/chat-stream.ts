@@ -134,4 +134,6 @@ export class ChatExecutionController {
   end(token: { generation: number }) { if (this.owns(token)) this.active = null }
   cancel() { const active = this.active; this.active = null; this.generation++; active?.controller.abort() }
   get busy() { return this.active !== null }
+  /** Changes whenever an operation starts or navigation cancels its ownership. */
+  get revision() { return this.generation }
 }

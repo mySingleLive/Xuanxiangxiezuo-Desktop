@@ -14,6 +14,8 @@ import { toast } from "sonner"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { ProviderLogo } from "@/components/chat/provider-logos"
+import { imageModelSelection } from "@/lib/desktop/image-model-selection"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -87,14 +89,10 @@ function CoverWorkspace({
   const { data: modelsData } = useQuery({
     queryKey: ["image-models"],
     queryFn: () =>
-      apiGet<{ models: ImageModelOption[] }>("/api/image-models", "加载文生图模型失败"),
+      apiGet<{ models: ImageModelOption[]; defaultModelId: string | null }>("/api/image-models", "加载文生图模型失败"),
   })
   const models = modelsData?.models ?? []
-  const selectedModel = models.find((m) => m.id === modelId)
-  const modelLabel =
-    modelId === "auto" || !selectedModel
-      ? "自动（最新可用模型）"
-      : `${selectedModel.name}（${selectedModel.modelId}）`
+  const { selected: selectedModel, label: modelLabel, defaultModel, defaultLabel } = imageModelSelection(models, modelsData?.defaultModelId, modelId)
 
   const { data: imagesData } = useQuery({
     queryKey: ["cover-images", novelId],
@@ -251,12 +249,13 @@ function CoverWorkspace({
           <div className="flex flex-wrap items-center gap-2">
             <Select value={modelId} onValueChange={(v) => v && setModelId(v)}>
               <SelectTrigger className="w-60" aria-label="选择文生图模型">
-                <SelectValue>{modelLabel}</SelectValue>
+                <SelectValue>{selectedModel && <ProviderLogo provider={selectedModel.provider} className="size-4" />}{modelLabel}</SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="auto">自动（最新可用模型）</SelectItem>
+                <SelectItem value="auto">{defaultModel && <ProviderLogo provider={defaultModel.provider} className="size-4" />}{defaultLabel}</SelectItem>
                 {models.map((m) => (
                   <SelectItem key={m.id} value={m.id}>
+                    <ProviderLogo provider={m.provider} className="size-4" />
                     {m.name}（{m.modelId}）
                   </SelectItem>
                 ))}

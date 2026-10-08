@@ -2,9 +2,9 @@
 import { GlobalSceneTree, openAllScenes } from "@/components/content/scene/SceneWorkspace"
 import { worldDisplayName } from "@/lib/world-schema"
 import { worldForest } from "@/lib/world-tree"
+import { useDesktopCommands } from "@/lib/desktop/use-command-target"
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react"
-import Link from "next/link"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   AlertCircle,
@@ -22,7 +22,6 @@ import {
   Lightbulb,
   ListTree,
   Loader2,
-  LogOut,
   MapPin,
   MessageSquare,
   MessageSquarePlus,
@@ -42,10 +41,9 @@ import {
   Workflow,
   type LucideIcon,
 } from "lucide-react"
-import { announceChatLogout, browserSessionStorage, chatSessionKey } from "@/lib/chat-session"
-import { signOut } from "next-auth/react"
+import { SidebarWindowControls } from "@/components/desktop/WindowControls"
+import { updateDesktopSettings } from "@/stores/desktop"
 
-import { Seal } from "@/components/marketing/seal"
 import { useTheme } from "next-themes"
 import { toast } from "sonner"
 
@@ -1362,7 +1360,7 @@ function ConversationsNode({
 }
 
 interface SidebarTreeProps {
-  user: { id: string; name: string; email: string }
+  user: { id: string; name: string; email: string; avatarUrl?: string }
   /** 隐藏左侧导航栏（顶栏右侧的折叠按钮） */
   onToggleSidebar?: () => void
 }
@@ -1381,7 +1379,7 @@ export function SidebarTree({ user, onToggleSidebar }: SidebarTreeProps) {
   /** 当前处于未落库的新对话（点「创建对话」后 / 首条消息发出前）时按钮呈选中态 */
   const isNewConversation = conversationId === null
 
-  const { theme, setTheme } = useTheme()
+  const { theme } = useTheme()
   // SSR false、客户端 true，避免 hydration 不一致（与 ThemeSwitcher 同款守卫）
   const themeMounted = useSyncExternalStore(
     () => () => {},
@@ -1394,6 +1392,7 @@ export function SidebarTree({ user, onToggleSidebar }: SidebarTreeProps) {
   const [titleInput, setTitleInput] = useState("")
   /** 创建作品两步向导（书名 + 创作切入方式） */
   const [createOpen, setCreateOpen] = useState(false)
+  useDesktopCommands({"file.new":()=>setCreateOpen(true)})
 
   const { data: novels, isPending, isError, isFetching, refetch } = useQuery({
     queryKey: ["novels"],
@@ -1672,28 +1671,7 @@ export function SidebarTree({ user, onToggleSidebar }: SidebarTreeProps) {
 
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
-      {/* 品牌标：点击跳转网站主页（仅 logo+标题是链接，右侧「隐藏左侧导航栏」按钮不在链接内） */}
-      <div className="flex shrink-0 items-center gap-2 pt-2.5 pb-1 pl-3 pr-1.5">
-        <Link
-          href="/"
-          aria-label="返回网站主页"
-          title="返回网站主页"
-          className="flex min-w-0 items-center gap-2 rounded-md transition-opacity hover:opacity-80"
-        >
-          <Seal variant="horizontal" className="h-7 w-24" />
-        </Link>
-        {onToggleSidebar && (
-          <button
-            type="button"
-            aria-label="隐藏左侧导航栏"
-            title="隐藏左侧导航栏"
-            onClick={onToggleSidebar}
-            className="ml-auto flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-hover-wash hover:text-foreground"
-          >
-            <PanelLeft className="size-4" />
-          </button>
-        )}
-      </div>
+      <SidebarWindowControls onToggleSidebar={onToggleSidebar} />
       <div className="flex shrink-0 items-start gap-1 px-1.5 pt-1.5">
         <div className="min-w-0 flex-1">
           <button
@@ -2096,8 +2074,9 @@ export function SidebarTree({ user, onToggleSidebar }: SidebarTreeProps) {
               />
             }
           >
-            <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-active-wash text-[11px] font-semibold text-primary">
+            <span className="relative flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-active-wash text-[11px] font-semibold text-primary">
               {user.name.slice(0, 1).toUpperCase()}
+              {user.avatarUrl && <img key={user.avatarUrl} src={user.avatarUrl} alt="" className="absolute inset-0 size-full object-cover" onError={event => { event.currentTarget.hidden = true }} />}
             </span>
             <span className="flex min-w-0 flex-col">
               <span className="truncate text-[12.5px] leading-[1.3] font-medium">
@@ -2112,8 +2091,9 @@ export function SidebarTree({ user, onToggleSidebar }: SidebarTreeProps) {
             {/* 用户信息（Label 不可点击）：头像 + 用户名（大字）+ 邮箱（小字 muted） */}
             <DropdownMenuGroup>
               <DropdownMenuLabel className="flex items-center gap-2.5 px-2 py-2">
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-active-wash text-[13px] font-semibold text-primary">
+                <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-active-wash text-[13px] font-semibold text-primary">
                   {user.name.slice(0, 1).toUpperCase()}
+                  {user.avatarUrl && <img key={user.avatarUrl} src={user.avatarUrl} alt="" className="absolute inset-0 size-full object-cover" onError={event => { event.currentTarget.hidden = true }} />}
                 </span>
                 <span className="flex min-w-0 flex-col">
                   <span className="truncate text-[15px] leading-[1.35] font-semibold text-foreground">
@@ -2136,33 +2116,19 @@ export function SidebarTree({ user, onToggleSidebar }: SidebarTreeProps) {
                   size="sm"
                   aria-label="外观主题（宣纸 / 玄墨）"
                   checked={themeMounted ? theme === "ink" : false}
-                  onCheckedChange={(checked) => setTheme(checked ? "ink" : "paper")}
+                  onCheckedChange={(checked) => { void updateDesktopSettings(settings => ({ ...settings, appearance: { ...settings.appearance, theme: checked ? "ink" : "paper" } })).catch(error => toast.error(error.message)) }}
                 />
                 玄墨
               </span>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={async () => {
-              useChatStore.setState({ accountId: null, draft: "", conversationId: null, pendingNovelTitle: null, pendingQuestion: null, queuedMessages: [], queuePaused: true, recoveryStatus: "restoring" })
-              try { browserSessionStorage()?.removeItem(chatSessionKey(user.id)) } catch {}
-              queryClient.clear()
-              const result = await signOut({ redirect: false, callbackUrl: "/login" })
-              announceChatLogout(user.id)
-              window.location.assign(result.url)
-            }}>
-              <LogOut />
-              退出登录
+            <DropdownMenuItem onClick={() => { void window.desktop?.command("app.settings") }}>
+              <Settings />
+              设置
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Link
-          href="/admin"
-          aria-label="设置"
-          title="设置"
-          className="flex size-7 shrink-0 items-center justify-center rounded-[7px] text-muted-foreground transition-colors hover:bg-hover-wash hover:text-foreground"
-        >
-          <Settings className="size-[15px]" />
-        </Link>
+
       </div>
 
       <Dialog

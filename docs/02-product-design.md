@@ -1,5 +1,10 @@
 # 玄香印桌面版 · 产品设计
 
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE BEGIN -->
+> **当前范围（2026-10-08）：用户取消全部备份功能。** 产品不再提供手动/自动备份、备份列表/保留策略、应用/作品从备份恢复、schema升级和迁移前额外数据备份快照。作品打开/重关联/导出、迁移journal/故障续行、启动恢复/配置导入导出、正常保存和崩溃草稿恢复保持。下方旧段落和表格全文保留；其中备份特有要求仅作历史，确切原文在退役manifest。
+> 活动清单：[acceptance-active-scope.json](acceptance-active-scope.json)；原文和退役明细：[backup-scope-retirement.json](backup-scope-retirement.json)。此处不声明实现完成或验收通过。
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE END -->
+
 版本：0.12；日期：2026-10-07；状态：本次修订子代理复审通过（`reviews/21-product-settings-shell-review.md`）。前序通过记录保留。依据：`01-research.md`、`provider-catalog-research.md` 与用户本次需求。
 
 ## 1. 产品目标与验收范围

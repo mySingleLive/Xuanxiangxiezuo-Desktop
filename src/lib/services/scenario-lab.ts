@@ -9,6 +9,7 @@ import { lockSceneTree } from "./scene"
 
 import type { Prisma, ScenarioCard, ScenarioLab, ScenarioNode, ScenarioTurn } from "@/generated/prisma/client"
 import { prisma } from "@/lib/db"
+import { taskDefaults } from "@desktop/service/task-defaults"
 import {
   normalizeScenarioBeats,
   normalizeScenarioCast,
@@ -448,6 +449,7 @@ export async function appendScenarioTurn(
     checks?: ScenarioCheckRecord[]
   }
 ): Promise<ScenarioTurnDTO> {
+  const defaultsSnapshot = await taskDefaults()
   for (let attempt = 1; ; attempt++) {
     const max = await prisma.scenarioTurn.aggregate({
       where: { labId },
@@ -458,6 +460,7 @@ export async function appendScenarioTurn(
       const turn = await prisma.scenarioTurn.create({
         data: {
           labId,
+          defaultsSnapshot,
           index,
           kind: data.kind,
           narrative: data.narrative,

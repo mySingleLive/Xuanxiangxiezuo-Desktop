@@ -14,7 +14,7 @@
 | Xiaomi | OpenAI / https://api.xiaomimimo.com/v1 | [官方思考内容说明](https://platform.xiaomimimo.com/docs/en-US/usage-guide/passing-back-reasoning_content)；OpenAI/Anthropic 均兼容，UI 默认 OpenAI，思考类型 enabled/disabled |
 | 阿里巴巴 | OpenAI / https://dashscope.aliyuncs.com/compatible-mode/v1 | [官方兼容说明](https://www.alibabacloud.com/help/en/model-studio/compatibility-of-openai-with-dashscope)；北京预设依据 [官方端点](https://help.aliyun.com/en/model-studio/base-url)；区域/工作空间 Key 隔离，其他端点走自定义，不静默替换 |
 | MiniMax | OpenAI / https://api.minimax.io/v1 | [官方 OpenAI 格式](https://platform.minimax.io/docs/api-reference/text-openai-api)；模型 ID/计划与接口能力单独确认 |
-| 腾讯 | OpenAI / https://api.hunyuan.cloud.tencent.com/v1 | [官方兼容接口](https://cloud.tencent.com/document/product/1729/111007)，用混元 Key，不使用旧式云签名凭据 |
+| 腾讯 | OpenAI / https://tokenhub.tencentmaas.com/v1 | [2026-09-30 旧平台停服及迁移公告](https://cloud.tencent.com/document/product/1729/131925)：新增配置使用 TokenHub 国内站 Key；不自动修改已有端点或迁移旧 Key，图像预设的国际站凭据另行配置 |
 | 字节跳动 | OpenAI / https://ark.cn-beijing.volces.com/api/v3 | [方舟快速开始](https://docs.volcengine.com/docs/ark/quick-start?lang=zh)；北京区域，目录与 Key 权限分开核验 |
 | 自定义 | 协议空值，用户选择 OpenAI / Anthropic | 用户填写名称、端点、模型 ID；HTTPS 或本机回环 HTTP，禁止 URL 内凭据，草稿改地址/协议须重新输入 Key，成功保存才撤销旧授权 |
 

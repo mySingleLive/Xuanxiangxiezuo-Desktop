@@ -1,3 +1,4 @@
+import { taskDefaults } from "@desktop/service/task-defaults"
 /**
  * SOP 编排器（2026-08 graph-engineering SOP）：分层 DAG 的执行核心。
  *
@@ -79,7 +80,7 @@ export async function runCheckpointLoop(input: {
   const { threshold, maxIterations } = node.checkpoint
 
   const nodeRun = await prisma.sopNodeRun.create({
-    data: {
+    data: { defaultsSnapshot: await taskDefaults(),
       novelId: input.novelId,
       nodeId: input.nodeId,
       targetId: input.targetId ?? null,
@@ -234,7 +235,7 @@ export async function assessThemeMarket(input: {
   }
 
   const nodeRun = await prisma.sopNodeRun.create({
-    data: { novelId, nodeId: "theme", status: "running" },
+    data: { defaultsSnapshot: await taskDefaults(), novelId, nodeId: "theme", status: "running" },
   })
   await planService.markItemByNodeRun({
     conversationId: input.conversationId,
@@ -647,7 +648,7 @@ async function summonSetting(input: Parameters<typeof summonPlaywright>[0] & { b
 async function summonOutline(input: Parameters<typeof summonPlaywright>[0] & { brief: string }) {
   const { novelId, userId } = input
   const nodeRun = await prisma.sopNodeRun.create({
-    data: { novelId, nodeId: "outline", status: "running" },
+    data: { defaultsSnapshot: await taskDefaults(), novelId, nodeId: "outline", status: "running" },
   })
   await planService.markItemByNodeRun({
     conversationId: input.conversationId,
@@ -728,7 +729,7 @@ export async function reviewCast(input: {
   if (sections.characters === "（暂无角色）") throw new Error("还没有角色，先召唤剧作家建角色")
 
   const nodeRun = await prisma.sopNodeRun.create({
-    data: { novelId, nodeId: "character", status: "running" },
+    data: { defaultsSnapshot: await taskDefaults(), novelId, nodeId: "character", status: "running" },
   })
   try {
     const { run, data } = await invokeAgent({
@@ -798,7 +799,7 @@ export async function runReaderPanel(input: {
   }
 
   const nodeRun = await prisma.sopNodeRun.create({
-    data: { novelId, nodeId: "content", targetId: chapterId, status: "running" },
+    data: { defaultsSnapshot: await taskDefaults(), novelId, nodeId: "content", targetId: chapterId, status: "running" },
   })
 
   try {
@@ -910,7 +911,7 @@ export async function reviewWholeNovel(input: {
     : "（暂无检查点记录）"
 
   const nodeRun = await prisma.sopNodeRun.create({
-    data: { novelId, nodeId: "novel", status: "running" },
+    data: { defaultsSnapshot: await taskDefaults(), novelId, nodeId: "novel", status: "running" },
   })
 
   try {

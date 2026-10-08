@@ -1,77 +1,14 @@
 "use client"
+import { Boxes } from "lucide-react"
+import { cn } from "@/lib/utils"
 
-/**
- * 大模型 provider 真实 logo（模型选择器/对话 pill 用）。
- * - deepseek / anthropic / qwen / kimi：simple-icons 单色版 path（fill=currentColor）；
- * - openai：Tabler brand-openai 描边版（stroke=currentColor；simple-icons 已下架 OpenAI）；
- * - 未收录的 provider（zhipu / openai-compatible 等）回退 lucide 通用图标。
- * 统一 currentColor 继承菜单文本色，宣纸/玄墨双主题自适应（符合令牌取色、禁硬编码色值）。
- */
-import { Bot, Boxes, Brain, type LucideIcon } from "lucide-react"
-
-interface BrandLogo {
-  viewBox: string
-  title: string
-  paths: string[]
-  mode: "fill" | "stroke"
-  /** 多 path 镂空（evenodd），如 Z.ai 标：深色圆角方块 + Z 形镂空 */
-  fillRule?: "evenodd"
-}
-
-const BRAND_LOGOS: Record<string, BrandLogo> = {
-  deepseek: { viewBox: "0 0 24 24", title: "DeepSeek", mode: "fill" as const, paths: ["M23.748 4.651c-.254-.124-.364.113-.512.233-.051.04-.094.09-.137.137-.372.397-.806.657-1.373.626-.829-.046-1.537.214-2.163.848-.133-.782-.575-1.248-1.247-1.548-.352-.155-.708-.311-.955-.65-.172-.24-.219-.509-.305-.774-.055-.16-.11-.323-.293-.35-.2-.031-.278.136-.356.276-.313.572-.434 1.202-.422 1.84.027 1.436.633 2.58 1.838 3.393.137.094.172.187.129.323-.082.28-.18.553-.266.833-.055.179-.137.218-.328.14a5.5 5.5 0 0 1-1.737-1.179c-.857-.828-1.631-1.743-2.597-2.46a12 12 0 0 0-.689-.47c-.985-.957.13-1.743.387-1.836.27-.098.094-.433-.778-.428-.872.003-1.67.295-2.687.685a3 3 0 0 1-.465.136 9.6 9.6 0 0 0-2.883-.101c-1.885.21-3.39 1.1-4.497 2.622C.082 8.776-.231 10.854.152 13.02c.403 2.284 1.568 4.175 3.36 5.653 1.857 1.533 3.997 2.284 6.438 2.14 1.482-.085 3.132-.284 4.994-1.86.47.234.962.328 1.78.398.629.058 1.235-.031 1.705-.129.735-.155.684-.836.418-.961-2.155-1.004-1.682-.595-2.112-.926 1.095-1.295 2.768-3.598 3.284-6.733.05-.346.115-.834.108-1.114-.004-.171.035-.238.23-.257a4.2 4.2 0 0 0 1.545-.475c1.397-.763 1.96-2.016 2.093-3.517.02-.23-.004-.467-.247-.588M11.58 18.168c-2.088-1.642-3.101-2.183-3.52-2.16-.39.024-.32.472-.234.763.09.288.207.487.371.74.114.167.192.416-.113.603-.673.416-1.842-.14-1.897-.168-1.361-.801-2.5-1.86-3.301-3.306-.775-1.393-1.225-2.888-1.299-4.482-.02-.385.094-.522.477-.592a4.7 4.7 0 0 1 1.53-.038c2.131.311 3.946 1.264 5.467 2.774.868.86 1.525 1.887 2.202 2.89.72 1.066 1.494 2.082 2.48 2.915.348.291.626.513.892.677-.802.09-2.14.109-3.055-.615zm1.001-6.44a.306.306 0 0 1 .415-.287.3.3 0 0 1 .113.074.3.3 0 0 1 .086.214c0 .17-.136.307-.308.307a.303.303 0 0 1-.306-.307m3.11 1.596c-.2.081-.4.151-.591.16a1.25 1.25 0 0 1-.798-.254c-.274-.23-.47-.358-.551-.758a1.7 1.7 0 0 1 .015-.588c.07-.327-.007-.537-.238-.727-.188-.156-.426-.199-.689-.199a.6.6 0 0 1-.254-.078.253.253 0 0 1-.114-.358 1 1 0 0 1 .192-.21c.356-.202.767-.136 1.146.016.352.144.618.408 1.001.782.392.451.462.576.685.915.176.264.336.536.446.848.066.194-.02.353-.25.45"] },
-  anthropic: { viewBox: "0 0 24 24", title: "Anthropic", mode: "fill" as const, paths: ["M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z"] },
-  qwen: { viewBox: "0 0 24 24", title: "QWen", mode: "fill" as const, paths: ["M23.919 14.545 20.817 9.17l1.47-2.544a.56.56 0 0 0 0-.566l-1.633-2.83a.57.57 0 0 0-.49-.283h-6.207L12.487.402a.57.57 0 0 0-.49-.284H8.732a.56.56 0 0 0-.49.284L5.139 5.775h-2.94a.56.56 0 0 0-.49.284L.077 8.887a.56.56 0 0 0 0 .567L3.18 14.83l-1.47 2.545a.56.56 0 0 0 0 .566l1.634 2.83a.57.57 0 0 0 .49.283h6.205l1.47 2.545a.57.57 0 0 0 .49.284h3.266a.57.57 0 0 0 .49-.284l3.104-5.375h2.94a.57.57 0 0 0 .49-.283l1.634-2.828a.55.55 0 0 0-.004-.568M8.733.686l1.634 2.828-1.634 2.828H21.8L20.164 9.17H7.425L5.63 6.06Zm1.306 19.801-6.205-.002 1.634-2.83h3.265L2.201 6.344h3.267q3.182 5.517 6.367 11.032zm10.124-5.66L18.53 12l-6.532 11.315-1.634-2.83c2.129-3.673 4.25-7.351 6.373-11.028h3.592l3.102 5.374z"] },
-  /* 智谱官方 Z.ai 标（z-cdn.chatglm.cn/z-ai/static/logo.svg 提取）：深色圆角方块 + Z 形（上下横杠+斜笔）
-     合并为单 path、evenodd 镂空成单色标（simple-icons 未收录智谱，故取官网 CDN 原标） */
-  zhipu: { viewBox: "0 0 30 30", title: "Z.ai (智谱 GLM)", mode: "fill" as const, fillRule: "evenodd" as const, paths: ["M24.51,28.51H5.49c-2.21,0-4-1.79-4-4V5.49c0-2.21,1.79-4,4-4h19.03c2.21,0,4,1.79,4,4v19.03C28.51,26.72,26.72,28.51,24.51,28.51z M15.47,7.1l-1.3,1.85c-0.2,0.29-0.54,0.47-0.9,0.47h-7.1V7.09C6.16,7.1,15.47,7.1,15.47,7.1z M14.53,22.91l1.31-1.86c0.2-0.29,0.54-0.47,0.9-0.47h7.09v2.33H14.53z M24.3,7.1L13.14,22.91H5.7L16.86,7.1H24.3z"] },
-  /* Auto 虚拟模型标（2026-09 定制）：圆环=免费模型间的自动路由循环，中央字母 A；
-     描边单色（同 openai 路线），currentColor 双主题自适应 */
-  auto: {
-    viewBox: "0 0 24 24",
-    title: "Auto（玄香印）",
-    mode: "stroke" as const,
-    paths: [
-      "M21 12a9 9 0 1 1-18 0 9 9 0 1 1 18 0",
-      "M8.7 16.3 12 8.2l3.3 8.1",
-      "M10.1 13.7h3.8",
-    ],
-  },
-  kimi: { viewBox: "0 0 24 24", title: "KIMI", mode: "fill" as const, paths: ["M21.765.351C22.998.351 24 1.353 24 2.586S22.998 4.82 21.765 4.82h-1.974c-.15 0-.26-.12-.26-.26V2.586A2.237 2.237 0 0 1 21.765.35M9.41 13.388l8.447-8.377c.16-.16.07-.471-.14-.471h-4.55s-.1.02-.14.06l-9.099 9.029c-.14.14-.35.02-.35-.21V4.81c0-.15-.1-.27-.221-.27H.22c-.12 0-.22.12-.22.27v18.57c0 .15.1.27.22.27h3.137c.12 0 .22-.12.22-.27v-3.79c0-.08.03-.16.08-.21l2.826-2.796c.07-.07.16-.08.241-.03l7.546 5.551a8.9 8.9 0 0 0 4.018 1.493c.12.01.23-.11.23-.27V19.76c0-.14-.08-.25-.19-.26a5.8 5.8 0 0 1-2.355-.942l-6.533-4.73c-.14-.09-.15-.32-.03-.441"] },
-  openai: { viewBox: "0 0 24 24", title: "OpenAI", mode: "stroke" as const, paths: ["M11.217 19.384a3.501 3.501 0 0 0 6.783 -1.217v-5.167l-6 -3.35", "M5.214 15.014a3.501 3.501 0 0 0 4.446 5.266l4.34 -2.534v-6.946", "M6 7.63c-1.391 -.236 -2.787 .395 -3.534 1.689a3.474 3.474 0 0 0 1.271 4.745l4.263 2.514l6 -3.348", "M12.783 4.616a3.501 3.501 0 0 0 -6.783 1.217v5.067l6 3.45", "M18.786 8.986a3.501 3.501 0 0 0 -4.446 -5.266l-4.34 2.534v6.946", "M18 16.302c1.391 .236 2.787 -.395 3.534 -1.689a3.474 3.474 0 0 0 -1.271 -4.745l-4.308 -2.514l-5.955 3.42"] },
-}
-
-/** 无品牌 logo 的 provider 回退（lucide 通用图标） */
-const FALLBACK_ICONS: Record<string, LucideIcon> = {
-  zhipu: Brain,
-  "openai-compatible": Boxes,
-}
-
-/** provider 品牌 logo；未收录 provider 渲染 lucide 回退图标 */
-export function ProviderLogo({ provider, className }: { provider: string; className?: string }) {
-  const brand = BRAND_LOGOS[provider]
-  if (!brand) {
-    const Fallback = FALLBACK_ICONS[provider] ?? Bot
-    return <Fallback className={className} data-provider-logo={provider} />
-  }
-  return (
-    <svg
-      viewBox={brand.viewBox}
-      role="img"
-      aria-label={brand.title}
-      data-provider-logo={provider}
-      data-brand-logo="true"
-      className={className}
-      fill={brand.mode === "fill" ? "currentColor" : "none"}
-      stroke={brand.mode === "stroke" ? "currentColor" : "none"}
-      strokeWidth={brand.mode === "stroke" ? 2 : 0}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {brand.paths.map((d, i) => (
-        /* fillRule 必须挂在 path 上（fill-rule 不是可继承属性，挂 svg 根无效） */
-        <path key={i} d={d} fillRule={brand.fillRule} clipRule={brand.fillRule} {...(brand.mode === "fill" ? { stroke: "none" } : { fill: "none" })} />
-      ))}
-    </svg>
-  )
+// Approved local brand assets; provenance and license remain in design/*-logo-provenance.json.
+const names: Record<string,string> = { openai:"OpenAI",anthropic:"Anthropic",google:"Google",xai:"xAI",deepseek:"深度求索",kimi:"月之暗面",zai:"智谱",xiaomi:"Xiaomi",qwen:"阿里巴巴",minimax:"MiniMax",tencent:"腾讯",bytedance:"字节跳动" }
+const aliases: Record<string,string> = { zhipu:"zai",moonshot:"kimi",alibaba:"qwen",hunyuan:"tencent",volcengine:"bytedance" }
+const modelAssets = new Set(["openai","anthropic","google","xai","kimi","qwen","tencent","bytedance"])
+export function ProviderLogo({ provider, className, variant = "model" }: { provider: string; className?: string; variant?: "provider" | "model" }) {
+  const id = aliases[provider.toLowerCase()] ?? provider.toLowerCase()
+  if (!names[id]) return <Boxes className={className} data-provider-logo={provider} aria-hidden="true" />
+  const family = variant === "model" && modelAssets.has(id) ? "models" : "providers"
+  return <img src={`/brands/${family}/${id}.svg`} alt={names[id]} draggable={false} data-provider-logo={id} className={cn("shrink-0 object-contain",family === "models" && id === "openai" && "dark:invert",className)} />
 }

@@ -1,3 +1,4 @@
+import {withConversationToolContext,canResumeConversationCreation} from "@desktop/service/conversation-runtime"
 import { randomUUID } from "node:crypto"
 import type { ToolSet } from "ai"
 import { Prisma } from "@/generated/prisma/client"
@@ -12,7 +13,7 @@ import { beforeStoryTool, afterStoryTool } from "./story-tool-runtime"
 import { readStoryArtifacts } from "./story-artifacts"
 import { waitWithAbort } from "@/lib/abortable-stream"
 
-const EXTERNAL_TOOLS = new Set(["generateCharacterImage", "generateNovelCover"])
+const EXTERNAL_TOOLS = new Set(["generateCharacterImage", "generateNovelCover", "startNovelFromChat"])
 // 评审只增加版本绑定的报告；中断后的半条运行档案不是未确认的正文覆盖。
 // 重评仍先读取当前指纹，由服务层拒绝迟到的旧版本结果。
 const RECONCILABLE_REVIEWS = new Set(["reviewStoryCheckpoint", "requestAIReview", "requestReaderReview", "reviewWholeNovel"])
@@ -90,6 +91,7 @@ async function executeChatToolNow<T>(scope: ChatExecutionScope, toolName: string
     if (exact) {
       if (exact.requestHash !== hash) throw new ChatProtocolError("TOOL_REQUEST_CONFLICT", "工具调用编号已用于不同参数")
       if (exact.status === "succeeded") return { record: exact, replay: true }
+      if (toolName === "startNovelFromChat" && ["failed", "unknown"].includes(exact.status) && await canResumeConversationCreation(scope.conversationId, exact.operationId, tx)) return { record: exact, replay: false }
       throw new ChatProtocolError("TOOL_IN_PROGRESS", "此操作已开始，请核对保存结果")
     }
     const revision = await reviewTargetRevision(tx, scope, toolName, input)
@@ -98,7 +100,7 @@ async function executeChatToolNow<T>(scope: ChatExecutionScope, toolName: string
     // 有部分提交、无完整结果的操作不能通过更换参数/调用 ID 绕过核对。
     const unresolved = write && !RECONCILABLE_REVIEWS.has(toolName) ? await tx.chatToolExecution.findFirst({ where: { turnId: scope.turnId, toolName, status: { in: ["started", "unknown"] }, OR: [{ effects: { some: {} } }, { hasExternalEffects: true }] } }) : null
     // 批次幂等工具的同 operationId 重试：由服务层重放既有批次对齐结果（重放安全性见 IDEMPOTENT_BATCH_TOOLS 注释）
-    const reconcilableRetry = unresolved !== null && IDEMPOTENT_BATCH_TOOLS.has(toolName) && unresolved.operationId === operationId
+    const reconcilableRetry = unresolved !== null && unresolved.operationId === operationId && (IDEMPOTENT_BATCH_TOOLS.has(toolName) || toolName === "startNovelFromChat" && unresolved.status === "unknown" && await canResumeConversationCreation(scope.conversationId, operationId, tx))
     if (unresolved && !previous && !reconcilableRetry) throw new ChatProtocolError("EFFECTS_UNCONFIRMED", "此类操作已有结果待确认，请读取当前内容并仅继续其他未完成步骤")
     const record = await tx.chatToolExecution.create({ data: { id: randomUUID(), turnId: scope.turnId, attemptId: scope.attemptId, toolCallId, toolName,
       operationId, requestHash: hash, input: json(input), hasExternalEffects: EXTERNAL_TOOLS.has(toolName), ...(previous ? { status: "succeeded", output: previous.output ?? Prisma.JsonNull } : {}) } })
@@ -107,7 +109,7 @@ async function executeChatToolNow<T>(scope: ChatExecutionScope, toolName: string
   if (row.replay) return row.record.output as T
   scope.progress?.({ stage: "executing_tool", toolName, toolCallId })
   try {
-    const result = await runInChatExecution({ ...scope, toolExecutionId: row.record.id, operationId: row.record.operationId }, execute)
+    const result = await runInChatExecution({ ...scope, toolExecutionId: row.record.id, operationId: row.record.operationId }, () => withConversationToolContext(scope.conversationId, execute))
     // SDK会把工具返回直接拼进下一步ModelMessage。与审计/重放统一为JSON，
     // 防止首次返回含Date（如待采用提案createdAt）而重放为字符串，导致续步校验失败。
     const output = json(result)

@@ -1,5 +1,10 @@
 # 正式测试用例与执行约定
 
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE BEGIN -->
+> **当前范围（2026-10-08）：用户取消全部备份功能。** 历史531条原文/状态保留；当前530条有效（桌面106+业务424），全部not-run。DESK-D08整条退役；B07/S08/G03/D05/ADAPTER-08五条混合用例只退役备份片段，D06澄清迁移恢复和旧控制安全拒绝。执行器按active scope选择case并应用activeDefinition；退役不计passed/skip，活动用例的全部平台/分支仍须验收。
+> 活动清单：[acceptance-active-scope.json](acceptance-active-scope.json)；原文和退役明细：[backup-scope-retirement.json](backup-scope-retirement.json)。此处不声明实现完成或验收通过。
+<!-- USER-2026-10-08-CANCEL-BACKUPS CURRENT-SCOPE END -->
+
 版本1.0；日期2026-10-07。前置：技术方案及实施边界已通过独立审核23/24。**正式用例已通过独立审核25/26，全部531条尚未执行**，不得把UI原型历史检查计入App结果。
 
 ## 用例组成与追踪

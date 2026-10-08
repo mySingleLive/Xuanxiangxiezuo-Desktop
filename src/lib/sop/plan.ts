@@ -10,6 +10,8 @@
 import { Prisma } from "@/generated/prisma/client"
 import { prisma } from "@/lib/db"
 import { ContentError } from "@/lib/content-errors"
+import { currentTaskDefaults, taskDefaults } from "@desktop/service/task-defaults"
+import { legacyTaskDefaults, type TaskDefaults } from "@desktop/shared/task-defaults"
 
 export type SopPlanItemStatus = "pending" | "active" | "done" | "failed" | "skipped"
 
@@ -56,6 +58,8 @@ function allTerminal(items: SopPlanItem[]): boolean {
 }
 
 export interface CreatePlanInput {
+  /** Trusted service scope; never accepted from renderer/tool JSON. */
+  defaultsSnapshot?: TaskDefaults
   novelId: string; conversationId: string; title: string; entryIntent?: string; replaceGoal?: boolean
   items: { label: string; nodeId: string; targetId?: string }[]
   deferredQuestions?: { nodeId: string; question: string }[]
@@ -78,9 +82,13 @@ export async function createPlanInTransaction(tx: Prisma.TransactionClient, inpu
   const data = { title: input.title, entryIntent: input.entryIntent ?? prev?.entryIntent ?? null, items: items as unknown as Prisma.InputJsonValue, deferredQuestions: deferred as unknown as Prisma.InputJsonValue }
   if (prev && !input.replaceGoal) return tx.sopPlan.update({ where: { id: prev.id }, data })
   if (prev) await tx.sopPlan.update({ where: { id: prev.id }, data: { status: "superseded" } })
-  return tx.sopPlan.create({ data: { ...data, novelId: input.novelId, conversationId: input.conversationId, status: "active" } })
+  return tx.sopPlan.create({ data: { ...data, novelId: input.novelId, conversationId: input.conversationId, status: "active",
+    defaultsSnapshot: input.defaultsSnapshot ?? currentTaskDefaults() ?? legacyTaskDefaults(conversation.modelId, conversation.thinkingEffort) } })
 }
-export async function createPlan(input: CreatePlanInput) { return prisma.$transaction(tx => createPlanInTransaction(tx, input)) }
+export async function createPlan(input: CreatePlanInput) {
+  const defaultsSnapshot = input.defaultsSnapshot ?? await taskDefaults()
+  return prisma.$transaction(tx => createPlanInTransaction(tx, { ...input, defaultsSnapshot }))
+}
 
 /** 所有读改写先锁会话，再读取计划，避免并发节点完成互相覆盖。 */
 async function mutatePlan<T>(id: string, update: (tx: Prisma.TransactionClient, plan: NonNullable<Awaited<ReturnType<typeof getPlan>>>) => Promise<T>) {

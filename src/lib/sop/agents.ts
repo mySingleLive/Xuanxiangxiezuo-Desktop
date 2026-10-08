@@ -320,6 +320,7 @@ export async function callAgent<I extends SopAgentId>(
     userId: opts.userId,
     novelId: opts.novelId,
     tier: spec.tier,
+    role: spec.kind === "judge" ? "review" : "text",
     resolvedModel: opts.resolvedModel,
     action: spec.promptKey,
     preview: spec.kind === "playwright",

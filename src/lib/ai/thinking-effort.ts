@@ -13,6 +13,7 @@
  */
 
 import type { SharedV4ProviderOptions } from "@ai-sdk/provider"
+import { providerFamily } from "./provider-family"
 
 export interface ThinkingEffortOption {
   /** 稳定标识（落库/传输用） */
@@ -87,7 +88,7 @@ export function thinkingEffortOptionsFor(
   provider: string,
   modelId: string
 ): ThinkingEffortOption[] {
-  switch (provider) {
+  switch (providerFamily(provider)) {
     case "deepseek":
       return DEEPSEEK_EFFORTS
     case "kimi":
@@ -134,7 +135,7 @@ export function buildThinkingProviderOptions(
   modelId?: string
 ): SharedV4ProviderOptions | undefined {
   const level = effort ?? "default"
-  switch (provider) {
+  switch (providerFamily(provider)) {
     case "deepseek": {
       if (level === "off") {
         return { deepseek: { thinking: { type: "disabled" } } }

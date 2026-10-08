@@ -14,6 +14,9 @@ import {
 import type { ResolvedThread } from "@/components/comments/types"
 
 import { MONACO_FONT_OPTS, monaco } from "./monaco-setup"
+import { useDesktopStore } from "@/stores/desktop"
+import { desktopFontFamily } from "@/lib/desktop/appearance"
+import { bindMonacoCommandTarget } from "@/lib/desktop/monaco-commands"
 
 /** comments 缺省时传给 useMonacoComments 的静默占位（模块级常量,保住引用稳定） */
 const NO_THREADS: ResolvedThread[] = []
@@ -49,6 +52,17 @@ export default function MonacoMarkdownEditor({
   comments,
 }: MonacoMarkdownEditorProps) {
   const [editorInstance, setEditorInstance] = useState<Parameters<OnMount>[0] | null>(null)
+  const appearance = useDesktopStore(state => state.bootstrap?.settings.appearance)
+  const platform = useDesktopStore(state => state.bootstrap?.platform)
+
+  useEffect(() => {
+    if (!editorInstance || !platform) return
+    let stopped = false, dispose: (() => void) | undefined
+    void bindMonacoCommandTarget(editorInstance, platform).then(value => {
+      if (stopped) value(); else dispose = value
+    }).catch(error => console.error("MONACO_COMMAND_ADAPTER_UNAVAILABLE", error))
+    return () => { stopped = true; dispose?.() }
+  }, [editorInstance, platform])
 
   /* 主题切换：Monaco 配色 + 书写字体（宣纸宋体 / 玄墨等宽） */
   useEffect(() => {
@@ -99,7 +113,8 @@ export default function MonacoMarkdownEditor({
         options={{
           readOnly,
           glyphMargin: commentsEnabled === true,
-          wordWrap: "on",
+          wordWrap: appearance?.wordWrap ? "on" : "off",
+          lineNumbers: appearance?.lineNumbers ? "on" : "off",
           minimap: { enabled: false },
           padding: { top: 22, bottom: 60 },
           scrollBeyondLastLine: false,
@@ -122,6 +137,7 @@ export default function MonacoMarkdownEditor({
           unicodeHighlight: { ambiguousCharacters: false },
           scrollbar: { verticalScrollbarSize: 10, horizontalScrollbarSize: 10 },
           ...MONACO_FONT_OPTS[theme],
+          ...(appearance ? { fontFamily: desktopFontFamily(appearance.bodyFont, true), fontSize: appearance.bodyFontSize, lineHeight: Math.round(appearance.bodyFontSize * appearance.lineHeight) } : {}),
         }}
       />
       {/* 评论 overlay（气泡 portal + 选区浮钮）:坐标以本容器为原点 */}

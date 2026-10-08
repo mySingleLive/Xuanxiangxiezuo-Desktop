@@ -1,6 +1,6 @@
 "use client"
 import { createContext, useContext, useSyncExternalStore, type ReactNode } from "react"
-import { CommentDraftStore, commentDraftKey, type DraftAnchor, type DraftTarget } from "@/lib/comment-drafts"
+import { commentDraftStoreFor, commentDraftKey, type DraftAnchor, type DraftTarget } from "@/lib/comment-drafts"
 import { Button } from "@/components/ui/button"
 
 const Account = createContext<string | undefined>(undefined)
@@ -8,15 +8,11 @@ export function CommentDraftAccount({ userId, children }: { userId: string; chil
   return <Account.Provider value={userId}>{children}</Account.Provider>
 }
 const Context = createContext<{ target: DraftTarget | null; source?: string }>({ target: null })
-const stores = new Map<string, CommentDraftStore>()
 const noopSubscribe = () => () => {}
 const zero = () => 0
 const empty = () => ""
 function storeFor(accountId?: string) {
-  if (!accountId || typeof window === "undefined") return null
-  let store = stores.get(accountId)
-  if (!store) { store = new CommentDraftStore(accountId, () => window.sessionStorage); stores.set(accountId, store) }
-  return store
+  return commentDraftStoreFor(accountId)
 }
 export function CommentDraftProvider({ target, source, children }: { target: DraftTarget | null; source?: string; children: ReactNode }) {
   return <Context.Provider value={{ target, source }}>{children}</Context.Provider>

@@ -5,7 +5,7 @@ import { homedir, tmpdir } from "node:os"
 import { join, relative } from "node:path"
 
 const root = process.cwd()
-const walk = directory => readdirSync(directory, { withFileTypes: true }).flatMap(entry => entry.name === "generated" ? [] : entry.isDirectory() ? walk(join(directory, entry.name)) : [join(directory, entry.name)])
+const walk = directory => readdirSync(directory, { withFileTypes: true }).flatMap(entry => ["generated","retired"].includes(entry.name) ? [] : entry.isDirectory() ? walk(join(directory, entry.name)) : [join(directory, entry.name)])
 const suites = ["tests/unit", "tests/integration"].flatMap(walk).filter(path => path.endsWith(".test.ts")).map(path => relative(root, path) || path)
 const args = ["--import", "tsx", "--test", "--test-reporter=tap", ...suites]
 const startedAt = new Date().toISOString()

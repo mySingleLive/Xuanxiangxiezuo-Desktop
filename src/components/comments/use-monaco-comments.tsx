@@ -32,6 +32,8 @@ import type * as Monaco from "monaco-editor"
 import { MessageSquarePlus } from "lucide-react"
 
 import { selectionGutterPosition, selectionSnapshot } from "@/lib/comment-selection"
+import {editorCommentCommand} from "@/lib/desktop/editor-comment-command"
+import {registerDesktopCommandTarget} from "@/lib/desktop/command-runtime"
 
 import { monaco } from "../editor/monaco-setup"
 import { CommentComposer } from "./CommentComposer"
@@ -117,6 +119,10 @@ export function useMonacoComments(args: MonacoCommentsArgs): { overlay: ReactNod
 
   const [addBtn, setAddBtn] = useState<AddButtonState | null>(null)
   const [composer, setComposer] = useState<ComposerState | null>(null)
+  useEffect(()=>{
+    if(!editor)return
+    return registerDesktopCommandTarget(editorCommentCommand(editor,()=>enabled&&!readOnly&&!composer,snapshot=>{setComposer(snapshot);setAddBtn(null)}))
+  },[editor,enabled,readOnly,composer])
   const zonesRef = useRef(new Map<string, ActiveZone>())
 
   // Monaco 默认把整个 ViewZone 层设为 aria-hidden；自定义评论包含真实表单，必须向读屏暴露。

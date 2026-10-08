@@ -18,6 +18,8 @@ import { approveStoryVersion } from "./story-workflow"
 import { acceptStoryContentApproval } from "./story-content-approval"
 import { selectedStoryChoice, storyTaskNavigationSchema } from "@/lib/story-task"
 import { bindPlanningAdjustment, misplacedPlanningAdjustment, planningAdjustmentOf, planningAdjustmentRecoveryRequestAllowed, planningAdjustmentSchema, questionAnswer, type PlanningAdjustment } from "@/lib/planning-adjustment"
+import { legacyTaskDefaults, overrideTaskDefaults, restoreTaskDefaults } from "@desktop/shared/task-defaults"
+import { taskDefaults } from "@desktop/service/task-defaults"
 
 type Tx = Prisma.TransactionClient
 export class ChatProtocolError extends ContentError {
@@ -28,7 +30,8 @@ class NavigationContentStaleError extends Error {
   constructor(readonly reason: ContentError) { super(reason.message) }
 }
 export function scopeFor(conversation: Conversation, turn: ChatTurn, attempt: ChatAttempt): ChatExecutionScope {
-  return { userId: turn.userId, conversationId: conversation.id, turnId: turn.id, attemptId: attempt.id, epoch: attempt.executionEpoch }
+  return { userId: turn.userId, conversationId: conversation.id, turnId: turn.id, attemptId: attempt.id, epoch: attempt.executionEpoch,
+    taskDefaults: restoreTaskDefaults(turn.defaultsSnapshot) ?? legacyTaskDefaults(conversation.modelId, conversation.thinkingEffort) }
 }
 async function lockConversation(tx: Tx, id: string, userId: string) {
   await tx.$queryRaw`SELECT id FROM "Conversation" WHERE id = ${id} AND "userId" = ${userId} FOR UPDATE`
@@ -129,6 +132,10 @@ export async function beginChatRequest(userId: string, raw: unknown) {
   const input = parsed.data
   const { clientRequestId, ...payload } = input
   const hash = requestHash(payload)
+  const explicitMode = "mode" in raw && raw.mode !== undefined ? input.mode : undefined
+  // Read the committed, keyless settings before acquiring a DB transaction.
+  // Existing conversations never consult today's global defaults here.
+  const initialDefaults = !input.conversationId ? overrideTaskDefaults(await taskDefaults(), { modelId: input.modelId, thinkingEffort: input.thinkingEffort, mode: explicitMode }) : undefined
   // 导航面板过期预检（2026-09-25 作者实测死循环）：回答 storyNavigation 面板且面板内容与当前图谱不一致时，
   // 先把面板刷新到当前版本（独立事务），主事务内消费即可一击命中稳定选项 ID；刷新失败按原规则由主事务严格校验。
   if (input.interaction?.action === "answer" && input.interaction.turnId) {
@@ -167,10 +174,15 @@ export async function beginChatRequest(userId: string, raw: unknown) {
     if (input.conversationId) conversation = await lockConversation(tx, input.conversationId, userId)
     else {
       if (input.novelId && !await tx.novel.findFirst({ where: { id: input.novelId, userId, status: { not: "DELETED" } }, select: { id: true } })) throw new ChatProtocolError("NOVEL_NOT_FOUND", "作品不存在或无权访问", 404)
-      conversation = await tx.conversation.create({ data: { userId, novelId: input.novelId ?? null, title: stripMentionPayloads(input.message!).slice(0, 50), modelId: input.modelId ?? null, thinkingEffort: input.thinkingEffort ?? null } })
+      conversation = await tx.conversation.create({ data: { userId, novelId: input.novelId ?? null, title: stripMentionPayloads(input.message!).slice(0, 50), modelId: initialDefaults!.textModelId,
+        thinkingEffort: initialDefaults!.thinking === "default" ? null : initialDefaults!.thinking, defaultsSnapshot: initialDefaults! } })
     }
     const latest = await tx.chatTurn.findFirst({ where: { conversationId: conversation.id }, orderBy: [{ createdAt: "desc" }, { id: "desc" }] })
     if (retryTurn) retryTurn = await tx.chatTurn.findUniqueOrThrow({ where: { id: retryTurn.id } })
+    const conversationDefaults = overrideTaskDefaults(restoreTaskDefaults(conversation.defaultsSnapshot) ?? legacyTaskDefaults(conversation.modelId, conversation.thinkingEffort), { modelId: conversation.modelId, thinkingEffort: conversation.thinkingEffort, mode: restoreTaskDefaults(latest?.defaultsSnapshot)?.mode })
+    const turnDefaults = retryTurn ? restoreTaskDefaults(retryTurn.defaultsSnapshot) ?? legacyTaskDefaults(conversation.modelId, conversation.thinkingEffort)
+      : overrideTaskDefaults(conversationDefaults, { modelId: input.modelId, thinkingEffort: input.thinkingEffort, mode: explicitMode })
+    input.mode = turnDefaults.mode
     const restoredAdjustment = retryTurn && latest?.id === retryTurn.id ? await recoverablePlanningAdjustment(tx, retryTurn, conversation.novelId) : null
     if (restoredAdjustment && !planningAdjustmentRecoveryRequestAllowed(input)) throw new ChatProtocolError("RETRY_NOT_ALLOWED", "提案调整恢复只能重试原回答，不能同时提交另一问题或操作", 409, retryTurn!.id)
     if (retryTurn && (latest?.id !== retryTurn.id || !["failed", "interrupted"].includes(retryTurn.status) && !restoredAdjustment)) throw new ChatProtocolError("RETRY_NOT_ALLOWED", "只能恢复此会话最新的失败回合或失焦的提案澄清", 409, retryTurn.id)
@@ -209,7 +221,7 @@ export async function beginChatRequest(userId: string, raw: unknown) {
     if (interaction?.kind === "planApproval") {
       if (input.mode !== "standard" || !conversation.novelId) throw new ChatProtocolError("PLAN_APPROVAL_INVALID", "请关联作品后批准并进入标准模式", 400)
       const proposal = planProposalSchema.parse(interaction.payload)
-      const plan = await createPlanInTransaction(tx, { ...proposal, conversationId: conversation.id, novelId: conversation.novelId })
+      const plan = await createPlanInTransaction(tx, { ...proposal, conversationId: conversation.id, novelId: conversation.novelId, defaultsSnapshot: turnDefaults })
       interaction = { ...interaction, payload: { ...proposal, planId: plan.id } }
     }
     const userMessageId = retryTurn?.userMessageId ?? randomUUID()
@@ -251,7 +263,7 @@ export async function beginChatRequest(userId: string, raw: unknown) {
       if (payload?.storyApproval) await approveStoryVersion({ userId, novelId: conversation.novelId }, workflowApprovalSchema.parse(payload.storyApproval), userMessageId, tx)
       if (payload?.contentApproval) confirmedAction = await acceptStoryContentApproval(userId, conversation.novelId, payload.contentApproval, userMessageId, tx) ?? confirmedAction
     }
-    const turn = retryTurn ?? await tx.chatTurn.create({ data: { userId, conversationId: conversation.id, clientRequestId, userMessageId, status: "queued", ...(confirmedAction ? { action: confirmedAction } : {}) } })
+    const turn = retryTurn ?? await tx.chatTurn.create({ data: { userId, conversationId: conversation.id, clientRequestId, userMessageId, status: "queued", defaultsSnapshot: turnDefaults, ...(confirmedAction ? { action: confirmedAction } : {}) } })
     if (!retryTurn) await tx.message.create({ data: { id: userMessageId, conversationId: conversation.id, turnId: turn.id, role: "USER", content: input.message! } })
     const attemptId = randomUUID()
     const request = await tx.chatRequest.create({ data: { userId, clientRequestId, requestHash: hash, turnId: turn.id, entryAttemptId: attemptId } })
@@ -262,7 +274,7 @@ export async function beginChatRequest(userId: string, raw: unknown) {
     if (interactionTurn && interaction) await tx.chatTurn.update({ where: { id: interactionTurn.id }, data: { status: "succeeded", interaction: { ...interaction, state: input.interaction!.action === "approve" ? "approved" : "answered", responseTurnId: turn.id, responseMessageId: userMessageId, responseHash: hash } as Prisma.InputJsonValue } })
     const currentTurn = await tx.chatTurn.update({ where: { id: turn.id }, data: { status: "queued", latestAttemptId: attempt.id } })
     conversation = await tx.conversation.update({ where: { id: conversation.id }, data: { activeAttemptId: attempt.id, executionEpoch: epoch, leaseExpiresAt: new Date(Date.now() + CHAT_LEASE_MS), cancelRequestedAt: null,
-      ...(input.modelId !== undefined ? { modelId: input.modelId } : {}), ...(input.thinkingEffort !== undefined ? { thinkingEffort: input.thinkingEffort } : {}) } })
+      ...(!retryTurn && input.modelId !== undefined ? { modelId: input.modelId } : {}), ...(!retryTurn && input.thinkingEffort !== undefined ? { thinkingEffort: input.thinkingEffort } : {}) } })
     return { replay: false as const, turn: currentTurn, attempt, conversation }
     // 回合建立事务含 consumeStoryTask 的全量产物图读取：48 章规模下把上限放宽到 30s，慢读不应让面板消费 500。
   }, { ...CHAT_TRANSACTION_OPTIONS, timeout: 30_000 }).catch(async (error: unknown) => {

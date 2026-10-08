@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
-import { mkdtemp, rm, readFile } from "node:fs/promises"
+import { mkdtemp, rm, readFile, writeFile } from "node:fs/promises"
 import { readFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
@@ -11,6 +11,46 @@ async function fixture(run: (path: string) => Promise<void>) {
   const root = await mkdtemp(join(tmpdir(), "xuanxiang-vault-")); try { await run(join(root, "state.json")) } finally { await rm(root, { recursive: true, force: true }) }
 }
 const protection = { isEncryptionAvailable: () => true, encryptString: (key: string) => Buffer.from("OS-CIPHER:" + [...key].reverse().join("")), decryptString: (value: Buffer) => value.toString().slice(10).split("").reverse().join("") }
+
+test("model configuration preserves unknown context size instead of inventing a provider capacity", () => fixture(async path => {
+  const repo = new ModelRepository(path, protection, { replace() {}, remove() {} })
+  const saved = await repo.saveModel(0, { ...draft, contextWindow: 0 })
+  assert.equal(saved.models[0].contextWindow, 0)
+  await assert.rejects(repo.saveModel(saved.revision, { ...draft, id:saved.models[0].id, contextWindow: 999 }))
+}))
+
+test("default model disable retains its ID but resets thinking to model default even when high remains supported", () => fixture(async path => {
+  const repo = new ModelRepository(path, protection, { replace() {}, remove() {} })
+  let saved = await repo.saveModel(0, { ...draft, thinkingLevels: ["low", "high"], defaultThinking: "low" })
+  const id = saved.models[0].id
+  saved.settings.agent.textModelId = id
+  saved.settings.agent.thinking = "high"
+  saved = await repo.updateSettings(saved.revision, saved.settings)
+  const disabled = await repo.saveModel(saved.revision, { ...draft, id, enabled: false, apiKey: "", thinkingLevels: ["low", "high"], defaultThinking: "low" })
+  assert.equal(disabled.settings.agent.textModelId, id)
+  assert.equal(disabled.models[0].enabled, false)
+  assert.equal(disabled.settings.agent.thinking, "default")
+}))
+
+test("explicit re-enable of a legacy disabled default resets thinking while retaining model ID and credential", () => fixture(async path => {
+  const repo = new ModelRepository(path, protection, { replace() {}, remove() {} })
+  let saved = await repo.saveModel(0, { ...draft, thinkingLevels: ["low", "high"], defaultThinking: "low" })
+  const id = saved.models[0].id
+  saved.settings.agent.textModelId = id
+  saved.settings.agent.thinking = "high"
+  saved = await repo.updateSettings(saved.revision, saved.settings)
+  // An isolated persisted fixture represents state written by the older disable behavior.
+  const legacy = JSON.parse(await readFile(path, "utf8"))
+  legacy.value.models[0].enabled = false
+  legacy.value.models[0].authRevision += 1
+  legacy.value.settings.agent.thinking = "high"
+  await writeFile(path, JSON.stringify(legacy))
+  const enabled = await repo.saveModel(saved.revision, { ...draft, id, enabled: true, apiKey: "", thinkingLevels: ["low", "high"], defaultThinking: "low" })
+  assert.equal(enabled.settings.agent.textModelId, id)
+  assert.equal(enabled.models[0].enabled, true)
+  assert.equal(enabled.settings.agent.thinking, "default")
+  assert.equal(await repo.keyFor(id, enabled.models[0].authRevision), draft.apiKey)
+}))
 
 test("DESK-M12: model keys require OS protection and public state never exposes secret fields", () => fixture(async path => {
   const repo = new ModelRepository(path, protection, { replace() {}, remove() {} })

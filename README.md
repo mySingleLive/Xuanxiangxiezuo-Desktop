@@ -6,7 +6,9 @@
 
 ## 当前进度
 
-技术方案与531条正式测试用例已通过独立审核，进入TDD实现阶段。已独立导入原 Web 源码，本地核心51项测试通过并完成四批代码审核。尚未打包或完成桌面验收，不能将设计原型视为可用App。
+技术方案及测试清单已通过独立审核，进入TDD实现与验收阶段。按作者最新要求，自动/手动备份及备份恢复已移除；正常保存、草稿保留和目录迁移继续保留。原531条清单中1条纯备份用例退役，当前有效530条（106桌面+424业务），均未完成正式验收。已生成macOS arm64未签名开发版.app、DMG和ZIP，并完成有限静态及原生检查：系统六组菜单、关于窗口、真实目录/头像选择取消、用户资料和多快捷键跨进程保持、正常退出及异常锁修复。Dock控制工具超时的失败保留，窗口完整操作、输入法、完整业务及真实供应商仍待验收。Windows无现成测试环境，按作者要求保留待验收。见[本次验证记录](docs/verification-2026-10-08.md)。
+
+本源码提交不包含安装产物、用户数据、真实密钥或本机原始验收日志；公开的审核文档已隐藏本机路径，原始记录保留在开发环境。
 
 交付严格按以下顺序进行：
 
@@ -14,7 +16,7 @@
 2. [产品设计](docs/02-product-design.md) → [子代理审核通过](docs/reviews/21-product-settings-shell-review.md)
 3. [UI 设计](docs/03-ui-design.md) → [子代理复审通过](docs/reviews/22-ui-settings-shell-review.md) → 用户已批准（2026-10-07），[实施边界](docs/implementation-boundaries.md)
 4. [技术方案](docs/04-technical-design.md) → [独立审核通过](docs/reviews/23-technical-design-review.md)
-5. [测试用例](docs/05-test-cases.md)（107桌面 + 424业务）→ [独立审核通过](docs/reviews/25-test-cases-review.md)
+5. [测试用例](docs/05-test-cases.md) → [独立审核通过](docs/reviews/25-test-cases-review.md)；[当前范围](docs/acceptance-active-scope.json)为106桌面 + 424业务
 6. TDD 实现 → 子代理 code review
 7. 执行全部测试用例与真实桌面验收
 8. 测试通过后总结
@@ -34,6 +36,18 @@ python3 -m http.server 4187 --bind 127.0.0.1
 然后打开 <http://127.0.0.1:4187/design/desktop-preview.html>；默认在顶部显示调试工具栏（平台、色板、页面、异常状态、AI门控示例），按 Alt+Shift+P 切换显隐；`?review=0` 隐藏工具栏。此临时预览服务不是最终 App 的运行方案，最终桌面版无需部署服务端。
 
 原型按键规则检查：`node --test design/check-shortcut-keys.cjs`。
+
+## 运行当前开发版本
+
+需要 Node.js 24。执行 `npm ci`、`npm run generate`、`npm run build:ui`、`npm run build:desktop` 后运行 `npm start`。工作台由 Electron 的本地协议加载，不启动 HTTP 服务或外部数据库。当前开发版本尚不适合承载真实创作数据。
+
+核心验证：`npm run test:core:evidence`；隔离的 macOS Electron 定向检查：`node scripts/smoke-electron.mjs`。这些检查不替代正式验收清单。
+
+## 本机构建安装包
+
+安装开发依赖并完成生成与构建后，`npm run package:dir` 生成应用目录，`npm run package` 生成macOS DMG/ZIP或Windows NSIS。产物位于 `release/`。封包前核本机Electron版本、OS/CPU和Sharp动态库；所有归档前检查实际资源，并用包内依赖在独立工具进程中完成内存数据库与图片资源检查，不启动Electron或访问作者数据。`npm run package:check` 可重复检查已生成的macOS arm64应用目录。
+
+只在匹配目标OS/CPU的机器安装依赖并构建。macOS x64和Windows安装/运行未验收；当前macOS产物未签名、未公证，不自动上传、发布或更新。配置及资源检查不替代实际安装、原生UI与持久化验收，当前开发版本仍不用于真实创作数据。
 
 ## 来源
 

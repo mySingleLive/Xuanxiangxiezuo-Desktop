@@ -10,7 +10,7 @@ export type ModelDraft = Omit<StoredModel, "id" | "authRevision" | "encryptedKey
 export class ModelRepository {
   private readonly store: VersionedStore<AppState>
   private published = new Set<string>()
-  constructor(path: string, private readonly protection: SecretProtection, private readonly gateway: Pick<ModelGateway, "replace" | "remove">, storeOptions: StoreOptions = {}) {
+  constructor(readonly path: string, private readonly protection: SecretProtection, private readonly gateway: Pick<ModelGateway, "replace" | "remove">, storeOptions: StoreOptions = {}) {
     this.store = new VersionedStore(path, defaultState, stateSchema.parse, storeOptions)
   }
   async read() { const state = await this.store.read(); return { revision: state.revision, ...publicState(state.value) } }
@@ -29,10 +29,18 @@ export class ModelRepository {
       protocol: model.provider === "google" && model.kind === "IMAGE" ? "google" : model.protocol })
     this.published = ids
   }
-  async initialize() { const state = await this.store.read(); this.publish(state.value); return this.read() }
-  private async commit(revision: number, value: AppState): Promise<Snapshot<AppState>> {
+  async initialize(assertCurrent:()=>void=()=>{}) {
+    assertCurrent()
+    const state = await this.store.read()
+    assertCurrent()
+    this.publish(state.value)
+    const current = await this.read()
+    assertCurrent()
+    return current
+  }
+  private async commit(revision: number, value: AppState, beforeCommit?:()=>void): Promise<Snapshot<AppState>> {
     try {
-      const saved = await this.store.update(revision, value)
+      const saved = await this.store.update(revision, value, beforeCommit)
       this.publish(saved.value)
       return saved
     } catch (error) {
@@ -69,7 +77,7 @@ export class ModelRepository {
     if (next.thinkingLevels.some(level => !level || level.length > 30) || new Set(next.thinkingLevels).size !== next.thinkingLevels.length) throw new Error("模型思考档位列表无效")
     if (current.value.models.some(model => model.id !== next.id && model.provider === next.provider && model.endpoint === next.endpoint && model.kind === next.kind && model.modelId === next.modelId)) throw new Error("这个模型已经添加")
     const settings = structuredClone(current.value.settings)
-    if (settings.agent.textModelId === next.id && settings.agent.thinking !== "default" && !next.thinkingLevels.includes(settings.agent.thinking)) settings.agent.thinking = "default"
+    if (settings.agent.textModelId === next.id && (prior?.enabled !== next.enabled || (settings.agent.thinking !== "default" && !next.thinkingLevels.includes(settings.agent.thinking)))) settings.agent.thinking = "default"
     const saved = await this.commit(revision, { settings, models: [...current.value.models.filter(model => model.id !== next.id), next] })
     return { revision: saved.revision, ...publicState(saved.value) }
   }
@@ -82,7 +90,7 @@ export class ModelRepository {
     const saved = await this.commit(revision, { settings, models: current.value.models.filter(model => model.id !== id) })
     return { revision: saved.revision, ...publicState(saved.value) }
   }
-  async updateSettings(revision: number, settings: Settings) {
+  async updateSettings(revision: number, settings: Settings, beforeCommit?:()=>void) {
     const state = await this.store.read(); const validated = settingsSchema.parse(settings)
     for (const key of ["textModelId", "reviewModelId", "imageModelId"] as const) {
       const id = validated.agent[key]
@@ -95,7 +103,7 @@ export class ModelRepository {
       if (validated.agent.textModelId !== state.value.settings.agent.textModelId) validated.agent.thinking = "default"
       else throw new Error("此模型不支持所选思考强度")
     }
-    const saved = await this.commit(revision, { ...state.value, settings: validated })
+    const saved = await this.commit(revision, { ...state.value, settings: validated }, beforeCommit)
     return { revision: saved.revision, ...publicState(saved.value) }
   }
 }

@@ -8,11 +8,14 @@ const entrySchema = z.object({
   draftId: z.string(), conversationId: z.string().nullable(), novelId: z.string().nullable(),
   draft: z.string(), pendingNovelTitle: z.string().nullable(), novelCreationRequestId: z.string().nullable(),
   modelChoice: z.object({ modelId: z.string().nullable(), effort: z.string().nullable() }),
-  queuedMessages: z.array(z.object({ id: z.string(), text: z.string() })),
+  modelChoiceExplicit: z.boolean().optional(),
+  mode: z.enum(["standard", "plan"]).optional(), modeExplicit: z.boolean().optional(),
+  queuedMessages: z.array(z.object({ id: z.string(), text: z.string(), action: chatActionSchema.optional() })),
   wasRunning: z.boolean(), awaitingQuestion: z.boolean(),
   pendingRequest: z.object({ clientRequestId: z.string(), body: z.string() }).nullable().optional(),
 })
 const savedSchema = z.object({ version: z.literal(1), activeKey: z.string(), drafts: z.record(z.string(), entrySchema) })
+export { entrySchema as chatSessionEntrySchema, savedSchema as chatSessionSnapshotSchema }
 export type ChatSessionEntry = z.infer<typeof entrySchema>
 export type ChatSessionStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">
 export const chatSessionKey = (accountId: string) => `xuanxiang-chat-session:v1:${accountId}`

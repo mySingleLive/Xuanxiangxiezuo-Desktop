@@ -119,8 +119,17 @@ export function fallbackChipData(insertText: string): ChipData {
   return { insertText, label, groupLabel, kind }
 }
 
+function isDesktopEmptyCaret(root: HTMLElement): boolean {
+  // Chromium retains a sole BR as the empty editing host's caret placeholder.
+  // Preserve that DOM node for undo; it is not a user draft newline.
+  return !!(root.classList.contains("chat-composer-editable") && root.ownerDocument.defaultView?.desktop
+    && root.childNodes.length === 1 && root.firstChild?.nodeName === "BR"
+    && !(root.firstChild as HTMLElement).hasAttribute("data-composer-break"))
+}
+
 /** 编辑器 DOM → 纯文本草稿（chip 还原为 @[…] 序列；nbsp 归一为空格；块级/BR 换算行） */
 export function editorToText(root: HTMLElement): string {
+  if (isDesktopEmptyCaret(root)) return ""
   let out = ""
   const walk = (node: Node) => {
     if (node.nodeType === Node.TEXT_NODE) {
@@ -153,6 +162,9 @@ export function editorToText(root: HTMLElement): string {
 
 /** 复制编辑器内选区时保留引用的稳定标识；编辑器外或空选区沿用浏览器行为。 */
 export function selectedEditorText(root: HTMLElement): string | null {
+  // Check the original editing host before cloning loses its composer class.
+  // A selected empty-host caret BR is not a source newline for copy/cut.
+  if (isDesktopEmptyCaret(root)) return null
   const selection = root.ownerDocument.getSelection()
   if (!selection || selection.isCollapsed || selection.rangeCount !== 1) return null
   const range = selection.getRangeAt(0)
@@ -301,6 +313,7 @@ export function insertDraftAtCaret(
   root: HTMLElement,
   text: string,
   hydrate: (insertText: string) => ChipData | undefined,
+  options: { nativeUndo?: boolean } = {},
 ) {
   if (!text) return
   const container = root.ownerDocument.createElement("div")
@@ -311,6 +324,18 @@ export function insertDraftAtCaret(
   if (!last) return
   const selection = root.ownerDocument.getSelection()
   const selected = selection?.rangeCount === 1 ? selection.getRangeAt(0) : null
+  if (options.nativeUndo) {
+    if (!root.isConnected || !root.isContentEditable || root.ownerDocument.activeElement !== root || root.ownerDocument.hasFocus() === false
+      || !selected || !root.contains(selected.startContainer) || !root.contains(selected.endContainer)) throw new Error("消息输入框已变化，未粘贴内容")
+    // The HTML comes exclusively from our text nodes and typed chip builder;
+    // clipboard HTML never reaches this path. Chromium owns undo/redo/input.
+    const safe = root.ownerDocument.createElement("div")
+    safe.appendChild(fragment)
+    // Distinguish intentional source newlines from Chromium's empty-host BR.
+    safe.querySelectorAll("br").forEach(br => br.setAttribute("data-composer-break", "true"))
+    if (!root.ownerDocument.execCommand("insertHTML", false, safe.innerHTML)) throw new Error("消息输入框无法粘贴，请重试")
+    return
+  }
   const range = selected && root.contains(selected.startContainer) && root.contains(selected.endContainer)
     ? selected.cloneRange()
     : root.ownerDocument.createRange()
@@ -327,6 +352,14 @@ export function insertDraftAtCaret(
   selection?.addRange(range)
 }
 
+/** Desktop cut uses the same browser history as native typing and paste. */
+export function deleteDraftSelection(root: HTMLElement) {
+  const selection = root.ownerDocument.getSelection()
+  if (!root.isConnected || !root.isContentEditable || root.ownerDocument.activeElement !== root || root.ownerDocument.hasFocus() === false
+    || selection?.rangeCount !== 1 || selection.isCollapsed || !root.contains(selection.anchorNode) || !root.contains(selection.focusNode)) throw new Error("消息选区已变化，未剪切内容")
+  if (!root.ownerDocument.execCommand("delete", false)) throw new Error("消息输入框无法剪切，请重试")
+}
+
 /** 纯文本草稿 → 编辑器 DOM（全量重建；hydrate 用候选数据补全头像/图标） */
 export function renderDraftIntoEditor(
   root: HTMLElement,
@@ -338,7 +371,11 @@ export function renderDraftIntoEditor(
     if (!t) return
     const lines = t.split("\n")
     lines.forEach((line, i) => {
-      if (i > 0) root.appendChild(document.createElement("br"))
+      if (i > 0) {
+        const br = root.ownerDocument.createElement("br")
+        if (root.classList.contains("chat-composer-editable") && root.ownerDocument.defaultView?.desktop) br.setAttribute("data-composer-break", "true")
+        root.appendChild(br)
+      }
       if (line) root.appendChild(document.createTextNode(line))
     })
   }

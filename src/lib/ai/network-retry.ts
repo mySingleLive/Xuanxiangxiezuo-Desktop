@@ -19,7 +19,7 @@
  * AI SDK 内建重试统一关闭（maxRetries: 0），计数只此一处，全部可见。
  */
 
-import { prisma } from "@/lib/db"
+import { globalPrisma as prisma } from "@/lib/db"
 import { classifyError, isRetryableStatusCode } from "@/lib/ai/error-classification"
 
 /** 识别与文案已收敛到 error-classification.ts（全站唯一错误翻译入口）；此处保留转出口以兼容既有引用。 */

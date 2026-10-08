@@ -1,6 +1,4 @@
-import { randomUUID } from "node:crypto"
-import { mkdir, readFile, unlink, writeFile } from "node:fs/promises"
-import path from "node:path"
+import {currentWorkAssets} from "@desktop/service/image-assets"
 import sharp from "sharp"
 import type { Prisma } from "@/generated/prisma/client"
 import { prisma } from "@/lib/db"
@@ -12,7 +10,6 @@ import { lockContentOperation, requestHash } from "./content-commit"
 import { buildSceneImagePrompt, buildSceneImageAssistPrompt } from "@/lib/scene-image-prompt"
 import { generateText } from "@/lib/ai/generate"
 import { lockSceneTree, ownedScene, ownedSceneBook, type SceneScope } from "./scene"
-const directory = () => path.join(process.cwd(), ".data", "scene-images")
 const formats = {png: "image/png", jpeg: "image/jpeg", webp: "image/webp", gif: "image/gif"} as const
 export async function decodeSceneImage(buffer: Buffer, claimedMime?: string) {
   if (!buffer.length || buffer.length > 10 * 1024 * 1024) throw new ContentError("INVALID_IMAGE", "图片须为1字节至10MB", 400)
@@ -35,9 +32,7 @@ export async function generateSceneImagePrompt(scope: SceneScope, sceneId: strin
   return prompt
 }
 async function persistBytes(buffer: Buffer, claimedMime?: string) {
-  const {extension} = await decodeSceneImage(buffer, claimedMime)
-  const id = randomUUID(), filename = `${id}.${extension}`
-  await mkdir(directory(), {recursive: true}); await writeFile(path.join(directory(), filename), buffer, {flag: "wx"})
+  const {id,filename}=await currentWorkAssets().save(buffer,claimedMime)
   return {id, filename}
 }
 async function saveHistory(tx: Prisma.TransactionClient, scope: SceneScope, sceneId: string, kind: SceneImageKind, file: {id: string; filename: string}, source: string, prompt?: string, baseline?: number) {
@@ -52,7 +47,7 @@ async function saveHistory(tx: Prisma.TransactionClient, scope: SceneScope, scen
 }
 export async function uploadSceneImage(scope: SceneScope, sceneId: string, kind: SceneImageKind, buffer: Buffer, mime: string) {
   const scene = await ownedScene(prisma, scope, sceneId); const revision = kind === "exterior" ? scene.exteriorImageRevision : scene.interiorImageRevision; const file = await persistBytes(buffer, mime)
-  try {return await prisma.$transaction(tx => saveHistory(tx, scope, sceneId, kind, file, "UPLOAD", undefined, revision))} catch (error) {await unlink(path.join(directory(), file.filename)).catch(() => undefined); throw error}
+  try {return await prisma.$transaction(tx => saveHistory(tx, scope, sceneId, kind, file, "UPLOAD", undefined, revision))} catch (error) {await currentWorkAssets().removeCreated(file.filename).catch(() => undefined); throw error}
 }
 export async function selectSceneImage(scope: SceneScope, sceneId: string, kind: SceneImageKind, imageId: string | null) {
   return prisma.$transaction(async tx => {
@@ -80,7 +75,7 @@ export async function generateSceneImage(input: GenerateSceneImageInput, provide
     const buffer = await provider(input.prompt, input.modelId); file = await persistBytes(buffer)
     return await prisma.$transaction(async tx => {const result = await saveHistory(tx, input, input.sceneId, input.kind, file!, "AI", input.prompt, claim.revision); await tx.sceneImageRequest.update({where: key, data: {status: "complete", result: result as Prisma.InputJsonValue}}); return result})
   } catch (error) {
-    if (file) await unlink(path.join(directory(), file.filename)).catch(() => undefined)
+    if (file) await currentWorkAssets().removeCreated(file.filename).catch(() => undefined)
     const message = error instanceof ContentError || error instanceof NoModelAvailableError ? error.message : error instanceof Error && error.message.startsWith("文生图") ? error.message : "图片生成失败，请检查模型配置后发起新的生成"
     await prisma.sceneImageRequest.update({where: key, data: {status: "failed", result: {error: message}}})
     if (error instanceof ContentError) throw error
@@ -91,7 +86,7 @@ export async function readSceneImageAsset(scope: SceneScope, sceneId: string, im
   await ownedScene(prisma, scope, sceneId)
   const image = await prisma.sceneImage.findFirst({where: {id: imageId, sceneId}})
   if (!image || !/^[a-f0-9-]+\.(png|jpg|webp|gif)$/.test(image.filename)) throw new ContentError("TARGET_NOT_FOUND", "图片不存在", 404)
-  const bytes = await readFile(path.join(directory(), image.filename)).catch(() => null)
-  if (!bytes) throw new ContentError("TARGET_NOT_FOUND", "图片文件不存在", 404)
-  return {bytes, mime: image.filename.endsWith("jpg") ? "image/jpeg" : `image/${image.filename.split(".").pop()}`}
+  const asset = await currentWorkAssets().read(image.filename).catch(() => null)
+  if (!asset) throw new ContentError("TARGET_NOT_FOUND", "图片文件不存在", 404)
+  return asset
 }

@@ -6,7 +6,7 @@
    里的字节序列会被 oxide 误当任意值候选（曾因此生成非法 CSS 导致整站 500），
    显式限定来源后产物目录的变化不再影响样式编译。 */
 @source "../**/*.{ts,tsx,js,jsx,html}";
-@source "../../design/**/*.{html,js}";
+/* Reviewed prototype fixtures are intentionally excluded from the installed App. */
 @source not "../../.next/**";
 @source not "../../tmp/**";
 @source not "../../scripts/tmp/**";
